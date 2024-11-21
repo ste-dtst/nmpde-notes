@@ -274,10 +274,9 @@ Unfortunately, we cannot use the $L^2$ norm in Ceà's lemma, and this means that
 
 With some bit of additional work, we can produce error estimates on weaker norms, such as the $L^2$ one, from the estimates on stronger norms.
 \begin{lemma}[Nitsche] \label{lemma:nitsche}
-Let $A \in \L(V,V')$ an operator as in the hypotheses of Lax-Milgram's lemma. Assume that $H \subset V$ is a subspace such that:
+Let $A \in \L(V,V')$ an operator as in the hypotheses of Lax-Milgram's lemma. Assume that $V$ is a subspace of some Hilbert space $H$, with the following properties:
 \begin{romanlist}
-\item the embedding $V \hookrightarrow H$ is compact and $H' = H$;
-\item $\norm{u}_H \lesssim \norm{u}_V$ $\quad \forall u \in V$;
+\item $\norm{u}_H \lesssim \norm{u}_V$ $\quad \forall u \in V$ \quad (i.e., the embedding $V \hookrightarrow H$ is continuous);
 \item $V = \overline{H}^{\norm{\cdot}_V}$.
 \end{romanlist}
 Then the following inequality holds:
@@ -285,13 +284,13 @@ Then the following inequality holds:
 \norm{u-u_h}_H \lesssim \sup_{g \in H} \Bigl( \frac{1}{\norm{g}_H} \inf_{\phi_h \in V_h} \norm{\phi_g - \phi_h}_V \Bigr) \norm{u-u_h}_V .
 \end{equation}
 \end{lemma}
-\rev{I don't get the necessity of the second condition. Isn't it already included in the other hypotheses?}
 
 \begin{remark}
 With the hypotheses above, if $f \in H$, by the Hahn-Banach theorem $f$ can be extended to a functional $\tilde{f} \in V'$, i.e.
 \[
 \langle \tilde{f}, v \rangle_V = (f, v)_H \quad \forall v \in V.
 \]
+\rev{Is Hahn-Banach really necessary? We are in a Hilbert space setting.}
 Now consider the usual operatorial problem $A u = \tilde{f}$, i.e.
 \begin{equation}
 \langle Au,v \rangle = \langle \tilde{f},v \rangle = (f, v)_H \quad \forall v\in V.
@@ -310,7 +309,7 @@ We start observing that
 \begin{equation}\label{eqn:nitsche_norm}
 \norm{u-u_h}_H = \sup_{g \in H} \frac{(g, u-u_h)_H}{\norm{g}_H}.
 \end{equation}
-This is true because we have assumed that $H' = H$.
+This is true because $H$ is a Hilbert space, hence $H \cong H'$.
 
 Given $g \in H$, we know from the last remark that the dual problem $A^T \phi = g$ admits a unique solution $\phi_g \in V$. If we set $v = u-u_h$, we get:
 \[
