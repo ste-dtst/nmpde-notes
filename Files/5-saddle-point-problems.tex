@@ -1,0 +1,323 @@
+% !TeX source = ../main.tex
+
+\chapter{Saddle point problems}\label{chap:saddle}
+
+\section{Petrov-Galerkin Method and the BNB Condition}
+In this section we will consider a more general version of the classic problem \eqref{eqn:op_pbm}. In this setting, we consider a Banach space $V$ and a \emph{reflexive} Banach space $W$.
+\begin{remark}
+    Recall that a Banach space $W$ is said to be \emph{reflexive} if the natural map from $W$ to $W''$ is an isomorphism (it is, in fact, a canonical isomorphism, since it does not depend on the choice of a basis). This map takes a vector $w$ and associates it to the linear map $J_w$ such that $J_w(f)=f(w)$ for every $f\in W'$. In practice we require this hypothesis so that we can identify $W=W''$.
+\end{remark}
+As usual, we have the option to either consider a linear continuous operator $A\in\L(V;W')$ or a bilinear operator $a\in\L(V\times W;\R)$. Given $f\in V'$, the problem we want to solve is to find $u\in V$ such that
+\begin{equation}\label{eqn:petrov-galerkin}\marginpar{Petrov-Galerkin method}
+    Au=f \ \text{in} \ V', \ \text{or equivalently} \ a(u,w) = \langle f,w \rangle \ \forall w\in W,
+\end{equation}
+where as usual $a(\cdot,\cdot)$ is defined by $a(u,w):=\langle Au,w \rangle$ for all $u\in V$ and $w\in W$.\par
+The first question we must ask is whether the problem is well-posed. Note that we can not rely on the Lax-Milgram Lemma since here the bilinear operator $a:V\times W\to \R$, with $V\neq W$ in general.
+\begin{definition}\label{eqn:BNB}\marginpar{BNB conditions}
+    A problem of the form \eqref{eqn:petrov-galerkin} is said to be \emph{well-posed} (in the sense of Hadamaard) if the following two conditions are satisfied:
+    \begin{itemize}
+        \item for every $f\in W'$, there exists a unique $u\in V$ such that $Au=f$,
+        \item $A$ is bounding, i.e. there exists $\alpha>0$ such that $\norm{u}_V \leq \tfrac{1}{\alpha}\norm{Au}_{W'}$ for every $u\in V$.
+    \end{itemize}
+\end{definition}
+The previous two conditions are also known as \emph{BNB (Banach-Nechas-Babuska) conditions} in the literature.
+\begin{remark}
+    The previous two conditions can also be summarized by saying that $A$ is required to be:
+    \begin{enumerate}
+        \item injective (note that this is also implied by being bounding on all $V$, since clearly no element of the kernel can satisfy the bounding condition, hence the kernel must be trivial),
+        \item surjective,
+        \item bounding.
+    \end{enumerate}
+    1,2 and 3 are all different aspects of the \emph{closed range theorem}.
+\end{remark}
+\begin{theorem}\label{theorem: closed range}\marginpar{Closed range theorem}
+    Let $A\in\L(V;W')$ for $V,W$ Banach spaces. Then the following are equivalent:
+    \begin{enumerate}
+        \item $\im A = \overline{\im A}$,
+        \item A is bounding on $V \setminus \ker(A)$, i.e. there exists $\alpha >0$ such that $\norm{Au}_{W'}\geq\alpha\norm{u}_V$ for every $u\in V\setminus\ker(A)$.
+    \end{enumerate}
+\end{theorem}
+\begin{remark}
+    The second condition (also called \emph{bounding condition}) is equivalent to the following \emph{limsup condition}:
+    \begin{equation}\label{eqn:limsup condition}
+        \inf_{u\in V\setminus\ker(A)}\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}\geq\alpha.
+    \end{equation}
+    This can be easily seen by remembering that $\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{w}_W}=\norm{Au}_{W'}$ by definition of operatorial norm, hence the limsup condition can be rewritten as
+    \begin{equation*}
+        \inf_{u\in V\setminus\ker(A)}\frac{\norm{Au}_{W'}}{\norm{u}_V}\geq\alpha,
+    \end{equation*}
+    which is clearly equivalent to the bounding condition.
+\end{remark}
+\begin{proof}[Proof of Theorem \eqref{theorem: closed range}]
+    \hfill
+    \begin{enumerate}[itemindent=25pt]
+        \item[1. $\implies$ 2.] Consider $A\in\L(V,\im A)$. Clearly $A$ is surjective on its image, and by hypothesis $\im A$ is a closed linear subspace of $W'$, and hence is a Banach space. Consider now the open unit ball $B_1(0_V)$: by the open mapping theorem (which we can apply since $A$ is a linear, continuous and surjective mapping between Banach spaces), $A(B_1(0_V))\subseteq\im A$ is open in $\im A$, and so there exists a $\gamma>0$ such that $B_\gamma(0_{W'})\subseteq A(B_1(0_V))$ (because $A(0_V)=0_{W'}$ by linearity).\par
+        It is also clear that, for any $w'\in \im A$, there exists $\alpha<\gamma$ such that $\overline{w'}:=\alpha\frac{w'}{\norm{w'}_{W'}}\in B_\gamma(0_{W'})$, which is contained in the image of $B_1(0_V)$ (here we require $w'\neq 0_{W'}$); this in turn implies the existence of a $z\in B_1(0_V)$ such that $Az=\overline{w'}$.\par
+        From this, we can easily conclude. Indeed, take $v:=\frac{\norm{w'}_{W'}}{\alpha}z$, so that $Av=w'$. Then we have
+        \begin{equation*}
+            \norm{v}_V=\frac{\norm{w'}_{W'}}{\alpha}\norm{z}_V\leq\frac{\norm{w'}_{W'}}{\alpha}=\frac{\norm{Av}_{W'}}{\alpha}.
+        \end{equation*}
+        Since this reasoning applies to any $v\not\in\ker(A)$, we proved that $A$ is bounding on $V\setminus\ker(A)$.
+        \item[2. $\implies$ 1.] We need to prove that $\im A$ is closed in $W'$. Take a Cauchy sequence $\{w_n'\}\subset \im A$ and let $w'\in W'$ be the limit. If we prove that $w'\in\im A$ we are done. For every $w_n'$, take $v_n\in V$ such that $Av_n=w_n'$. Then
+        \begin{equation*}
+            \norm{w_n'-w_m'}_{W'}=\norm{A(v_n-v_m)}_{W'}\geq\alpha\norm{v_n-v_m}_V,
+        \end{equation*}
+        hence also $\{v_n\}$ is Cauchy in $V$. If we call $v\in V$ the limit, by continuity of $A$ we must have $Av=w'$.
+    \end{enumerate}
+\end{proof}
+
+\begin{example}
+    Let us consider the ``identity'' map $A:H_0^1(\Omega)\to L^2(\Omega)$, i.e. $Au=u$ for all $u\in H_0^1(\Omega)$. Observe that $\ker(A)=\{0_V\}$ but $A$ is not surjective (for example because not all functions in $L^2$ are continuous). However $H_0^1(\Omega)(=\im A)$ is dense in $L^2(\Omega)$ (recall that $H_0^1$ is the closure of $C_0^\infty$, which is dense in $L^2$). In particular, $\im A\neq\overline{\im A}$. This also shows a key difference between the infinite- and finite-dimensional cases: in finite dimensions $\ker(A)=\{0\}$ implies invertibility, while in infinite dimensions this is not enough.
+\end{example}
+\rev{Not super clear what is the meaning of this example... of course the map is not invertible, since it is not surjective...}
+
+So far we have shown the following equivalences (here we give statements for $A\in\L(V,W')$, but analogous statements for $A^T\in\L(W,V')$ also hold):
+\begin{enumerate}
+    \item $A^T$ is surjective,
+    \item $A$ is injective and $\im A=\overline{\im A}$,
+    \item $A$ is bounding on $V$.
+\end{enumerate}
+Indeed, 2. and 3. are clearly equivalent thanks to the closed range theorem.\par
+Let us show that 1. implies 3. Assume that this is not the case; then there exists a sequence $\{v_n\}\subset V$ with $\norm{v_n}_{V}=1$ and $\norm{Av_n}_{W'}<1/n$ for all $n\in\N$. Note that, since $\norm{v_n}_{V}=1$, for every $n$ there exists a functional $v_n'\in V'$ such that $|v_n'(v_n)|\geq 1/2$. Since $A^T$ is surjective, by the open mapping theorem there exists $\gamma > 0$ such that $A^T(B_1(0_W))$ contains $B_\gamma(0_{V'})$. Thus we get a sequence $\{w_n\}\subset B_1(0_W)$ such that $A^Tw_n=\gamma v_n'$ for all $n$. Finally, observe that this implies that
+\begin{equation*}
+    |Av_n(w_n)|=|A^Tw_n(v_n)|=\gamma|v_n'(v_n)|\geq\gamma/2,
+\end{equation*}
+hence $\norm{Av_n}_{W'}\geq\gamma/2$, a contradiction.\par
+\rev{3. implies 1.?}
+Now we want to rewrite the BNB conditions in the special case of Hilbert spaces.
+\begin{lemma}\label{eqn:BNB for Hilbert}
+    Let $V,W$ be Hilbert spaces, and let $A\in\L(V;W')$. Then the BNB conditions \eqref{eqn:BNB} are equivalent to the following: there exists an $\alpha>0$ such that
+    \begin{enumerate}
+        \item $\norm{Au}_{W'}\geq\alpha\norm{u}_V$,
+        \item $\norm{A^Tw}_{V'}\geq\alpha\norm{w}_W$,
+    \end{enumerate}
+\end{lemma}
+\begin{proof}
+    Clearly 2. in \eqref{eqn:BNB} and 1. in \eqref{eqn:BNB for Hilbert} are equivalent. On the other hand, if for every $w\in W$ we define $w'\in W'$ such that $w'(z):=\tfrac{1}{\norm{w}_W}\langle w,z \rangle$, and we call $Au^*=w'$, then we have
+    \begin{equation*}
+        \norm{A^Tw}_{V'}=\sup_{u\in V}\frac{\langle A^Tw,u \rangle}{\norm{u}_V}\geq\frac{\langle A^Tw,u^* \rangle}{\norm{u^*}_V}=\frac{\langle Au^*,w \rangle}{\norm{u^*}_V}=\frac{1}{\norm{u^*}_V}\norm{w}_W.
+    \end{equation*}
+\end{proof}
+\rev{The proof does not work, it needs to be fixed.}
+\begin{remark}
+    Using the closed range theorem and Remark \ref{eqn:limsup condition}, 1. and 2. of the previous Lemma can be more suggestively written as
+    \begin{align}
+        \inf_{u\in V}\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}&\geq\alpha \\
+        \inf_{w\in W}\sup_{u\in V}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}&\geq\alpha.
+    \end{align}
+\end{remark}
+Finally, we conclude this section with the following result, which we do not prove.
+\begin{theorem}
+    Using the notations above, if we assume that $V=W$ and that $A$ is $\alpha$-elliptic, then ``Lax-Milgram implies BNB'', i.e. if the hypothesis of Lemma \ref{lemma:lax-milgram} are satisfied, then \eqref{eqn:BNB} holds.
+\end{theorem}
+
+
+\section{Ceà's Lemma for Petrov-Galerkin}
+We consider the following slightly less general setting for Petrov-Galerkin: let $V,Q$ be Hilbert spaces, let $V_h\subset V$ and $Q_h\subset Q$ be some subspaces of finite dimension, and let $A\in\L(V;Q')$ be a linear continuous operator and let and $A_h\in\L(V_h;Q_h')$ be its discretization. It will prove useful in the following to introduce two \emph{projection} operators from the whole space to the discrete space $\Pi_h:V\to V_h$ and $P_h:Q\to Q_h$ defined as
+\begin{equation*}
+    \langle\Pi_h v,v_h\rangle=\langle v,v_h\rangle \ \forall\, v\in V,
+\end{equation*}
+and analogously for $P_h$.\par
+Consider the discrete version of problem \eqref{eqn:petrov-galerkin}: given $f\in V'$, find $u_h\in V_h$ such that
+\begin{equation}\label{eqn:discrete petrov-galerkin}\marginpar{Discrete Petrov-Galerkin}
+    \langle Au_h, q_h \rangle= \langle f,q_h \rangle \ \forall q_h\in Q_h.
+\end{equation}
+\begin{remark}
+    The following observation will be useful later on. Note that if $u$ is a solution to the continuous problem, then $\langle Au,q_h\rangle=\langle f,q_h\rangle$ for all $q_h\in Q_h\subset Q$. At the same time, given a solution $u_h$ to the discrete problem, we have $\langle Au_h,q_h\rangle=\langle f,q_h\rangle$ for all $q_h\in Q_h$. Subtracting the two gives us
+    \begin{equation}\label{eqn:petrov-galerkin orthogonality}
+        \langle A(u-u_h),q_h \rangle=0 
+    \end{equation}
+    for all $q_h\in Q_h$.
+\end{remark}
+As it has been discussed in the previous section, the solution exists and is unique if and only if the BNB conditions hold: in this setting we call them \emph{discrete infsup conditions} (or \emph{discrete BNB conditions}) to distinguish them from the infsup conditions for the continuous problem. Their formulation is however exactly the same:
+\begin{align}\label{eqn:discrete infsup}\marginpar{Discrete infsup}
+    \inf_{u_h\in V_h}\sup_{q_h\in Q_h}\frac{\langle Au_h,q_h \rangle}{\norm{u_h}_V\norm{q_h}_{Q_h}}&\geq\alpha_h>0 \\
+    \inf_{q_h\in Q_h}\sup_{u_h\in V_h}\frac{\langle Au_h,q_h \rangle}{\norm{u_h}_V\norm{q_h}_{Q_h}}&\geq\alpha_h>0.
+\end{align}
+\begin{remark}
+    We wrote $\alpha_h$ to stress the fact that this constant is generally different to the one in the continuous infsup, but $\alpha_h$ \emph{does not} depend on $h$.
+\end{remark}
+\begin{lemma}[Ceà's lemma for Petrov-Galerkin]
+    Assume that the infsup conditions hold for both the continuous and the discrete problem. Let $u\in V$ be the solution to \eqref{eqn:petrov-galerkin} and let $u_h\in V_h$ be the solution to \eqref{eqn:discrete petrov-galerkin}. Then
+    \begin{equation*}
+        \norm{u-u_h}_V\leq\left( 1+\frac{\norm{A}}{\alpha_h} \right)\inf_{v_h\in V_h}\norm{u-v_h}_V.
+    \end{equation*}
+\end{lemma}
+\begin{proof}
+    From the discrete infsup, we have
+    \begin{equation*}
+        \alpha_h\leq \inf_{v_h\in V_h}\sup_{q_h\in Q_h}\frac{\langle Av_h,q_h \rangle}{\norm{v_h}_V\norm{q_h}_{Q_h}}= \inf_{v_h\in V_h}\frac{\norm{Av_h}_{*,Q_h}}{\norm{v_h}_V},
+    \end{equation*}
+    where $\norm{\cdot}_{*,Q_h}$ is the operatorial norm on the space $Q_h$ (i.e. the last equality follows by the definition of $\norm{\cdot}_{*,Q_h}$). From this follows that
+    \begin{equation*}
+        \frac{1}{\alpha_h}\norm{Av_h}_{*,Q_h}\geq\norm{v_h}_V \quad \forall\, v_h\in V_h.
+    \end{equation*}
+    In particular, it is also true that
+    \begin{equation*}
+        \frac{1}{\alpha_h}\norm{A(u_h-v_h)}_{*,Q_h}\geq\norm{u_h-v_h}_V \quad \forall\, v_h\in V_h,
+    \end{equation*}
+    since clearly $u_h-v_h\in V_h$. Now, we start doing some inequalities:
+    \begin{align*}
+        \norm{u-u_h}_V&\leq\norm{u-v_h}_V+\norm{v_h-u_h}_V\\
+        &\leq\norm{u-v_h}_V+\frac{1}{\alpha_h}\norm{A(v_h-u_h)}_{*,Q_h}
+    \end{align*}
+    for all $v_h\in V_h$. At this point, to conclude it is enough to observe that
+    \begin{align*}
+        \norm{A(v_h-u_h)}_{*,Q_h}&=\sup_{q_h\in Q_h}\frac{\langle A(v_h-u_h),q_h \rangle}{\norm{q_h}_{Q_h}}\\
+        &=\sup_{q_h\in Q_h}\frac{\langle A(v_h-u),q_h \rangle + \langle A(u-u_h),q_h\rangle}{\norm{q_h}_{Q_h}}\\
+        &=\sup_{q_h\in Q_h}\frac{\langle A(v_h-u),q_h \rangle}{\norm{q_h}_{Q_h}}\\
+        &=\norm{A(v_h-u)}_{*,Q_h},
+    \end{align*}
+    where we used \eqref{eqn:petrov-galerkin orthogonality} for the third equality. Plugging this into the inequality we obtained previously yields
+    \begin{align*}
+        \norm{u-u_h}_V&\leq\norm{u-v_h}_V+\frac{1}{\alpha_h}\norm{A(v_h-u)}_{*,Q_h}\\
+        &\leq\left( 1+\frac{\norm{A}}{\alpha_h} \right)\norm{v_h-u}_V,
+    \end{align*}
+    for all $v_h\in V_h$. Taking the inf on $V_h$ gives the wanted inequality.
+\end{proof}
+
+
+\section{Mixed Problems}
+Saddle point problems are a class of optimization problems characterized by the presence of both primal and dual variables, leading to solutions that are critical points of a Lagrangian function. These problems are common in various applications such as fluid dynamics, structural mechanics, and optimization.\par
+The setting is the following: take  two Hilbert spaces $V,Q$ and two linear continuous operators
+\begin{equation*}
+    A:V\to V', \quad B:V\to Q'.
+\end{equation*}
+Take also $f\in V'$ and $g\in Q'$. The problem we aim to solve is to find $(u, p)\in V\times Q$ such that:
+\begin{equation}\label{eqn:general mixed prb} \marginpar{General mixed problem}
+    \begin{aligned}
+        Au + B^Tp &= f \quad \text{in} \ V', \\
+        Bu &= g  \quad \text{in} \ Q'.
+    \end{aligned}
+\end{equation}
+
+\begin{remark}
+    Assume that $g$ is in the image of $B$. Then there exists $u_g\in V$ such that $Bu_g=g$. Call $Z:=\ker{B}$; then the solution $u\in V$ can be written as $u=u_0 + u_g$ for some $u_0\in Z$. Substituting in \eqref{eqn:general mixed prb} we obtain:
+    \begin{equation}\label{eqn:u0 prb}
+        \begin{aligned}
+            Au_0 + B^Tp &= f - Au_g=:\Tilde{f} , \\
+            Bu_0 &= 0,
+        \end{aligned}
+    \end{equation}
+    and the second equation is satisfied automatically by construction.
+\end{remark}
+
+By the previous Remark, we can therefore restrict ourselves to the study of the so-called ``$u_0$ problem'', i.e. finding $u_0\in Z$ such that
+\begin{equation*}
+    \langle Au_0,v_0 \rangle + \langle B^Tp,v_0 \rangle = \langle \Tilde{f},v_0 \rangle \quad \forall \ v_0\in Z
+\end{equation*}
+(this is just the first \eqref{eqn:u0 prb} written in terms of scalar products). Since $v_0\in Z$, the second term of the left-hand side vanishes, and thus we are left with the equation
+\begin{equation*}
+    \langle Au_0,v_0 \rangle = \langle \Tilde{f},v_0 \rangle \quad \forall \ v_0\in Z.
+\end{equation*}
+As we have said multiple times, the solution $u_0\in Z$ to this problem exists and is unique if and only if the BNB conditions hold in $Z$. Explicitly, we ask that there exists an $\alpha>0$ such that
+\begin{align}\label{eqn:ell-ker conditions}\marginpar{Ell-ker conditions}
+    \inf_{v_0\in Z}\sup_{u_0\in Z}\frac{\langle Au_0,v_0 \rangle}{\norm{u_0}_V\norm{v_0}_V}&\geq\alpha \\
+    \inf_{u_0\in Z}\sup_{v_0\in Z}\frac{\langle Au_0,v_0 \rangle}{\norm{u_0}_V\norm{v_0}_V}&\geq\alpha.
+\end{align}
+In this setting, the BNB conditions are also called \emph{ell-ker conditions} (for ellipticity in the kernel).\par
+If we manage to solve the $u_0$-problem, the solution to the original problem can be found by solving the \emph{$p$-problem}: find $p\in Q$ such that
+\begin{align*}
+    \langle B^Tp,v\rangle &= -\langle Au,v\rangle + \langle f,v\rangle\\
+    &= -\langle Au_0,v\rangle + \langle\Tilde{f},v\rangle \quad \forall v\in V.
+\end{align*}
+Once again, existence and uniqueness of the solution are equivalent to the following infsup condition:
+\begin{equation}\label{eqn:infsup for B}\marginpar{Infsup condition for $B$}
+    \inf_{p\in Q}\sup_{v\in V}\frac{\langle Bv,p \rangle}{\norm{v}_V\norm{p}_Q}\geq\beta>0
+\end{equation}
+In conclusion, if conditions \eqref{eqn:ell-ker conditions} and \eqref{eqn:infsup for B} hold, then there is a unique solution $(u,p)\in V\times Q$ for the mixed problem \eqref{eqn:general mixed prb}.\par
+Now we want to investigate whether we can estimate the norm of the solution in terms of $f,g$ and the infsup constants $\alpha$ and $\beta$. First observe that, from \eqref{eqn:ell-ker conditions} and the definition of $\Tilde{f}$, it follows immediately that
+\begin{equation*}
+    \norm{u_0}_V\leq\frac{1}{\alpha}\norm{\Tilde{f}}_{V'}\leq\frac{1}{\alpha}\left( 
+\norm{f}_{V'}+\norm{A}_*\norm{u_g}_V \right).
+\end{equation*}
+Moreover, from \eqref{eqn:infsup for B} and the definition of $u_g$ we have
+\begin{equation*}
+    \norm{g}_{Q'}=\norm{Bu_g}_{Q'}\geq\beta\norm{u_g}_V.
+\end{equation*}
+Hence 
+\begin{align*}
+    \norm{u}_V &= \norm{u_0+u_g}_V\\
+    &\leq\frac{1}{\alpha}\left(\norm{f}_{V'}+\norm{A}_*\norm{u_g}_V \right)+\frac{1}{\beta}\norm{g}_{Q'}\\
+    &\leq \frac{1}{\alpha}\norm{f}_{V'}+\left( \frac{\alpha+\norm{A}_*}{\alpha\beta}\right)\norm{g}_{Q'}.
+\end{align*}
+An analogous computation can be made for $p,$ showing that
+\begin{equation*}
+    \norm{p}_Q\leq\frac{\norm{A}_*+1}{\beta}\norm{f}_{V'}+\frac{\norm{A}_*}{\beta}\left(\frac{\norm{A}_*+\alpha}{\alpha\beta}\right)\norm{g}_{Q'}.
+\end{equation*}
+\begin{remark}
+    Call $\mathbb{V}:=V\times Q$ and
+    \begin{equation*}
+        \mathbb{A}:=\begin{bmatrix}
+            A & B^T\\
+            B & 0
+        \end{bmatrix}\in\L(\mathbb{V};\mathbb{V}').
+    \end{equation*}
+    The problem \eqref{eqn:general mixed prb} can clearly be stated in terms of a singular variable $\psi:=(u,p)\in\mathbb{V}$ and the linear operator $\mathbb{A}$. It can be proved (but it is not easy) that the conditions \eqref{eqn:ell-ker conditions}, \eqref{eqn:infsup for B} are equivalent to the existence of a constant $\overline{\alpha}>0$ such that
+    \begin{align}
+        \inf_{\psi\in \mathbb{V}}\sup_{\theta\in \mathbb{V}}\frac{\langle A\psi,\theta \rangle}{\norm{\psi}_\mathbb{V}\norm{\theta}_\mathbb{V}}&\geq\overline{\alpha} \\
+        \inf_{\theta\in \mathbb{V}}\sup_{\psi\in \mathbb{V}}\frac{\langle A\psi,\theta \rangle}{\norm{\psi}_\mathbb{V}\norm{\theta}_\mathbb{V}}&\geq\overline{\alpha}.
+    \end{align}
+    This is known in the literature as \emph{``Brezzi $\iff$ Babuska''}.
+\end{remark}
+
+\subsection{Some considerations on discrete mixed problems}
+The aim of this paragraph is to give an idea as to why mixed problem are difficult. As we will see shortly, the main reason is that the ``goodness'' of the approximation for the velocity does not only depend on the approximation space $V_h$, but also depends on the choice of $Q_h$ (and the same can be said for the approximation of the pressure).\par
+The main idea here is to proceed as usual, as if we wanted to prove Ceà's lemma. But first we introduce the following object, which is basically a discrete version of $\ker(B)$:
+\begin{equation*}
+    Z_h:=\{ v_h\in V_h \mid \langle Bv_h,q_h\rangle=0 \ \forall\,q_h\in Q_h \}.
+\end{equation*}
+\begin{remark}
+    In general, it is not true that $Z_h\subset Z$. For example, we can consider $B=\dvg$ in dimension 1 (i.e. $B$ is the derivative operator), so that $Z$ is the set of (a.e.) constant function. However, if we consider $Q_h$ to be the set of piece-wise constant functions, then
+    \begin{equation*}
+        \langle Bu,q_h\rangle=0 \ \forall\, q_h\in Q_h \ \iff \ \int_T u'=0 \ \forall \, T \ \text{triangle in the triangulation}.
+    \end{equation*}
+    Clearly the set of functions with 0 derivative on each element of the triangulation is not contained in the set of constant functions, i.e. $Z_h\not\subset Z$.\par
+    Also note that in general it is also not true that $Z\subset Z_h$.
+\end{remark}
+With the usual notations, we let $(u,p)$ be the solution to \eqref{eqn:general mixed prb} and let $(u_h,p_h)$ be the approximated solution. Then we can write
+\begin{align*}
+    \langle Au,v_h\rangle+\langle Bv_h,p\rangle&=\langle f,v_h\rangle \quad \forall\,v_h\in V_h\\
+    \langle Au_h,v_h\rangle+\langle Bv_h,p_h\rangle&=\langle f,v_h\rangle \quad \forall\,v_h\in V_h,\\
+\end{align*}
+Subtracting the two gives
+\begin{equation*}
+    \langle A(u-u_h),v_h\rangle=-\langle Bv_h,p-p_h\rangle \quad \forall\, v_h\in V_h;
+\end{equation*}
+now observe that if we restrict ourselves to $v_h\in Z_h\subset V_h$ then $\langle Bv_h,p-p_h\rangle=\langle Bv_h,p-q_h\rangle$ for all $q_h\in Q_h$, so the previous equation can be rephrased as
+\begin{equation}\label{eqn:mixed prb orthogonality}
+    \langle A(u-u_h),v_h\rangle=-\langle Bv_h,p-q_h\rangle \quad \forall\, v_h\in Z_h \ \text{and} \ \forall\,q_h\in Q_h.
+\end{equation}
+As usual we can employ the discrete infsup condition \eqref{eqn:discrete infsup} to write
+\begin{align*}
+    \norm{u-u_h}_V&\leq\norm{u-v_h}_V+\norm{v_h-u_h}_V\\
+    &\leq\norm{u-v_h}_V +\frac{1}{\alpha_h}\norm{A(v_h-u_h)}_{*,Z_h}
+\end{align*}
+for all $v_h\in Z_h$. Finally, we use \eqref{eqn:mixed prb orthogonality} in the following chain of (in)equalities:
+\begin{align*}
+    \norm{A(v_h-u_h)}_{*,Z_h} &= \sup_{z_h\in Z_h}\frac{\langle A(v_h-u_h),z_h\rangle}{\norm{z_h}_{V_h}}\\
+    &= \sup_{z_h\in Z_h}\frac{\langle A(v_h-u),z_h\rangle + \langle A(u-u_h),z_h\rangle}{\norm{z_h}_{V_h}}\\
+    &= \sup_{z_h\in Z_h}\frac{\langle A(v_h-u),z_h\rangle - \langle Bz_h,p-q_h\rangle}{\norm{z_h}_{V_h}}\\
+    &= \norm{A(v_h-u)}_{*,Z_h}+\norm{B^T(q_h-p)}_{*,Z_h}\\
+    &\leq \norm{A}_*\norm{v_h-u}_V+\norm{B}_*\norm{q_h-p}
+\end{align*}
+for all $v_h\in Z_h$ and all $q_h\in Q_h$. Taking the inf on $Z_h$ and $Q_h$ gives a similar result to the classic Ceà's lemma for the velocity:
+\begin{equation*}
+    \norm{u-u_h}_V\leq \left( 1+\frac{\norm{A}_*}{\alpha_h}\right)\inf_{v_h\in Z_h}\norm{u-v_h}_V+\frac{\norm{B}_*}{\alpha_h}\inf_{q_h\in Q_h}\norm{p-q_h};
+\end{equation*}
+similarly, we can obtain the following inequality for the pressure:
+\begin{equation*}
+    \norm{p-p_h}_Q\leq \left( 1+\frac{\norm{B}_*}{\beta_h}\right)\inf_{q_h\in Q_h}\norm{p-q_h}_Q+\frac{\norm{A}_*}{\beta_h}\inf_{v_h\in Z_h}\norm{u-v_h}.
+\end{equation*}
+
+
+
+\subsection{An example: the mixed Laplacian}
+Another example is the mixed formulation of the Laplacian:
+\begin{equation}
+    \begin{aligned}
+        a(u, v) + b(v, p) &= f(v) \quad \forall v \in V, \\
+        b(u, q) &= g(q) \quad \forall q \in Q.
+    \end{aligned}
+\end{equation}
+

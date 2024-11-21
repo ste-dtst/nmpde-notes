@@ -1,0 +1,258 @@
+% !TeX source = ../main.tex
+
+\chapter[Overview]{Overview}
+
+%****************************************************************
+% Lezione 27 febbraio
+%****************************************************************
+
+\section{Construction of the approximation, Ceà's lemma}
+
+Let $\Omega$ be an open, bounded, Lipschitz subset of $\R^n$. Let also $\partial\Omega$ be its boundary.
+Consider the following Poisson problem:
+\[
+\begin{cases} \marginpar{Strong formulation}
+-\Delta u = f \qquad &\text{in $\Omega$} \\
+u =  0 \qquad &\text{on $\partial \Omega$}
+\end{cases}
+\]
+where, as usual,
+\[
+\Delta = \sum_{i=1}^n \frac{\partial^2}{\partial x_i^2}.
+\]
+If we want to find a numerical solution of this problem, two approaches can be followed:
+\begin{itemize}
+\item discretize $-\Delta$ (\emph{finite differences});
+\item consider the \emph{weak formulation} of the problem (\emph{finite elements}).
+\end{itemize}
+
+\rev{Maybe add some reference to the finite difference construction.}
+
+Finite differences work well if $\Omega$ is a nice domain (e.g. a square, a cube and so on) and if $f$ is regular enough (e.g. continuous). In applications, however, the domain's boundary may not be nice at all, and $f$ may not be $C^0$ but, instead, at most $L^2$ or, worse, it may have singularities (e.g., it may be a Dirac delta).
+The finite element approach tries to overcome these difficulties. The advantage is that we don't have to discretize the differential operator anymore, but instead we integrate by parts and dump the derivatives onto a test function. Also, the solution $u$ no longer needs to be defined pointwise.
+
+In order to derive a weak formulation for the problem above, let $\phi \in \D$ a test function (usually $\D=C_0^\infty(\Omega)$). We multiply by $\phi$ both sides of the PDE in the strong formulation and then integrate:
+\[
+\int_\Omega -\Delta u \phi = \int_\Omega f \phi.
+\]
+If we integrate by parts and suppose that $\restr{u}{\partial \Omega} = \restr{\phi}{\partial\Omega} = 0$, we get:
+\[
+\int_\Omega \nabla u \nabla \phi = \int_\Omega f \phi.
+\]
+More in general, if we replace $\D$ with some function space $V$, the weak formulation will be: given $f\in V'$, find $u\in V$ such that
+\begin{equation} \label{eqn:weak_1} \marginpar{Weak form (1)}
+\int_\Omega \nabla u \nabla v = \int_\Omega f v \quad \forall v\in V.
+\end{equation}
+with the agreement that, being $f \in V'$, the RHS is in fact a duality.
+
+Some further clarification is needed:
+\begin{itemize}
+\item Does the LHS make sense? We need that
+\[
+\int_\Omega | \nabla u \nabla v | < +\infty
+\]
+hence a possibility is to require $\nabla u, \nabla v \in L^2(\Omega)$, i.e. be weak derivatives.
+\item We said before that $u$ and $v$ are assumed to be zero on the domain boundary. What does it mean? Remember that, for instance, Sobolev space functions are not well defined on a zero measure set, such as $\partial \Omega$. Hence, a workaround (the trace) will be needed.
+\end{itemize}
+Let us choose
+\[
+V:= H^1_0(\Omega) = \Set{u \in L^2(\Omega) : \nabla u \in L^2(\Omega), \restr{u}{\partial\Omega}=0}.
+\]
+It is well known that $H^1_0(\Omega) = \overline{C^\infty_0(\Omega)}^{\norm{\cdot}_{1,
+2}}$, where $\norm{\cdot}_{1,2}$ is the Sobolev norm induced by the scalar product
+\[
+(u,v)_{1,2} = \int_\Omega uv + \int_\Omega \nabla u \nabla v.
+\]
+In particular, the space $V$ with this scalar product is a Hilbert space.
+
+In order to try to approximate a solution of the weak problem, we first need to prove that such a solution exists. To do so, we take advantage of the Lax-Milgram lemma:
+\begin{lemma}[Lax-Milgram]\label{lemma:lax-milgram}\marginpar{Lax-Milgram lemma}
+Let $V$ a Hilbert space and let $a: V\times V \to \R$ be a bilinear operator such that:
+\begin{itemize}
+\item $a$ is \emph{bounded}, i.e. $\exists c>0$ s.t. $a(u,v) \le c \norm{u}_V \norm{v}_V$ for every $u,v \in V$ \\ (sometimes, we refer to the constant $c$ as $\norm{A}_*$);
+\item $a$ is \emph{coercive} (or \emph{bounding}), i.e. $\exists \alpha >0$ s.t. $a(u,u) \ge \alpha \norm{u}_V^2$.
+\end{itemize}
+Then, given $f\in V'$, the following problem
+\begin{equation}\label{eqn:weak_laxmilgram}
+a(u,v) = \langle f,v \rangle \quad \forall v\in V
+\end{equation}
+admits a unique solution $u_0$. Moreover, $u_0$ satisfies the following inequality:
+\[
+\norm{u_0}_V \le \frac{\norm{f}_{V'}}{\alpha}.
+\]
+\end{lemma}
+
+In the Poisson problem's case, the bilinear operator is
+\[
+a(u,v) = \int_\Omega \nabla u \nabla v,
+\]
+which is clearly bounded and coercive if $V=H_0^1(\Omega)$. In particular, coercivity follows from using Poincaré inequality to observe that the norm in $V$ is equivalent to the $H^1$ seminorm
+\[
+\abs{u}_{1,2} = \norm{\nabla u}_{L^2}.
+\]
+Hence, the weak formulation of the Poisson problem admits a unique solution by the Lax-Milgram lemma.
+
+The reason why the finite element method is powerful is that the differential operators stay untouched and, instead, what is to be simplified is \emph{the set in which the solutions live}. We construct a sequence of subspaces $V_h \subset V$ such that $V_h = \Span\Set{v_i}_{i=1}^n$, with $n$ depending on $h$. Then we restrict the weak problem to $V_h$, which inherits the norm from $V$: given $f \in V'$, we find $u_h \in V_h$ s.t.
+\begin{equation} \label{eqn:weak_2} \marginpar{Weak form (2)}
+a(u_h,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
+\end{equation}
+Our $u_h$ will be our candidate approximate solution. We shall first prove its existence.
+
+Since $u_h \in V_h$, there exist unique coefficients $\Set{u^j}_{j=1}^n$ such that
+\[
+u_h = \sum_{j=1}^n u^j v_j.
+\]
+If we use the Einstein notation, i.e. we omit the summation on repeated indices, the weak problem \ref{eqn:weak_2} becomes:
+\[
+a(u^j v_j ,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
+\]
+In particular, in order to achieve this equality, it will suffice for us to check it for a basis of $V_h$:
+\[
+a(v_i, v_j)  u^j = \langle v_i,f \rangle \quad \forall i=1,\dots,n.
+\]
+Here we have rearranged the objects in the brackets and used linearity to make it clearer that this is a matricial identity: if $A$ is the matrix whose entries are $A_{ij}=a(v_i, v_j)$, then we have to solve the linear system
+\[
+A \mathbf{u} = \mathbf{f}
+\]
+where $\mathbf{u}=(u^i)_{i=1}^n$ and $\mathbf{f}=(\langle v_i,f \rangle)_{i=1}^n$.
+In particular, $A$ is clearly symmetric and positive definite due to the coercivity of $a$:
+\[
+\mathbf{u}^T A \mathbf{u} = a(u^i v_i, u^i v_i) \ge \alpha \norm{u^i v_i}^2 \ge 0
+\]
+and this, by linearity, is zero if and only if every $u^i$ is zero. We conclude that $A$ is non singular, hence $u_h$ exists and is unique.
+
+We now seek a way to control \emph{a priori} the error introduced by the restriction to $V_h$.
+\begin{lemma}[Ceà]\marginpar{Ceà's lemma} \label{lemma:cea}
+In the setting of the Lax-Milgram lemma, let $u\in V$ be the solution of the weak problem~\eqref{eqn:weak_laxmilgram} and $u_h \in V_h$ a solution of~\eqref{eqn:weak_2}. Then:
+\[
+\norm{u - u_h} \le \frac{\norm{A}}{\alpha} \inf_{v_h \in V_h} \norm{u - v_h}.
+\]
+\end{lemma}
+\begin{proof}
+Observe that, since $u$ solves the weak problem in the whole $V$, then also
+\[
+a(u,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
+\]
+By linearity, it follows that
+\[
+a(u - u_h,v_h) = 0 \quad \forall v_h\in V_h.
+\]
+In particular, this is also true if we substitute $v_h$ with $v_h - u_h$, which is still in $V_h$:
+\[
+a(u - u_h, v_h - u_h) = 0 \quad \forall v_h\in V_h.
+\]
+This is an orthogonality property of the error. Now we exploit the properties of $a$:
+\begin{align}
+\alpha \norm{u - u_h} & \le a(u - u_h, u - u_h) \\
+& = a(u - u_h, u - v_h) + a(u - u_h, v_h - u_h) \\
+& = a(u - u_h, u - v_h) \\
+& \le \norm{A} \norm {u - u_h} \norm {u - v_h} \quad \forall v_h \in V_h.
+\end{align}
+The conclusion follows by simplifying $\norm{u - u_h}$ on both sides of the inequality.
+\end{proof}
+
+The meaning of Ceà's inequality is: it suffices to control the error only in $V_h$ in order to have a good approximation of $u$. This is a step in the right direction, because in practice the functions in $V_h$ will be polynomials, hence their derivatives will be well defined and we won't need to approximate them. However, there are still some problems left:
+\begin{itemize}
+\item How do we approximate an arbitrary domain $\Omega$?
+\item How do we approximate $V$ with $V_h$? Meaning, we seek to construct $V_h$ in such a way that $\text{dist}(V,V_h) = c h^k$ for some $k$, where
+\[
+\text{dist}(V,V_h) = \sup_{u\in V} \inf_{v_h \in V_h} \norm{u - v_h}.
+\]
+\item In practice, $u$ is unknown, but the RHS of the error estimate contains $u$. How do we manage this?
+\end{itemize}
+
+
+
+\section{An example: the 1-dimensional case}
+
+\rev{this section could be written better.}
+
+Let $\Omega = (a,b)$. In order to discretize it, we consider a set of points $\Set{x_i}_{i=1}^n$ such that
+\[
+a = x_0 < x_1 < \dots < x_{n+1} = b.
+\]
+To keep things simple, let
+\[
+x_i = a+ih, \quad h = \frac{b-a}{n+1}.
+\]
+As prompted in the previous section, let $V=H_0^1((a,b))$. Now consider
+\[
+V_h = \Set{v \in C^0([a,b]): \restr{v}{[x_i, x_{i+1}]}\in \P^1([x_i, x_{i+1}]) \,\forall i=0,\dots,n, \, v(a)=v(b)=0}
+\]
+where $\P^1$ denotes the space of polynomials of degree at most 1. This space has dimension $n$ and contains piecewise linear functions on $[a,b]$ which are zero on the boundary.
+
+We proceed to find a basis for it: let $v^i(u) := u(x_i)$ the evaluation of $u$ in the node $x_i$, for $i=1,\dots,n$. If $u$ were in $\D$, then $v^i$ would act as a Dirac delta $\delta(x-x_i)$, since
+\[
+\langle v^i, u \rangle = \int_\Omega \delta(x-x_i) u(x) \,dx = u(x_i).
+\]
+We construct functions $v_j \in V_h$ such that
+\[
+v^i(v_j) = \delta_{ij} = \begin{cases}
+1 \quad \text{if } i=j \\
+0 \quad \text{if } i\ne j
+\end{cases}
+\quad \forall i,j \in \Set{1,\dots,n}.
+\]
+In practice, for every node $x_j$ in the interior of $[a,b]$ we are considering a piecewise linear function that is one on that node and zero on any other node. It is clear that the functions $\Set{v_j}_{j=1}^{n}$ form a basis for the space $V_h$. These are the so-called \emph{shape functions}. Instead, the $v^i$-s form a basis for $V_h'$ and are called the \emph{nodal basis functions}.
+
+Let us now get back to the Poisson problem. In the 1-dimensional case, the entries of the matrix $A$ are of the form
+\[
+A_{ij} = \int_a^b v_i'(x) v_j'(x) \,dx.
+\]
+Since the nodal functions have been constructed in a \emph{localized} way, oneit is immediate to notice that $A_{ij} = 0$ whenever the supports of the involved nodal functions do not intersect. This is a distinguishing feature of a finite element method: the matrix $A$ is constructed in a way that makes it \emph{sparse}. In particular, in this case we have
+\[
+A_{ij} = \begin{cases}
+0 \quad &\text{if } \abs{i-j}>1 \\
+-\frac{1}{h} \quad &\text{if } \abs{i-j}=1 \\
+\frac{2}{h} \quad &\text{if } i=j
+\end{cases}.
+\]
+Notice that we have obtained the same matrix we would get with a finite difference method of the same order.
+\rev{I am a bit uncertain about the last sentence: this is very close to the matrix we would get with second order centered finite differences... but the orders are different. In particular, the most simple centered finite difference approach results in an approximation of order 2.}
+
+\section{The definition of finite element}
+
+\rev{this section has not been revised yet.}
+
+Let $V$ a Banach space \rev{check if $V$ is only Banach} and $A \in \L(V,V')$ a linear, continuous operator from $V$ to its dual space. Given $f \in V'$, we want to solve the problem $Au=f$ in $V'$, i.e.
+\begin{equation} \label{eqn:op_pbm} \marginpar{Operatorial form}
+\langle Au,v \rangle = \langle f,v \rangle \quad \forall v\in V.
+\end{equation}
+Let $V \supset V_h = \Span\Set{v_i}_{i=1}^n$, with $\dim V_h = n$. The space $V_h'$ is usually described in terms of the \emph{covectors}:
+\[
+V_h' = \Span\Set{v^i}_{i=1}^n.
+\]
+In particular, each $v^i$ is extended via the Hahn-Banach theorem to $V'$, in order to see $V_h'$ as a subspace of $V'$. With this notation, each $v^i$ is the dual vector of $v_i$, i.e.
+\[
+v^i(v_j) = \delta_{ij}.
+\]
+\rev{I'm not very sure about this. The $v^i$s are functions in $V'$, but $V_h'$ is not a subspace of $V'$.}
+In particular, if $u_h\in V_h$, we have
+\[
+u_h = \sum_{i=1}^n u^i v_i = \sum_{i=1}^n v^i(u_h) v_i.
+\]
+This leads to the natural definition of the \emph{interpolation operator} in $V_h$:
+\begin{align}
+I_{V_h}: &V \to V_h \\
+& u \mapsto \sum_{i=1}^n v^i(u) v_i = \sum_{i=1}^n u^i v_i.
+\end{align}
+
+\begin{remark}
+$I_{V_h}$ is a projection. In fact:
+\begin{align}
+I_{V_h}(I_{V_h}(u)) &= v^i (u^j  v_j) v_i \\
+&= u^j v^i(v_j) v_i \\
+&= \delta_{ij} u^j  v_i \\
+&= u^i  v_i.
+\end{align}
+\end{remark}
+
+\begin{definition}[Ciarlet, 1978] \marginpar{Definition of finite element}
+A \emph{finite element} is a triplet $(K,P,\Sigma)$, where:
+\begin{romanlist}
+\item $K\subset \R^n$ is a closed subset with piecewise smooth boundary;
+\item $P$ is a finite dimensional space of \emph{shape functions} $v_i$;
+\item $\Sigma$ is a set of basis functions $v^i$ for the space $P'$.
+\end{romanlist}
+\end{definition}
+

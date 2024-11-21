@@ -1,0 +1,360 @@
+% !TeX source = ../main.tex
+
+\chapter{Discontinuous Galerkin methods}
+
+\section{Strang's lemmas}
+Consider a bounded and coercive operator $A \in \L(V,V')$. As we know, to solve numerically the problem $A u = f$ in $V'$, we build a sequence of subspaces $V_h \subset V$ and restrict the problem to $V_h$:
+\[
+\text{find $u_h \in V_h$ s.t. } A u_h = f \quad \text{in $V'$}.
+\]
+In reality, we don't have at disposal $A$ and $f$ themselves, since their action on the shape functions $v_h \in V_h$ involves integrals, which are approximated by quadrature formulas. Hence, we are implicitly substituting $A$ and $f$ with a sequence of numerical approximations $A_h$ and $f_h$, and the real (approximated) problem we solve on a computer is the following:
+\[
+\text{find $u_h \in V_h$ s.t. } A_h u_h = f_h \quad \text{in ${V_h}'$}
+\]
+where $A_h \in \L(V_h,{V_h}')$ and $f_h \in {V_h}'$. This action is called in literature a \emph{variational crime}, because we are changing the variational problem. We now want to quantify the \emph{consistency error} introduced by this substitution.
+
+\begin{lemma}[First Strang's lemma]
+In the setting above, suppose that the operators $A_h$ are $h$-uniformly bounded and coercive, i.e. there exist $c_0, \alpha_0$ such that $\forall h$
+\begin{align}
+\langle A_h u_h, v_h \rangle \le c_0 \norm{u_h}_V \norm{v_h}_V \qquad &\forall u_h,v_h \in V_h, \\
+\langle A_h u_h, u_h \rangle \ge \alpha_0 \norm{u_h}_V^2 \qquad &\forall u_h \in V_h.
+\end{align}
+Then:
+\[
+\norm{u-u_h}_V \le \Bigl( 1+\frac{c_0}{\alpha_0} \Bigr) \inf_{v_h \in V_h} \bigl( \norm{u-v_h}_V + 
+\norm{A_h v_h - A v_h}_{{V_h}'} \bigr) + \norm{f-f_h}_{{V_h}'}
+\]
+where the norm of a functional $f \in V_h'$ is defined as usual:
+\[
+\norm{f}_{{V_h}'} := \sup_{v_h \in V_h} \frac{\langle f, v_h \rangle}{\norm{v_h}}.
+\]
+\end{lemma}
+\rev{check the hypotheses (see below). Write bounded and coercive or continuous and elliptic? Also, if $A_h \in \L(V,V')$ what is the right inequality?}
+
+\begin{remark}
+The term $\norm{A_h v_h - A v_h}_{{V_h}'}$ is the \emph{$A$-consistency error}. The term $\norm{f-f_h}_{{V_h}'}$ is the \emph{$f$-consistency error} and is essential, because we really want to check for consistency only in the FEM subspace.
+Remember that the norms in $V$ and $V_h$ are the same. Instead, the norms in $V'$ and ${V_h}'$ are different.
+
+\rev{Add some other comments from the notes.}
+\end{remark}
+
+\begin{proof}
+We begin applying the triangle inequality:
+\[
+\norm{u-u_h}_V \le \norm{u-v_h}_V + \norm{v_h - u_h}_V.
+\]
+Then we look for a bound for $\norm{v_h - u_h}_V$. By coercivity of $A_h$ we have
+\[
+\alpha_0 \norm{v_h - u_h}_V^2 \le \langle A_h(v_h - u_h), v_h- u_h \rangle.
+\]
+Now add and subtract $\langle A u - A v_h, v_h- u_h \rangle$. After rearranging the terms and observing that $Au = f$ and $A_h u_h = f_h$, we get:
+\begin{align}
+\alpha_0 \norm{v_h - u_h}_V^2 &\le  \langle A v_h - A u, v_h- u_h \rangle +
+\langle A_h v_h - A v_h, v_h- u_h \rangle + \langle f - f_h, v_h- u_h \rangle \\
+& \le \bigl( \norm{A} \norm{u-v_h}_V + \norm{A_h v_h - A v_h}_{{V_h}'} + \norm{f - f_h}_{{V_h}'} \bigr)
+\norm{v_h - u_h}_V.
+\end{align}
+If we divide by $\alpha_0 \norm{v_h - u_h}_V$, we conclude that
+\[
+\norm{v_h - u_h}_V\le \frac{1}{\alpha_0} \Bigl( \norm{A} \norm{u-v_h}_V + \norm{A_h v_h - A v_h}_{{V_h}'} + \norm{f - f_h}_{{V_h}'} \Bigr).
+\]
+The conclusion now is immediate. \rev{...but something is wrong with the constants. Also the hypothesis of $h$-uniform boundness for the $A_h$ seems not necessary.}
+\end{proof}
+
+We can also consider a second \emph{variational crime}: the case of non-conforming finite element function spaces, i.e. $V_h \not\subset V$. For instance, think of the situation of approximating continuous functions with piecewise continuous ones. 
+\rev{Is really this the meaning of non-conforming space? Or $V_h \not\subset V$ is a consequence of it?}
+In this case, we can find some bound for the error considering the direct sum $\tilde{V} := V + V_h$, provided with some norm $\tnorm{\cdot}$, and working in the space $\tilde{V}$. In particular, the operators $A_h$ must be extended to be in $\L(\tilde{V},\tilde{V}')$ and, similarly, every $f_h$ must be extended to $\tilde{V}$.
+\rev{This is a slightly revisited version of the theorem in the notes. I get the concrete idea of having the norm equivalence $\norm{\cdot} \sim \tnorm{\cdot}$ in $V$, but it is not necessary in the lemma. So how do we want to use it? Is the equivalence needed also in $V_h$?}
+%suppose the norm $\tnorm{\cdot}$ is equivalent to the norm $\norm{\cdot}$ on $V$:
+%\[
+%\exists c, C>0 \text{ s.t. } c\norm{u} \le \tnorm{u} \le C\norm{u} \quad \forall u \in V;
+%\]
+
+\begin{lemma}[Second Strang's lemma]
+Let $\tilde{V} = V + V_h$ and let $\tnorm{\cdot}$ be a norm in $\tilde{V}$ (possibly $h$-dependent). Let also $A_h$ be operators in $\L(\tilde{V},\tilde{V}')$. Suppose that the operators $A_h$ are $h$-uniformly bounded \emph{in $\tilde{V}$} and coercive \emph{in $V_h$} with respect to the norm $\tnorm{\cdot}$, i.e. there exist $c_0, \alpha_0$ such that $\forall h$
+\begin{align}
+\langle A_h u, v \rangle \le c_0 \tnorm{u} \tnorm{v} \qquad &\forall u,v \in \tilde{V}, \\
+\langle A_h u, u \rangle \ge \alpha_0 \tnorm{u}^2 \qquad &\forall u \in V_h.
+\end{align}
+Then, if $u_h \in V_h$ is the solution of $A_h u_h = f_h$ in ${V_h}'$, we have:
+\[
+\tnorm{u-u_h} \le \Bigl(1 + \frac{c_0}{\alpha_0} \Bigr) \inf_{v_h \in V_h} \tnorm{u-v_h} + \frac{1}{\alpha_0} \tnorm{A_h u - f_h}_{*,h}
+\]
+where $\tnorm{\cdot}_{*,h}$ is defined as follows:
+\[
+\tnorm{f}_{*,h} := \sup_{v_h \in V_h} \frac{\langle f, v_h \rangle}{\tnorm{v_h}}.
+\]
+\end{lemma}
+\begin{proof}
+We proceed in the same fashion of the first Strang's lemma. We start applying the triangle inequality:
+\[
+\tnorm{u-u_h} \le \tnorm{u-v_h} + \tnorm{v_h - u_h}.
+\]
+Then we look for a bound for $\tnorm{v_h - u_h}$. By coercivity of $A_h$ we have
+\begin{align}
+\alpha_0 \tnorm{v_h - u_h}^2 &\le \langle A_h(v_h - u_h), v_h- u_h \rangle \\
+&= \langle A_h v_h - f_h , v_h- u_h \rangle.
+\end{align}
+Now add and subtract $\langle A_h u, v_h- u_h \rangle$ and rearrange the terms to use the boundedness of $A_h$:
+\begin{align}
+\alpha_0 \tnorm{v_h - u_h}^2 &\le  \langle A_h (v_h - u), v_h- u_h \rangle +
+\langle A_h u - f_h, v_h- u_h \rangle \\
+& \le \bigl( c_0 \tnorm{u-v_h} + \tnorm{A_h u - f_h}_{*,h} \bigr)
+\tnorm{v_h - u_h}.
+\end{align}
+To get to the conclusion, divide by $\alpha_0 \tnorm{v_h - u_h}$ and couple the inequality with the triangle one that we used at the start of the proof.
+\end{proof}
+
+
+
+\section{Discontinuous Galerkin methods for the Poisson problem}
+
+Consider the following model problem:
+\begin{equation}\label{eqn:poisson_1}
+\begin{cases}
+-\Delta u = f \quad &\text{in $\Omega$} \\
+u = 0 \quad &\text{on $\partial\Omega$}.
+\end{cases}
+\end{equation}
+with $\Omega$ convex and polygonal, $f\in L^2(\Omega)$. As always, the space $V$ chosen for its weak formulation is $H^1_0(\Omega)$. If $V_h \not\subset V$, we see every triangle of the mesh $\T_h$ as an individual (not as part of a whole). We set:
+\begin{align}
+&\T := \bigcup_{T \in \T_h} \mathring{T} = \T_h \setminus \bigcup_{T} \partial T && \text{(cells)} \\
+&\E^0 := \bigcup_{T_i,T_j \in \T_h} \overline{T_i} \cap \overline{T_j} && \text{(interior edges)} \\
+&\E^{\partial\Omega} := \bigcup_{T_i \in \T_h} \overline{T_i} \cap \partial\Omega && \text{(boundary edges)} \\
+&\E := \E^0 \cup \E^{\partial\Omega} && \text{(all edges)}.
+\end{align}
+In particular, we denote each edge in the interior as $e_{ij} := \overline{T_i} \cap \overline{T_j}$ (of course, in 3D what we call "edge" will be a "face"). Observe that, with this notation, we also have
+\begin{align}
+&\E = \bigcup_{T \in \T_h} \partial T, \\
+&\E^0 = \E \setminus \partial \Omega, \\
+&\E^{\partial\Omega} = \E \cap \partial\Omega.
+\end{align}
+On the new mesh $\T$ we consider the "broken" scalar product on cells
+\[
+(u,v)_\T := \sum_{T \in \T_h} (u,v)_T
+\]
+and the "broken" scalar product on edges
+\[
+\langle u,v \rangle_\E := \sum_{e \in \E} (u,v)_e.
+\]
+Consider now the following choice for $V_h$:
+\[
+V_h = \Set{v \in L^2(\T) : \restr{v}{T} \in \P^l(T) \,\,\forall T \in \T_h}
+\]
+and set $\tilde{V} = V + V_h$. The FEM space we introduced is the space of \emph{discontinuous piecewise polynomials} on $\T$.
+
+We have said before that all cells in $\T$ are considered as individuals. Therefore, when two cells, say $T^+$ and $T^-$, share an edge $e$ (we call this edge an \emph{interface}), a function $u\in\tilde{V}$ may have different values on it, depending on which cell we are looking at. We would like to have some control on this behaviour, thus we call $u^+$ the value of $u$ on $e \cap T^+$, $u^-$ the value of $u$ on $e \cap T^-$. Also we define $n^+$ as the outer normal to $T^+$ and $n^-$ as the outer normal to $T^-$. With these in mind, we introduce the \emph{jump} of $u$:
+\[
+\jump{u} := \begin{cases}
+u^+ \cdot n^+ + u^- \cdot n^- \quad &\text{in $\E^0$} \\
+u \cdot n \quad &\text{in $\E^{\partial\Omega}$}
+\end{cases}
+\]
+and the \emph{average} of $u$:
+\[
+\avg{u} := \begin{cases}
+\frac{1}{2} u^+ + \frac{1}{2} u^-  \quad &\text{in $\E^0$} \\
+u \quad &\text{in $\E^{\partial\Omega}$}.
+\end{cases}
+\]
+\begin{remark}
+The product involved in the definition of jump has to be intended as a "trivial" product if $u$ is scalar, as a scalar product if $u$ is a vector. Remember:
+\begin{itemize}
+    \item the jump of a scalar is a vector, e.g. $\jump{u} = u^+ \mathbf{n^+} + u^- \mathbf{n^-}$;
+    \item the jump of a vector is a scalar, e.g. $\jump{\nabla u} = \nabla u^+ \cdot \mathbf{n^+} + \nabla u^- \cdot \mathbf{n^-}$.
+\end{itemize}
+Later on we will use the following identity, which holds for $a$ scalar and $\mathbf{b}$ vector (in reality, it is also true for \emph{any} $a$ and $b$, being careful with the products):
+\begin{equation}\label{eqn:jump_avg}
+a^+ \mathbf{n^+} \cdot \mathbf{b^+} + a^- \mathbf{n^-} \cdot \mathbf{b^-} = \jump{a} \cdot \avg{\mathbf{b}} + \avg{a} \jump{\mathbf{b}}.
+\end{equation}
+The proof is simple: just add and subtract the right quantities, then observe that $\mathbf{n^+}=-\mathbf{n^-}$.
+\end{remark}
+
+In order to use Strang's lemma to produce an error estimate on the space $\tilde{V}$, we consider the following norm on it:
+\[
+\tnorm{u}^2 := \sum_{T \in \T} \abs{u}^2_{1,T} + \sum_{e \in \E} \frac{1}{\abs{e}} \norm{\jump{u}}^2_{0,e}
+\]
+where $\abs{e}$ denotes the diameter of the edge $e$.
+\rev{check that it is indeed the diameter of the edge}
+This is indeed a norm on the space $\tilde{V}$; in particular, observe that $\tnorm{u} = 0$ implies $u=0$. In fact:
+\begin{itemize}
+\item $u$ would have $H^1$ seminorm equal to zero on each triangle, hence it would be constant on each $T$;
+\item $u$ also would have its jump equal to zero on every edge, hence such constants would be zero for every $T$.
+\end{itemize}
+The norm we have defined is clearly mesh dependent, but coincides with the $H^1$ seminorm $\abs{\cdot}_{1,\Omega}$ for functions in $V = H^1_0(\Omega)$ (remember that $\Omega$ is polygonal).
+
+We then rewrite the problem~\eqref{eqn:poisson_1} in a form that involves more deeply the triangulation $\T$:
+\begin{equation}\label{eqn:poisson_2}
+\begin{cases}
+-\Delta u = f \quad &\text{in $\T$} \\
+\jump{u} = 0 \quad &\text{in $\E$} \\
+\jump{\nabla u} = 0 \quad &\text{in $\E^0$}.
+\end{cases}
+\end{equation}
+We have to prove that the two forms are equivalent. Since $f \in L^2(\Omega)$, by the regularity theory for the Laplace problem, we know that the solution $u$ of~\eqref{eqn:poisson_1} is in $H^2(\Omega) \cap H^1_0(\Omega)$. Therefore, it makes sense to consider the space below:
+\[
+H^2(\T_h) := \Set{u \in L^2(\Omega) : \restr{u}{T} \in H^2(T) \,\, \forall T\in\T_h}
+\]
+and look, a priori, for solutions $u\in H^2(\T_h)$. Indeed, if $u$ solves~\eqref{eqn:poisson_1}, it trivially solves also~\eqref{eqn:poisson_2}. The converse can be shown via a weak formulation for~\eqref{eqn:poisson_2}.
+
+Let us look for a weak form for~\eqref{eqn:poisson_2}. It has been shown in~\cite{bcms04} that all discontinuous Galerkin methods used for the Poisson problem (also for more general ones) can be written in the following form:
+\[
+(-\Delta u - f, B_0 v)_\T + \langle \jump{u}, B_1 v \rangle_\E + \langle \jump{\nabla u}, B_2 v \rangle_{\E^0} = 0
+\]
+for some operators $B_0$, $B_1$, $B_2$ from $H^2(\T_h)$ to $L^2(\Omega)$, $\bigl(L^2(\E)\bigr)^d$ and $L^2(\E^0)$, respectively. This can be seen as a way of enforcing a linear relation among the three residuals of the three equations in~\eqref{eqn:poisson_2}. In order to find an expression for these operators, we observe that integration by parts leads to this identity on each triangle $T$:
+\[
+(- \Delta u - f , v )_T = (\nabla u, \nabla v)_T - (f,v)_T - \int_{\partial T} \nabla u \cdot n \,v.
+\]
+The last integral can be split into a sum of contributions from the edges that belong to $\partial T$, i.e.
+\[
+\int_{\partial T} \nabla u \cdot n \,v = \sum_{e \in \E \cap \partial T} \int_{e} \nabla u \cdot n \,v
+\]
+If we sum over $T$, each edge in the interior contributes to the sum two times, one for each cell that shares it. Hence, using the identity~\eqref{eqn:jump_avg} we get:
+\[
+(- \Delta u - f , v )_\T = (\nabla u, \nabla v)_\T - (f,v)_\T -
+\langle \jump{\nabla u}, \avg{v} \rangle_{\E^0} -
+\langle \avg{\nabla u}, \jump{v} \rangle_{\E}.
+\]
+Notice that we have used the identity
+\[
+\langle \jump{\nabla u}, \avg{v} \rangle_{\E^{\partial\Omega}}
+= \langle \avg{\nabla u}, \jump{v} \rangle_{\E^{\partial\Omega}}
+\]
+in order to have to consider $\jump{\nabla u}$ only in $\E^0$. This suggests that, if we make for $B_0$ the most simple choice, i.e. $B_0 v = v$, one could set $B_2 v = \avg{v}$, cancelling out the term $\langle \jump{\nabla u}, \avg{v} \rangle_{\E^0}$ in the weak formulation. Of course, this is not the only choice available for $B_2$, but it is the preferred one in most discontinuous Galerkin methods.
+
+The weak formulation, so far, has become:
+\[
+(\nabla u, \nabla v)_\T -
+\langle \avg{\nabla u}, \jump{v} \rangle_{\E} + 
+\langle \jump{u}, B_1 v \rangle_\E = (f,v)_\T \qquad \forall \, v \in H^2(\T_h).
+\]
+It is worth noting that this formulation contains as a particular case the usual conforming finite element approximation, since the terms $\jump{u}$ and $\jump{v}$ vanish when $u$, $v$ are continuous. In particular, the operator $B_1$ is "not active" for \emph{any} choice of $B_0$ and $B_2$, meaning that conforming ﬁnite element methods can be seen as ones that enforce a linear relation between the residual inside the element and the jump in the normal component of the gradient across interelement boundaries.
+
+Let us now fix $B_1$. Our goal is to use quantities that will come in handy when producing estimates in the norm $\tnorm{\cdot}$: a possible choice could be to set $B_1 v = - \avg{\nabla v}$, which would render the discrete formulation symmetric: this is the \emph{symmetric interior penalty method} (SIPG), in its classical nonstabilized version. As will become clear later, we need to stabilize the formulation introducing a \emph{penalisation term}, i.e. we change $B_1$ in the following way:
+\[
+B_1 v = \gamma \jump{v} - \avg{\nabla v}.
+\]
+Here is the final formulation:
+\[
+(\nabla u, \nabla v)_\T -
+\langle \avg{\nabla u}, \jump{v} \rangle_{\E} -
+\langle \jump{u}, \avg{\nabla v} \rangle_\E +
+\gamma \langle \jump{u}, \jump{v} \rangle_\E =
+(f,v)_\T \quad \forall \, v \in H^2(\T_h).
+\]
+In particular, this defines the following operator $A_h$:
+\[
+\langle A_h u, v \rangle = 
+(\nabla u, \nabla v)_\T -
+\langle \avg{\nabla u}, \jump{v} \rangle_{\E} -
+\langle \jump{u}, \avg{\nabla v} \rangle_\E +
+\gamma \langle \jump{u}, \jump{v} \rangle_\E.
+\]
+We want to prove that $A_h$ satisfies the hypotheses of the second Strang's lemma if $\gamma \ge \frac{c}{h}$ for a suitable value of $c$. The key tools to do this are trace inequalities and the following one:
+\[
+\pm ab \le \frac{1}{2\epsilon} a^2 + \frac{\epsilon}{2} b^2
+\]
+which is based on $\Bigl(\frac{a}{\sqrt{\epsilon}}\pm b\sqrt{\epsilon}\Bigr)^2 \ge 0$ and holds for every $\epsilon>0$.
+\begin{remark}
+    If $u,v \in H^1_0(\Omega)$, then automatically $\langle A_h u, v \rangle = \langle A u, v \rangle$, where $A$ is the usual operator
+    \[
+    \langle A_h u, v \rangle = (\nabla u, \nabla v)_\T.
+    \]    
+    This means that solutions that satisfy~\eqref{eqn:poisson_2}, hence its weak formulation, also satisfy the weak formulation of~\eqref{eqn:poisson_1}.
+\end{remark}
+
+\textbf{Step 1:} prove that
+\[
+\langle A_h u, v \rangle \le c_0 \tnorm{u} \tnorm{v} \qquad \forall u,v \in \tilde{V}.
+\]
+As usual, we have the easy inequality
+\[
+(\nabla u, \nabla v)_\T \le \abs{u}_{1,\T} \abs{v}_{1,\T}.
+\]
+Moreover, by regularity theory we know that $u \in \tilde{V}$ implies $u \in H^2$, therefore $\nabla u$ makes sense on edges and the following estimate on each edge $e$ makes sense:
+\begin{align}
+    \int_e \nabla u \cdot n v &\le \norm{\nabla u}_{0,e} \norm{v}_{0,e} \\
+    & = \abs{u}_{1,e} \norm{v}_{0,e} \\
+    & \lesssim \abs{e}^{-\frac{1}{2}} \abs{u}_{\frac{1}{2},e} \norm{v}_{0,e} \\
+    & \lesssim \abs{e}^{-\frac{1}{2}} \abs{u}_{1,T} \norm{v}_{0,e}.
+\end{align}
+\rev{I think this doesn't work. Trace theorem would imply the presence of a norm instead of a seminorm, but this would break the proof (we're in $\tilde{V}$, not in $V$). Also, I'm not completely sure about the assumption that we derived from the regularity theory, since being in $\tilde{V}$ is not the same as being in $V$.}
+In particular, the last two steps of the inequality are due to an inverse estimate and the trace theorem. The same argument holds of course if we reverse $u$ and $v$. As a consequence, we get:
+\begin{align}\label{ineq:dg_stability}
+    \abs{\langle \jump{u}, \avg{\nabla v} \rangle_e}
+    &\lesssim \abs{e}^{-\frac{1}{2}} \norm{v}_{1,T} \norm{\jump{u}}_{0,e} \\
+    &\lesssim \frac{\abs{e}^{-1}}{2\epsilon} \norm{\jump{u}}_{0,e}^2 +
+    \frac{\epsilon}{2} \abs{v}_{1,T}^2
+\end{align}
+and, in a similar fashion:
+\[
+    \abs{\langle \avg{\nabla u}, \jump{v} \rangle_{e}}
+    \lesssim \frac{\abs{e}^{-1}}{2\epsilon} \norm{\jump{v}}_{0,e}^2 +
+    \frac{\epsilon}{2} \abs{u}_{1,T}^2.
+\]
+Finally, we have
+\[
+\langle \jump{u}, \jump{v} \rangle_e
+\le \norm{\jump{u}}_{0,e} \norm{\jump{v}}_{0,e}.
+\]
+Putting things together and eventually using the $\epsilon$-inequality concludes the proof.
+
+\textbf{Step 2:} prove coercivity, i.e.
+\[
+\langle A_h u, u \rangle \ge \alpha_0 \tnorm{u}^2 \qquad \forall u \in V_h.
+\]
+Since the domain is polygonal, we have:
+\[
+    \langle A_h u, u \rangle =
+    \abs{u}_{1,\Omega}^2 -
+    2 \sum_e \langle \avg{\nabla u}, \jump{u} \rangle_{e} +
+    \gamma \sum_e \norm{\jump{u}}_{0,e}^2.
+\]
+In particular, we have used the equality $\langle \avg{\nabla u}, \jump{u} \rangle_{e} = \langle \avg{u}, \jump{\nabla u} \rangle_{e}$ to merge two terms. Now set $\gamma \ge \frac{c}{h}$, with $h \le \min_e \abs{e}$, and apply inequality~\eqref{ineq:dg_stability}:
+\begin{align}
+    \langle A_h u, u \rangle & \ge
+    \abs{u}_{1,\Omega}^2 -
+    2 \sum_e \langle \avg{\nabla u}, \jump{u} \rangle_{e} +
+    c \sum_e \frac{1}{\abs{e}} \norm{\jump{u}}_{0,e}^2 \\
+    & \ge \bigl(1-\tilde{c}\epsilon\bigr) \abs{u}_{1,\Omega}^2 +
+    \Bigl(c-\frac{\tilde{c}}{\epsilon}\bigr) \sum_e \frac{1}{\abs{e}} \norm{\jump{u}}_{0,e}^2
+\end{align}
+where the constant $\tilde{c}$ is the one which comes out in inequality~\eqref{ineq:dg_stability}. In order for this expression to be greater or equal than $\alpha_0 \tnorm{u}^2$ for some $\alpha_0$, we have to require the quantities in the parentheses to be greater than zero. It is easy to see that this happens if $c>\tilde{c}$.
+
+\rev{still something doesn't work. In my reference, step 2 is required to be proved only in $V_h$, but here being $\tilde{V}$ is mandatory, otherwise we cannot use the result from the previous step. Still, the original problem about that result is not solved.}
+
+As a consequence, by Strang's lemma we have:
+\begin{align}
+    \tnorm{u-u_h} &\le \Bigl(1 + \frac{c_0}{\alpha_0} \Bigr) \inf_{v_h \in V_h} \tnorm{u-v_h} + \frac{1}{\alpha_0} \tnorm{A_h u - f_h}_{*,h} \\
+    & = \Bigl(1 + \frac{c_0}{\alpha_0} \Bigr) \inf_{v_h \in V_h} \tnorm{u-v_h}.
+\end{align}
+In fact, the exact solution $u \in V$ satisfies $A u = A_h u = f_h$, hence the second term vanishes.
+
+\rev{final comments to be added, there's another estimate at the end.}
+
+\section{Nitsche's method}
+
+Let us modify the Poisson problem from the previous section and add a nonzero Dirichlet boundary condition:
+\begin{equation}\label{eqn:poisson_dbc1}
+\begin{cases}
+-\Delta u = f \quad &\text{in $\Omega$} \\
+u = g \quad &\text{on $\Gamma = \partial\Omega$}.
+\end{cases}
+\end{equation}
+We have already seen in section~\ref{sec:trace_operators} a way to handle boundary conditions: we can split the solution $u$ into a sum $u_0 + u_g$, such that $u_0 = 0$ on $\Gamma$ and $u_g = g$ on $\Gamma$ (in terms of trace), then solve in $H^1_0(\Omega)$. However, this approach has some problems with time-dependent problems, because $u_g$ changes at each time step. Moreover, $V_h$ is a subspace of $H^1(\Omega)$, but at the same time $V_h \not\subset H^1_0(\Omega)$. As an alternative, Nitsche proposed to enforce the boundary condition directly in the weak formulation. In particular, given the usual weak formulation in $H^1_0(\Omega)$:
+\[
+(\nabla u, \nabla v)_\Omega - \langle \nabla u \cdot n, v \rangle_\Gamma = (f,v)_\Omega
+\]
+we can add a penalisation term $\gamma \langle u-g, v \rangle_\Gamma$ in order to force $V_h$ to be as close as possible to being a subset of $H^1_0(\Omega)$.
+\rev{... meaning that here $V_h = H^1_0$?}
+In fact, this term would be equal to zero if $u = g$ on $\Gamma$. Moreover, we decide to keep the formulation symmetric, hence we also add $\langle u, \nabla v \cdot n \rangle_\Gamma$ to the left-hand side. This needs to be compensated somehow in order to keep the problem consistent: the right way to do it is to notice that also $\langle u-g, \nabla v \cdot n \rangle_\Gamma$ would be zero if $u = g$ on $\Gamma$. With all these considerations in mind, we get to the following weak formulation:
+\[
+(\nabla u, \nabla v)_\Omega - \langle \nabla u \cdot n, v \rangle_\Gamma - \langle u, \nabla v \cdot n \rangle_\Gamma + \gamma \langle u, v \rangle_\Gamma = (f,v)_\Omega + \gamma \langle g, v \rangle_\Gamma - \langle g, \nabla v \cdot n \rangle_\Gamma.
+\]
+One advantage of this method is that now the terms on the boundary show up in the matrix and in the right-hand side, in particular the matrix can be computed once and for all, or at most has to be updated only when the mesh is changed.
+
+If $\gamma \ge \frac{c}{h}$, the method is consistent.
+\rev{why?}
+
+Element-wise, this is the symmetric interior penalty method with Dirichlet boundary conditions enforced via Nitsche's method. 
+\rev{complete this}

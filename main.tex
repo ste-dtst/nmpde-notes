@@ -1,0 +1,273 @@
+%!TeX encoding = utf8
+%!TeX spellcheck = en_US
+
+\documentclass[a4paper, 11pt]{book}
+
+% Suppress undesired warnings
+\RequirePackage{silence}
+\WarningFilter{classicthesis}{Using package}
+\WarningFilter{remreset}{The remreset package}
+
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{emptypage}
+\usepackage{graphicx, subfig}
+\usepackage{enumitem}
+\usepackage{marginnote}
+\usepackage[autostyle,italian=guillemets]{csquotes}
+\usepackage[colorlinks]{hyperref}
+%\usepackage[style=numeric, sorting=ynt, backend=biber, hyperref, backref]{biblatex}
+\PassOptionsToPackage{nopatch}{microtype}
+\usepackage[eulerchapternumbers, palatino=false, parts=true]{classicthesis}
+\usepackage{pgfplots}
+\usepackage{nicematrix}
+\usepackage{mathtools}
+\usepackage{braket}
+%\usepackage{widebar}
+
+% Font
+\usepackage[proportional, oldstyle]{cochineal}
+\usepackage[cochineal, vvarbb]{newtxmath}
+\usepackage[enum]{tabfigures}
+\microtypesetup{kerning=true}
+\DeclareSymbolFont{cochinealit}{\encodingdefault}{\familydefault}{m}{it}
+\DeclareMathSymbol{f}{\mathalpha}{cochinealit}{`f}
+\DeclareSymbolFontAlphabet{\mathit}{cochinealit}
+
+% Figures
+\graphicspath{{Figures/}}
+\captionsetup{format=hang}
+\pgfplotsset{/pgf/number format/use comma,compat=newest}
+\usetikzlibrary{arrows.meta}
+
+% Layout
+\geometry{%showframe,
+	width=30pc, height=54pc, vmarginratio=1000:1414}
+\setlength\parindent{1em}
+\setlength\marginparwidth{7em}
+
+\hypersetup{%hidelinks,
+	linkcolor=RoyalBlue}
+
+% Bibliography
+%\addbibresource{Bibliography.bib}
+%\renewcommand*{\nameyeardelim}{\addcomma\space}
+
+% Headings
+\newcommand\setupheading[1]{%
+	\cleardoublepage\phantomsection
+	\markboth{\spacedlowsmallcaps{#1}}{\spacedlowsmallcaps{#1}}%
+}
+\clearplainofpairofpagestyles
+\renewcommand{\sectionmark}[1]{%
+	\markright{\textsc{\thesection}\quad\spacedlowsmallcaps{#1}}}
+
+
+% Lists
+\setlist[itemize]{itemsep=0pt}
+
+\newlist{romanlist}{enumerate}{1}
+\setlist[romanlist]{label=\normalfont(\roman*),itemsep=0pt}
+
+\newlist{steps}{enumerate}{1}
+\setlist[steps]{label=\normalfont\textbf{Step \arabic*.}, ref=\arabic*,
+	wide=0pt, leftmargin=0pt, listparindent=\parindent, parsep=0pt, itemsep=\baselineskip}
+
+\newlist{case}{enumerate}{1}
+\setlist[case]{label=\normalfont\textbf{Caso \arabic*.}, ref=\arabic*,
+	wide=0pt, leftmargin=0pt, listparindent=\parindent, parsep=0pt, itemsep=\baselineskip}
+
+\newlist{exercises}{enumerate}{1}
+\setlist[exercises]{ref=\arabic*,
+	labelindent=0pt,
+	labelwidth=20pt,
+	labelsep=10pt,
+	itemindent=0pt,
+	%leftmargin=\labelindent+\labelwidth+\labelsep,
+	listparindent=\parindent,
+	parsep=0pt,
+	itemsep=\baselineskip,
+	label=\normalfont[\arabic*]}
+
+% Theorems
+\newtheoremstyle{plain}{}{}{\itshape}{}{}{}{ }{%
+	\textbf{\thmname{#1}\thmnumber{ \scshape#2.}}\thmnote{ (#3).}}
+\newtheoremstyle{definition}{}{}{}{}{}{}{ }{%
+	\textbf{\thmname{#1}\thmnumber{ \scshape#2.}}\thmnote{ (#3).}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\numberwithin{equation}{chapter}
+\numberwithin{figure}{chapter}
+\numberwithin{table}{chapter}
+
+% Abbreviations
+\newcommand\restr[2]{{\left.\kern-\nulldelimiterspace#1
+	\vphantom{\big|}\right|_{#2}}}
+\newcommand\citetheorem[1]{\citeauthor{#1} \cite{#1}}
+\newcommand\authorimage[3][.9]{%
+	\marginpar{\includegraphics[width=#1\linewidth]{#2}\\[1ex]
+	#3}}
+\let\bm\boldsymbol
+\let\.\boldsymbol
+\DeclareRobustCommand{\highdash}{\raisebox{.2ex}{--}}
+\def\D{\mathcal{D}} % Distributions
+\def\P{\mathcal{P}} % Polynomials
+\def\L{\mathcal{L}} % Linear continuous operators
+\def\F{\mathcal{F}} % Fourier transform
+\def\N{\mathbb{N}}
+\def\Z{\mathbb{Z}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\T{\mathcal{T}} % Triangulation
+\def\E{\mathcal{E}} % Edges
+\def\1{\mathbb{1}}
+\DeclareMathOperator{\mcd}{mcd}
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\ran}{ran}
+\DeclareMathOperator{\rk}{rank}
+\DeclareMathOperator{\ind}{ind}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\adj}{adj}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\conv}{conv}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\dvg}{div}
+\DeclareMathOperator{\RE}{RE} % Lifting from face
+\DeclareMathOperator{\SZ}{SZ} % Scott-Zhang operator
+\DeclareMathOperator{\card}{card} % Cardinality
+
+% Definition of vvvert symbol for the three-bar norm 
+% Math symbol font matha
+\DeclareFontFamily{U}{matha}{\hyphenchar\font45}
+\DeclareFontShape{U}{matha}{m}{n}{
+      <5> <6> <7> <8> <9> <10> gen * matha
+      <10.95> matha10 <12> <14.4> <17.28> <20.74> <24.88> matha12
+      }{}
+\DeclareSymbolFont{matha}{U}{matha}{m}{n}
+\DeclareFontSubstitution{U}{matha}{m}{n}
+% Math symbol font mathb
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+      <5> <6> <7> <8> <9> <10>
+      <10.95> <12> <14.4> <17.28> <20.74> <24.88>
+      mathx10
+      }{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+% Symbol definition
+\DeclareMathDelimiter{\vvvert}{0}{matha}{"7E}{mathx}{"17}
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\tnorm}{\vvvert}{\vvvert} % Three-bar norm
+\DeclarePairedDelimiter{\jump}{\llbracket}{\rrbracket} % Jump
+\DeclarePairedDelimiter{\avg}{\{\!\!\{}{\}\!\!\}} % Average
+
+% Revision
+\usepackage[many]{tcolorbox}
+\long\def\rev#1{\par
+	\begin{tcolorbox}[enhanced, before skip=2ex, after skip=2ex,
+		arc=0mm, outer arc=0mm, boxrule=0mm, toprule=1pt, bottomrule=1pt,
+		colback=yellow!20!white, width=\linewidth, left=0pt]
+    \normalfont\normalsize\itshape#1
+	\end{tcolorbox}
+	\par}
+%\long\def\nrev#1{}
+\let\nrev\rev
+
+% Tweaks
+\renewcommand{\epsilon}{\varepsilon}
+\renewcommand{\theta}{\vartheta}
+\renewcommand{\rho}{\varrho}
+\renewcommand{\phi}{\varphi}
+\let\bar\widebar
+\mathtoolsset{showonlyrefs}
+\makeatletter
+\renewcommand\marginpar[1]{
+	\marginnote{\graffito@setup#1}
+}
+\makeatother
+%\renewenvironment{equation*}{\begin{equation}}{\end{equation}}
+%\def\[{\begin{equation}}
+%\def\]{\end{equation}}
+
+\begin{document}
+
+\mainmatter
+
+%\input{Files/0-title-page}
+
+%****************************************************************
+% Contents
+%****************************************************************
+
+%\begingroup
+%\manualmark
+%\setupheading{\contentsname}
+%\tableofcontents
+%\endgroup
+
+%\part{Theory}
+
+\input{Files/1-overview}
+
+\input{Files/2-error-estimates-lax-milgram}
+
+\input{Files/3-a-posteriori-error-estimates}
+
+\input{Files/4-discontinuous-galerkin-methods}
+
+\input{Files/5-saddle-point-problems}
+
+%\part{Appendix}
+
+%\input{Files/6-lab}
+
+%****************************************************************
+% Bibliography
+%****************************************************************
+
+\begin{thebibliography}{9}
+\bibitem{ciarlet78}
+P.G. Ciarlet, \emph{The finite element method for elliptic problems}. Number v. 4 in Studies in mathematics and its applications. North-Holland Pub. Co. Sole distributors for the U.S.A. and Canada, Elsevier North-Holland, Amsterdam New York, 1978. ISBN 978-0-444-85028-7.
+
+\bibitem{eg04}
+A. Ern, J.L. Guermond, \emph{Theory and Practice of Finite Elements}. Volume 159 of Applied Mathematical Sciences. Springer New York, New York, NY, 2004. ISBN 978-1-4419-1918-2 978-1-4757-4355-5. \href{http://link.springer.com/10.1007/978-1-4757-4355-5}{URL}, \href{https://doi.org/10.1007/978-1-4757-4355-5}{doi}.
+
+\bibitem{bs10}
+S.C. Brenner, L.R. Scott, \emph{The mathematical theory of finite element methods}. Number 15 in Texts in applied mathematics. Springer, New York, NY, 3. ed. edition, 2010. ISBN 978-0-387-75933-3 978-1-4419-2611-1.
+
+\bibitem{bbf13}
+D. Boffi, F. Brezzi, M. Fortin, \emph{Mixed Finite Element Methods and Applications}. Volume 44 of Springer Series in Computational Mathematics. Springer Berlin Heidelberg, Berlin, Heidelberg, 2013. ISBN 978-3-642-36518-8 978-3-642-36519-5. \href{http://link.springer.com/10.1007/978-3-642-36519-5}{URL}, \href{https://doi.org/10.1007/978-3-642-36519-5}{doi}.
+
+\bibitem{bcms04}
+F. Brezzi, B. Cockburn, L.D. Marini, E. S\"uli,
+\emph{Stabilization mechanisms in discontinuous Galerkin finite element methods}. Volume 195 of Computer Methods in Applied Mechanics and Engineering, 2006. \href{https://doi.org/10.1016/j.cma.2005.06.015}{doi}.
+
+\bibitem{qv94}
+A. Quarteroni, A. Valli, \emph{Numerical Approximation of Partial Differential Equations}. Scientific Computation. Clarendon Press, Philadelphia, 1994. ISBN 978-0-19-852448-2.
+
+\bibitem{fract_sob}
+E. Di Nezza, G. Palatucci, E. Valdinoci,
+\emph{Hitchhiker’s guide to the fractional Sobolev spaces}. 2011.
+\href{https://arxiv.org/abs/1104.4345v3}{arXiv}, \href{https://doi.org/10.48550/arXiv.1104.4345}{doi}.
+
+\bibitem{kelly83}
+D.W. Kelly, J.P. De S. R. Gago, O.C. Zienkiewicz, I. Babu\v{s}ka. \emph{A posteriori error analysis and adaptive processes in the finite element method: Part I–error analysis}. International Journal for Numerical Methods in Engineering, 1983. \href{https://doi.org/10.1002/nme.1620191103}{doi}.
+\end{thebibliography}
+
+\end{document}
