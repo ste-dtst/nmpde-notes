@@ -199,7 +199,7 @@ Let us now get back to the Poisson problem. In the 1-dimensional case, the entri
 \[
 A_{ij} = \int_a^b v_i'(x) v_j'(x) \,dx.
 \]
-Since the nodal functions have been constructed in a \emph{localized} way, oneit is immediate to notice that $A_{ij} = 0$ whenever the supports of the involved nodal functions do not intersect. This is a distinguishing feature of a finite element method: the matrix $A$ is constructed in a way that makes it \emph{sparse}. In particular, in this case we have
+Since the nodal functions have been constructed in a \emph{localized} way, it is immediate to notice that $A_{ij} = 0$ whenever the supports of the involved nodal functions do not intersect. This is a distinguishing feature of a finite element method: the matrix $A$ is constructed in a way that makes it \emph{sparse}. In particular, in this case we have
 \[
 A_{ij} = \begin{cases}
 0 \quad &\text{if } \abs{i-j}>1 \\
