@@ -14,7 +14,7 @@ As usual, we have the option to either consider a linear continuous operator $A\
 where as usual $a(\cdot,\cdot)$ is defined by $a(u,w):=\langle Au,w \rangle$ for all $u\in V$ and $w\in W$.\par
 The first question we must ask is whether the problem is well-posed. Note that we can not rely on the Lax-Milgram Lemma since here the bilinear operator $a:V\times W\to \R$, with $V\neq W$ in general.
 \begin{definition}\label{eqn:BNB}\marginpar{BNB conditions}
-    A problem of the form \eqref{eqn:petrov-galerkin} is said to be \emph{well-posed} (in the sense of Hadamaard) if the following two conditions are satisfied:
+    A problem of the form \eqref{eqn:petrov-galerkin} is said to be \emph{well-posed} (in the sense of Hadamard) if the following two conditions are satisfied:
     \begin{itemize}
         \item for every $f\in W'$, there exists a unique $u\in V$ such that $Au=f$,
         \item $A$ is bounding, i.e. there exists $\alpha>0$ such that $\norm{u}_V \leq \tfrac{1}{\alpha}\norm{Au}_{W'}$ for every $u\in V$.
@@ -148,7 +148,7 @@ As it has been discussed in the previous section, the solution exists and is uni
     \begin{equation*}
         \alpha_h\leq \inf_{v_h\in V_h}\sup_{q_h\in Q_h}\frac{\langle Av_h,q_h \rangle}{\norm{v_h}_V\norm{q_h}_{Q_h}}= \inf_{v_h\in V_h}\frac{\norm{Av_h}_{*,Q_h}}{\norm{v_h}_V},
     \end{equation*}
-    where $\norm{\cdot}_{*,Q_h}$ is the operatorial norm on the space $Q_h$ (i.e. the last equality follows by the definition of $\norm{\cdot}_{*,Q_h}$). From this follows that
+    where $\norm{\cdot}_{*,Q_h}$ is the operator norm on the space $Q_h$ (i.e. the last equality follows by the definition of $\norm{\cdot}_{*,Q_h}$). From this follows that
     \begin{equation*}
         \frac{1}{\alpha_h}\norm{Av_h}_{*,Q_h}\geq\norm{v_h}_V \quad \forall\, v_h\in V_h.
     \end{equation*}
@@ -321,3 +321,4 @@ Another example is the mixed formulation of the Laplacian:
     \end{aligned}
 \end{equation}
 
+\rev{complete this}

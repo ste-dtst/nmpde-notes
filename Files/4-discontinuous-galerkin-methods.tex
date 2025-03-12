@@ -58,11 +58,10 @@ If we divide by $\alpha_0 \norm{v_h - u_h}_V$, we conclude that
 \[
 \norm{v_h - u_h}_V\le \frac{1}{\alpha_0} \Bigl( \norm{A} \norm{u-v_h}_V + \norm{A_h v_h - A v_h}_{{V_h}'} + \norm{f - f_h}_{{V_h}'} \Bigr).
 \]
-The conclusion now is immediate. \rev{...but something is wrong with the constants. Also the hypothesis of $h$-uniform boundness for the $A_h$ seems not necessary.}
+The conclusion now is immediate. \rev{...but something is wrong with the constants. Also the hypothesis of $h$-uniform boundedness for the $A_h$ seems not necessary.}
 \end{proof}
 
-We can also consider a second \emph{variational crime}: the case of non-conforming finite element function spaces, i.e. $V_h \not\subset V$. For instance, think of the situation of approximating continuous functions with piecewise continuous ones. 
-\rev{Is really this the meaning of non-conforming space? Or $V_h \not\subset V$ is a consequence of it?}
+We can also consider a second \emph{variational crime}: the case of non-conforming finite element function spaces, i.e. $V_h \not\subset V$. For instance, think of the situation of approximating continuous functions with piecewise continuous ones.
 In this case, we can find some bound for the error considering the direct sum $\tilde{V} := V + V_h$, provided with some norm $\tnorm{\cdot}$, and working in the space $\tilde{V}$. In particular, the operators $A_h$ must be extended to be in $\L(\tilde{V},\tilde{V}')$ and, similarly, every $f_h$ must be extended to $\tilde{V}$.
 \rev{This is a slightly revisited version of the theorem in the notes. I get the concrete idea of having the norm equivalence $\norm{\cdot} \sim \tnorm{\cdot}$ in $V$, but it is not necessary in the lemma. So how do we want to use it? Is the equivalence needed also in $V_h$?}
 %suppose the norm $\tnorm{\cdot}$ is equivalent to the norm $\norm{\cdot}$ on $V$:
@@ -143,7 +142,7 @@ V_h = \Set{v \in L^2(\T) : \restr{v}{T} \in \P^l(T) \,\,\forall T \in \T_h}
 \]
 and set $\tilde{V} = V + V_h$. The FEM space we introduced is the space of \emph{discontinuous piecewise polynomials} on $\T$.
 
-We have said before that all cells in $\T$ are considered as individuals. Therefore, when two cells, say $T^+$ and $T^-$, share an edge $e$ (we call this edge an \emph{interface}), a function $u\in\tilde{V}$ may have different values on it, depending on which cell we are looking at. We would like to have some control on this behaviour, thus we call $u^+$ the value of $u$ on $e \cap T^+$, $u^-$ the value of $u$ on $e \cap T^-$. Also we define $n^+$ as the outer normal to $T^+$ and $n^-$ as the outer normal to $T^-$. With these in mind, we introduce the \emph{jump} of $u$:
+We have said before that all cells in $\T$ are considered as individuals. Therefore, when two cells, say $T^+$ and $T^-$, share an edge $e$ (we call this edge an \emph{interface}), a function $u\in\tilde{V}$ may have different values on it, depending on which cell we are looking at. We would like to have some control on this behavior, thus we call $u^+$ the value of $u$ on $e \cap T^+$, $u^-$ the value of $u$ on $e \cap T^-$. Also we define $n^+$ as the outer normal to $T^+$ and $n^-$ as the outer normal to $T^-$. With these in mind, we introduce the \emph{jump} of $u$:
 \[
 \jump{u} := \begin{cases}
 u^+ \cdot n^+ + u^- \cdot n^- \quad &\text{in $\E^0$} \\
@@ -220,7 +219,7 @@ Notice that we have used the identity
 \langle \jump{\nabla u}, \avg{v} \rangle_{\E^{\partial\Omega}}
 = \langle \avg{\nabla u}, \jump{v} \rangle_{\E^{\partial\Omega}}
 \]
-in order to have to consider $\jump{\nabla u}$ only in $\E^0$. This suggests that, if we make for $B_0$ the most simple choice, i.e. $B_0 v = v$, one could set $B_2 v = \avg{v}$, cancelling out the term $\langle \jump{\nabla u}, \avg{v} \rangle_{\E^0}$ in the weak formulation. Of course, this is not the only choice available for $B_2$, but it is the preferred one in most discontinuous Galerkin methods.
+in order to have to consider $\jump{\nabla u}$ only in $\E^0$. This suggests that, if we make for $B_0$ the most simple choice, i.e. $B_0 v = v$, one could set $B_2 v = \avg{v}$, canceling out the term $\langle \jump{\nabla u}, \avg{v} \rangle_{\E^0}$ in the weak formulation. Of course, this is not the only choice available for $B_2$, but it is the preferred one in most discontinuous Galerkin methods.
 
 The weak formulation, so far, has become:
 \[

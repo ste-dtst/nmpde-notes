@@ -1,6 +1,6 @@
 % !TeX source = ../main.tex
 
-\chapter[Error estimates (Lax-Milgram case)]{Error estimates (Lax-Milgram case)}
+\chapter[A priori error estimates (Lax-Milgram case)]{A priori error estimates (Lax-Milgram case)}
 
 \section{Scaling argument for Sobolev norms}
 
@@ -39,8 +39,8 @@ Now let
 \rho_m := \sup_{\tilde{B} \subset T_m} \diam(\tilde{B}), \quad h_m := \max_{x,y \in T_m} \abs{x-y}.
 \]
 where $\tilde{B}$ denotes a ball.
-\rev{In my notes I wrote that if $\rho_m = h_m$ then $T_m$ is equilateral (false). Why?}
-As we will see from the analysis below, in finite element methods we seek to avoid circumstances in which $h_m \gg \rho_m$ or $\rho_m \ll 1$, i.e. triangles that are close to degenerate.
+As we will see from the analysis below, when using finite element methods it is important to avoid circumstances in which $h_m \gg \rho_m$ or $\rho_m \ll 1$, i.e. when triangles are close to degenerate.
+\rev{Add a picture to get the idea.}
 
 We start with some considerations on the matrix $B$. First, we notice that if $x,y \in T_m$ we have
 \[
@@ -291,7 +291,7 @@ With the hypotheses above, if $f \in H$, by the Hahn-Banach theorem $f$ can be e
 \langle \tilde{f}, v \rangle_V = (f, v)_H \quad \forall v \in V.
 \]
 \rev{Is Hahn-Banach really necessary? We are in a Hilbert space setting.}
-Now consider the usual operatorial problem $A u = \tilde{f}$, i.e.
+Now consider the usual problem in operator form $A u = \tilde{f}$, i.e.
 \begin{equation}
 \langle Au,v \rangle = \langle \tilde{f},v \rangle = (f, v)_H \quad \forall v\in V.
 \end{equation}
@@ -354,7 +354,7 @@ for $t$ in an appropriate range, depending on the regularity of $\Omega$. Hence:
 \[
 \norm{u-u_h}_0 \lesssim h^{t+2} \norm{f}_t.
 \]
-For instance, if $t=0$, we have convergence of order $1$ in $H^1$, of order $2$ in $L^2$. This behaviour corresponds to what we see numerically: the convergence in a lower order Sobolev norm is better than a higher order one.
+For instance, if $t=0$, we have convergence of order $1$ in $H^1$, of order $2$ in $L^2$. This behavior corresponds to what we see numerically: the convergence in a lower order Sobolev norm is better than a higher order one.
 \end{example}
 
 

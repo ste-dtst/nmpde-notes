@@ -20,7 +20,7 @@ where, as usual,
 \[
 \Delta = \sum_{i=1}^n \frac{\partial^2}{\partial x_i^2}.
 \]
-If we want to find a numerical solution of this problem, two approaches can be followed:
+If we want to find a numerical solution for this problem, two approaches can be followed:
 \begin{itemize}
 \item discretize $-\Delta$ (\emph{finite differences});
 \item consider the \emph{weak formulation} of the problem (\emph{finite elements}).
@@ -110,7 +110,7 @@ In particular, in order to achieve this equality, it will suffice for us to chec
 \[
 a(v_i, v_j)  u^j = \langle v_i,f \rangle \quad \forall i=1,\dots,n.
 \]
-Here we have rearranged the objects in the brackets and used linearity to make it clearer that this is a matricial identity: if $A$ is the matrix whose entries are $A_{ij}=a(v_i, v_j)$, then we have to solve the linear system
+Here we have rearranged the objects in the brackets and used linearity to make it clearer that this is a matrix identity: if $A$ is the matrix whose entries are $A_{ij}=a(v_i, v_j)$, then we have to solve the linear system
 \[
 A \mathbf{u} = \mathbf{f}
 \]
@@ -208,14 +208,15 @@ A_{ij} = \begin{cases}
 \end{cases}.
 \]
 Notice that we have obtained the same matrix we would get with a finite difference method of the same order.
-\rev{I am a bit uncertain about the last sentence: this is very close to the matrix we would get with second order centered finite differences... but the orders are different. In particular, the most simple centered finite difference approach results in an approximation of order 2.}
+\rev{I am a bit uncertain about the last sentence: this is very close to the matrix we would get with second order centered finite differences... but here we got $h$ instead of $h^2$.}
+
 
 \section{The definition of finite element}
 
 \rev{this section has not been revised yet.}
 
 Let $V$ a Banach space \rev{check if $V$ is only Banach} and $A \in \L(V,V')$ a linear, continuous operator from $V$ to its dual space. Given $f \in V'$, we want to solve the problem $Au=f$ in $V'$, i.e.
-\begin{equation} \label{eqn:op_pbm} \marginpar{Operatorial form}
+\begin{equation} \label{eqn:op_pbm} \marginpar{Operator form}
 \langle Au,v \rangle = \langle f,v \rangle \quad \forall v\in V.
 \end{equation}
 Let $V \supset V_h = \Span\Set{v_i}_{i=1}^n$, with $\dim V_h = n$. The space $V_h'$ is usually described in terms of the \emph{covectors}:
@@ -256,3 +257,7 @@ A \emph{finite element} is a triplet $(K,P,\Sigma)$, where:
 \end{romanlist}
 \end{definition}
 
+
+\section{Lagrangian finite elements}
+
+\section{DoFs and finite dimensional spaces}
