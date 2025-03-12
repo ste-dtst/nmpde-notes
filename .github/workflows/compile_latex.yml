@@ -10,16 +10,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Set up LaTeX environment
-        uses: dante-ev/latex-action@latest
-
       - name: Compile LaTeX document
-        run: |
-          latexmk -pdf -silent -interaction=nonstopmode main.tex
-          mv main.pdf numpde-notes.pdf
+        uses: dante-ev/latex-action@latest
+        with:
+          root_file: main.tex
+          compiler: latexmk
+          args: -pdf -silent -interaction=nonstopmode -shell-escape
 
       - name: Upload PDF
         uses: actions/upload-artifact@v4
         with:
           name: compiled-pdf
-          path: numpde-notes.pdf
+          path: main.pdf
