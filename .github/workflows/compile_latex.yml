@@ -15,8 +15,8 @@ jobs:
 
       - name: Compile LaTeX document
         run: |
-        latexmk -pdf -silent -interaction=nonstopmode main.tex
-        mv main.pdf numpde-notes.pdf
+          latexmk -pdf -silent -interaction=nonstopmode main.tex
+          mv main.pdf numpde-notes.pdf
 
       - name: Upload PDF
         uses: actions/upload-artifact@v2
