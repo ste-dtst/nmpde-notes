@@ -19,7 +19,7 @@ jobs:
           mv main.pdf numpde-notes.pdf
 
       - name: Upload PDF
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: compiled-pdf
           path: numpde-notes.pdf
