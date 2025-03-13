@@ -5,10 +5,10 @@
 \section{Notations on Sobolev spaces}
 \label{sec:sobolev_notations}
 
-\begin{figure}[t]
+\begin{figure}[!ht]
   \centering
   \includegraphics{domain}
-  \caption{The domain $\Omega$ and its boundary $\partial\Omega$. We generally indicate with $n$ the outer normal to the boundary.}
+  \caption{A Lipschitz domain $\Omega$ and its boundary $\partial\Omega$. We generally indicate with $n$ the outer normal to the boundary.}
   \label{fig:domain}
 \end{figure}
 
@@ -18,7 +18,7 @@ Let $\Omega \subset \R^d$ be an open, bounded domain with Lipschitz boundary $\p
 
 For $1 \leq p < \infty$, we define the Lebesgue space $L^p(\Omega)$ as the set of measurable functions $u: \Omega \to \R$ such that
 \[
-\|u\|_{L^p(\Omega)} := \left(\int_\Omega |u(x)|^p \, dx \right)^{1/p} < \infty.
+\|u\|_{L^p(\Omega)} := \left(\int_\Omega |u(x)|^p \diff x \right)^{1/p} < \infty.
 \]
 
 For $p = \infty$, we define $L^\infty(\Omega)$ as the space of essentially bounded measurable functions with the norm
@@ -28,7 +28,7 @@ For $p = \infty$, we define $L^\infty(\Omega)$ as the space of essentially bound
 
 These spaces, equipped with their respective norms, are Banach spaces. In particular, $L^2(\Omega)$ is a Hilbert space with the inner product
 \[
-(u, v)_{L^2(\Omega)} = \int_\Omega u(x) v(x) \, dx.
+(u, v)_{L^2(\Omega)} = \int_\Omega u(x) v(x) \diff x.
 \]
 
 \subsection{Weak derivatives}
@@ -43,7 +43,7 @@ For functions that are not sufficiently smooth, we introduce the concept of weak
 \begin{definition}[Weak derivative]
 Let $u \in L^1_{\text{loc}}(\Omega)$ and $\alpha$ be a multi-index. A function $v \in L^1_{\text{loc}}(\Omega)$ is called the $\alpha$-th weak derivative of $u$, denoted by $D^\alpha u = v$, if
 \[
-  \int_\Omega v(x) \phi(x) \, dx =  (-1)^{|\alpha|} \int_\Omega u(x) D^\alpha \phi(x) \, dx = \quad \forall \phi \in C_0^\infty(\Omega).
+  \int_\Omega v(x) \phi(x) \diff x =  (-1)^{|\alpha|} \int_\Omega u(x) D^\alpha \phi(x) \diff x = \quad \forall \phi \in C_0^\infty(\Omega).
 \]
 \end{definition}
 
@@ -286,7 +286,7 @@ where $\P^1$ denotes the space of polynomials of degree at most 1. This space ha
 
 We proceed to find a basis for it: let $v^i(u) := u(x_i)$ the evaluation of $u$ in the node $x_i$, for $i=1,\dots,n$. If $u$ were in $\D$, then $v^i$ would act as a Dirac delta $\delta(x-x_i)$, since
 \[
-\langle v^i, u \rangle = \int_\Omega \delta(x-x_i) u(x) \,dx = u(x_i).
+\langle v^i, u \rangle = \int_\Omega \delta(x-x_i) u(x) \diff x = u(x_i).
 \]
 We construct functions $v_j \in V_h$ such that
 \[
@@ -300,7 +300,7 @@ In practice, for every node $x_j$ in the interior of $[a,b]$ we are considering 
 
 Let us now get back to the Poisson problem. In the 1-dimensional case, the entries of the matrix $A$ are of the form
 \[
-A_{ij} = \int_a^b v_i'(x) v_j'(x) \,dx.
+A_{ij} = \int_a^b v_i'(x) v_j'(x) \diff x.
 \]
 Since the nodal functions have been constructed in a \emph{localized} way, it is immediate to notice that $A_{ij} = 0$ whenever the supports of the involved nodal functions do not intersect. This is a distinguishing feature of a finite element method: the matrix $A$ is constructed in a way that makes it \emph{sparse}. In particular, in this case we have
 \[

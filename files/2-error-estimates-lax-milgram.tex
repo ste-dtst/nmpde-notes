@@ -379,7 +379,7 @@ In order to deal with the trace of a Sobolev function, it is necessary to give a
 \]
 where $\abs{u}_{\lambda,p}$ is called in literature the \emph{Gagliardo seminorm} of $u$:
 \[
-\abs{u}^p_{\lambda,p} := \int_{\Omega} \int_{\Omega} \frac{\abs{u(x)-u(y)}^p}{\abs{x-y}^{d+\lambda p}} \,dx \,dy.
+\abs{u}^p_{\lambda,p} := \int_{\Omega} \int_{\Omega} \frac{\abs{u(x)-u(y)}^p}{\abs{x-y}^{d+\lambda p}} \diff x \,dy.
 \]
 Then we define
 \[
@@ -389,7 +389,7 @@ As in the case $s \in \N$, we also have that $W^{s,p}_0(\Omega) = \overline{C^\i
 
 For the case $p=2$, if $\Omega = \R^d$, there is an equivalent definition of the space $H^s(\R^d)$ via the Fourier transform $\F$:
 \[
-\bigl(\F u\bigr)(\xi) := \Bigl(\frac{1}{2\pi} \Bigr)^{d/2} \int_{\R^d} e^{-i \xi \cdot x} u(x) \,dx.
+\bigl(\F u\bigr)(\xi) := \Bigl(\frac{1}{2\pi} \Bigr)^{d/2} \int_{\R^d} e^{-i \xi \cdot x} u(x) \diff x.
 \]
 If we consider the Schwartz space $\mathcal{S}$ of rapidly decaying $C^\infty$ functions in $\R^d$, then $H^s(\R^d)$ can be defined as a subspace of tempered distributions:
 \[

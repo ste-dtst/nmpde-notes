@@ -1,6 +1,9 @@
 ## Dummy TeX file
 dummy-file.tex
 
+# Do not commit generated PDFs
+main.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
