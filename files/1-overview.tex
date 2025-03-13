@@ -2,6 +2,109 @@
 
 \chapter[Overview]{Overview}
 
+\section{Notations on Sobolev spaces}
+\label{sec:sobolev_notations}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics{domain}
+  \caption{The domain $\Omega$ and its boundary $\partial\Omega$. We generally indicate with $n$ the outer normal to the boundary.}
+  \label{fig:domain}
+\end{figure}
+
+Let $\Omega \subset \R^d$ be an open, bounded domain with Lipschitz boundary $\partial\Omega$. We begin by introducing some standard functional spaces that will be used throughout this course.
+
+\subsection{Lebesgue spaces}
+
+For $1 \leq p < \infty$, we define the Lebesgue space $L^p(\Omega)$ as the set of measurable functions $u: \Omega \to \R$ such that
+\[
+\|u\|_{L^p(\Omega)} := \left(\int_\Omega |u(x)|^p \, dx \right)^{1/p} < \infty.
+\]
+
+For $p = \infty$, we define $L^\infty(\Omega)$ as the space of essentially bounded measurable functions with the norm
+\[
+\|u\|_{L^\infty(\Omega)} := \operatorname{ess\,sup}_{x \in \Omega} |u(x)| < \infty.
+\]
+
+These spaces, equipped with their respective norms, are Banach spaces. In particular, $L^2(\Omega)$ is a Hilbert space with the inner product
+\[
+(u, v)_{L^2(\Omega)} = \int_\Omega u(x) v(x) \, dx.
+\]
+
+\subsection{Weak derivatives}
+
+Let $\alpha = (\alpha_1, \alpha_2, \ldots, \alpha_d)$ be a multi-index with $|\alpha| = \alpha_1 + \alpha_2 + \cdots + \alpha_d$. For a function $u \in C^{|\alpha|}(\Omega)$, we define the standard partial derivative
+\[
+D^\alpha u = \frac{\partial^{|\alpha|} u}{\partial x_1^{\alpha_1} \partial x_2^{\alpha_2} \cdots \partial x_d^{\alpha_d}}.
+\]
+
+For functions that are not sufficiently smooth, we introduce the concept of weak derivatives.
+
+\begin{definition}[Weak derivative]
+Let $u \in L^1_{\text{loc}}(\Omega)$ and $\alpha$ be a multi-index. A function $v \in L^1_{\text{loc}}(\Omega)$ is called the $\alpha$-th weak derivative of $u$, denoted by $D^\alpha u = v$, if
+\[
+  \int_\Omega v(x) \phi(x) \, dx =  (-1)^{|\alpha|} \int_\Omega u(x) D^\alpha \phi(x) \, dx = \quad \forall \phi \in C_0^\infty(\Omega).
+\]
+\end{definition}
+
+\subsection{Sobolev spaces $W^{k,p}(\Omega)$ and $H^k(\Omega)$}
+
+For integers $k \geq 0$ and $1 \leq p \leq \infty$, we define the Sobolev space $W^{k,p}(\Omega)$ as
+\[
+W^{k,p}(\Omega) = \{u \in L^p(\Omega) : D^\alpha u \in L^p(\Omega) \text{ for all } |\alpha| \leq k\},
+\]
+where $D^\alpha u$ are weak derivatives. For $p < \infty$, this space is equipped with the norm
+\[
+\|u\|_{W^{k,p}(\Omega)} = \left( \sum_{|\alpha| \leq k} \|D^\alpha u\|_{L^p(\Omega)}^p \right)^{1/p}.
+\]
+
+For $p = \infty$, we define
+\[
+\|u\|_{W^{k,\infty}(\Omega)} = \max_{|\alpha| \leq k} \|D^\alpha u\|_{L^\infty(\Omega)}.
+\]
+
+We also define the seminorm
+\[
+|u|_{W^{k,p}(\Omega)} = \left( \sum_{|\alpha| = k} \|D^\alpha u\|_{L^p(\Omega)}^p \right)^{1/p},
+\]
+with a similar modification for $p = \infty$.
+
+When $p = 2$, we denote $W^{k,2}(\Omega)$ by $H^k(\Omega)$, which is a Hilbert space with the inner product
+\[
+(u, v)_{H^k(\Omega)} = \sum_{|\alpha| \leq k} (D^\alpha u, D^\alpha v)_{L^2(\Omega)}.
+\]
+
+\subsection{Sobolev spaces with vanishing boundary values}
+
+For functions in Sobolev spaces, we define the subspace of functions vanishing on the boundary $\partial\Omega$. For $1 \leq p < \infty$, we define
+\[
+W_0^{k,p}(\Omega) = \overline{C_0^\infty(\Omega)}^{\|\cdot\|_{W^{k,p}(\Omega)}},
+\]
+that is, the closure of $C_0^\infty(\Omega)$ with respect to the $W^{k,p}$-norm.
+
+In particular, we denote $W_0^{k,2}(\Omega)$ by $H_0^k(\Omega)$. A key property of $H_0^1(\Omega)$ is the Poincaré inequality, which states that there exists a constant $C_{\Omega} > 0$ such that
+\[
+\|u\|_{L^2(\Omega)} \leq C_{\Omega} \|\nabla u\|_{L^2(\Omega)} \quad \forall u \in H_0^1(\Omega).
+\]
+
+This implies that the seminorm $|u|_{H^1(\Omega)} = \|\nabla u\|_{L^2(\Omega)}$ is actually a norm on $H_0^1(\Omega)$ equivalent to the standard $H^1$-norm.
+
+\subsection{Dual spaces}
+
+For a Banach space $X$, we denote by $X'$ its dual space, i.e., the space of continuous linear functionals on $X$. For example, $H^{-1}(\Omega) = (H_0^1(\Omega))'$ denotes the dual of $H_0^1(\Omega)$.
+
+\subsection{Trace spaces and the trace operator}
+
+For functions in $H^1(\Omega),$ we can define their traces on the boundary $\partial\Omega$. The trace operator 
+\[
+\gamma: H^1(\Omega) \to H^{1/2}(\partial\Omega)
+\]
+is a bounded linear operator that extends the classical restriction to the boundary. For simplicity, we often write $u|_{\partial\Omega}$ for $\gamma(u)$.
+
+The space $H^{1/2}(\partial\Omega)$ is a fractional Sobolev space on the boundary, and it can be characterized as the set of traces of $H^1(\Omega)$ functions.
+
+A fundamental result is that $u \in H_0^1(\Omega)$ if and only if $u \in H^1(\Omega)$ and $\gamma(u) = 0$.
+
 %****************************************************************
 % Lezione 27 febbraio
 %****************************************************************
@@ -216,8 +319,9 @@ Notice that we have obtained the same matrix we would get with a finite differen
 \rev{this section has not been revised yet.}
 
 Let $V$ a Banach space \rev{check if $V$ is only Banach} and $A \in \L(V,V')$ a linear, continuous operator from $V$ to its dual space. Given $f \in V'$, we want to solve the problem $Au=f$ in $V'$, i.e.
-\begin{equation} \label{eqn:op_pbm} \marginpar{Operator form}
-\langle Au,v \rangle = \langle f,v \rangle \quad \forall v\in V.
+\begin{equation}
+    \label{eqn:op_pbm} \marginpar{Operator form}
+    \langle Au,v \rangle = \langle f,v \rangle \quad \forall v\in V.
 \end{equation}
 Let $V \supset V_h = \Span\Set{v_i}_{i=1}^n$, with $\dim V_h = n$. The space $V_h'$ is usually described in terms of the \emph{covectors}:
 \[

@@ -1,0 +1,66 @@
+
+% Abbreviations
+\newcommand\restr[2]{{\left.\kern-\nulldelimiterspace#1
+	\vphantom{\big|}\right|_{#2}}}
+\newcommand\citetheorem[1]{\citeauthor{#1} \cite{#1}}
+\newcommand\authorimage[3][.9]{%
+	\marginpar{\includegraphics[width=#1\linewidth]{#2}\\[1ex]
+	#3}}
+\let\bm\boldsymbol
+\let\.\boldsymbol
+\DeclareRobustCommand{\highdash}{\raisebox{.2ex}{--}}
+\def\D{\mathcal{D}} % Distributions
+\def\P{\mathcal{P}} % Polynomials
+\def\L{\mathcal{L}} % Linear continuous operators
+\def\F{\mathcal{F}} % Fourier transform
+\def\N{\mathbb{N}}
+\def\Z{\mathbb{Z}}
+\def\R{\mathbb{R}}
+\def\C{\mathbb{C}}
+\def\T{\mathcal{T}} % Triangulation
+\def\E{\mathcal{E}} % Edges
+\def\1{\mathbb{1}}
+\DeclareMathOperator{\mcd}{mcd}
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\ran}{ran}
+\DeclareMathOperator{\rk}{rank}
+\DeclareMathOperator{\ind}{ind}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\adj}{adj}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\conv}{conv}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\dvg}{div}
+\DeclareMathOperator{\RE}{RE} % Lifting from face
+\DeclareMathOperator{\SZ}{SZ} % Scott-Zhang operator
+\DeclareMathOperator{\card}{card} % Cardinality
+
+% Definition of vvvert symbol for the three-bar norm 
+% Math symbol font matha
+\DeclareFontFamily{U}{matha}{\hyphenchar\font45}
+\DeclareFontShape{U}{matha}{m}{n}{
+      <5> <6> <7> <8> <9> <10> gen * matha
+      <10.95> matha10 <12> <14.4> <17.28> <20.74> <24.88> matha12
+      }{}
+\DeclareSymbolFont{matha}{U}{matha}{m}{n}
+\DeclareFontSubstitution{U}{matha}{m}{n}
+% Math symbol font mathb
+\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
+\DeclareFontShape{U}{mathx}{m}{n}{
+      <5> <6> <7> <8> <9> <10>
+      <10.95> <12> <14.4> <17.28> <20.74> <24.88>
+      mathx10
+      }{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareFontSubstitution{U}{mathx}{m}{n}
+% Symbol definition
+\DeclareMathDelimiter{\vvvert}{0}{matha}{"7E}{mathx}{"17}
+
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+\DeclarePairedDelimiter{\tnorm}{\vvvert}{\vvvert} % Three-bar norm
+\DeclarePairedDelimiter{\jump}{\llbracket}{\rrbracket} % Jump
+\DeclarePairedDelimiter{\avg}{\{\!\!\{}{\}\!\!\}} % Average

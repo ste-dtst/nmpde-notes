@@ -25,6 +25,19 @@
 \usepackage{mathtools}
 \usepackage{braket}
 %\usepackage{widebar}
+\usepackage{tocloft}
+\renewcommand{\cftchapaftersnum}{\hspace{0.5em}}
+\renewcommand{\cftsecaftersnum}{\hspace{0.5em}}
+\renewcommand{\cftsubsecaftersnum}{\hspace{0.5em}}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftchappagefont}{\hfill\cftchapfont}
+\renewcommand{\cftsecpagefont}{\hfill\cftsecfont}
+\renewcommand{\cftsubsecpagefont}{\hfill\cftsubsecfont}
+\renewcommand{\cftchapnumwidth}{2.5em}
+\renewcommand{\cftsecnumwidth}{3em}
+\renewcommand{\cftsubsecnumwidth}{3.5em}
 
 % Font
 \usepackage[proportional, oldstyle]{cochineal}
@@ -36,7 +49,7 @@
 \DeclareSymbolFontAlphabet{\mathit}{cochinealit}
 
 % Figures
-\graphicspath{{Figures/}}
+\graphicspath{{figures/}}
 \captionsetup{format=hang}
 \pgfplotsset{/pgf/number format/use comma,compat=newest}
 \usetikzlibrary{arrows.meta}
@@ -111,72 +124,7 @@
 \numberwithin{figure}{chapter}
 \numberwithin{table}{chapter}
 
-% Abbreviations
-\newcommand\restr[2]{{\left.\kern-\nulldelimiterspace#1
-	\vphantom{\big|}\right|_{#2}}}
-\newcommand\citetheorem[1]{\citeauthor{#1} \cite{#1}}
-\newcommand\authorimage[3][.9]{%
-	\marginpar{\includegraphics[width=#1\linewidth]{#2}\\[1ex]
-	#3}}
-\let\bm\boldsymbol
-\let\.\boldsymbol
-\DeclareRobustCommand{\highdash}{\raisebox{.2ex}{--}}
-\def\D{\mathcal{D}} % Distributions
-\def\P{\mathcal{P}} % Polynomials
-\def\L{\mathcal{L}} % Linear continuous operators
-\def\F{\mathcal{F}} % Fourier transform
-\def\N{\mathbb{N}}
-\def\Z{\mathbb{Z}}
-\def\R{\mathbb{R}}
-\def\C{\mathbb{C}}
-\def\T{\mathcal{T}} % Triangulation
-\def\E{\mathcal{E}} % Edges
-\def\1{\mathbb{1}}
-\DeclareMathOperator{\mcd}{mcd}
-\DeclareMathOperator{\re}{Re}
-\DeclareMathOperator{\im}{Im}
-\DeclareMathOperator{\ran}{ran}
-\DeclareMathOperator{\rk}{rank}
-\DeclareMathOperator{\ind}{ind}
-\DeclareMathOperator{\Span}{span}
-\DeclareMathOperator{\diag}{diag}
-\DeclareMathOperator{\tr}{tr}
-\DeclareMathOperator{\adj}{adj}
-\DeclareMathOperator{\sgn}{sgn}
-\DeclareMathOperator{\conv}{conv}
-\DeclareMathOperator{\diam}{diam}
-\DeclareMathOperator{\dvg}{div}
-\DeclareMathOperator{\RE}{RE} % Lifting from face
-\DeclareMathOperator{\SZ}{SZ} % Scott-Zhang operator
-\DeclareMathOperator{\card}{card} % Cardinality
-
-% Definition of vvvert symbol for the three-bar norm 
-% Math symbol font matha
-\DeclareFontFamily{U}{matha}{\hyphenchar\font45}
-\DeclareFontShape{U}{matha}{m}{n}{
-      <5> <6> <7> <8> <9> <10> gen * matha
-      <10.95> matha10 <12> <14.4> <17.28> <20.74> <24.88> matha12
-      }{}
-\DeclareSymbolFont{matha}{U}{matha}{m}{n}
-\DeclareFontSubstitution{U}{matha}{m}{n}
-% Math symbol font mathb
-\DeclareFontFamily{U}{mathx}{\hyphenchar\font45}
-\DeclareFontShape{U}{mathx}{m}{n}{
-      <5> <6> <7> <8> <9> <10>
-      <10.95> <12> <14.4> <17.28> <20.74> <24.88>
-      mathx10
-      }{}
-\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
-\DeclareFontSubstitution{U}{mathx}{m}{n}
-% Symbol definition
-\DeclareMathDelimiter{\vvvert}{0}{matha}{"7E}{mathx}{"17}
-
-\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
-\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
-\DeclarePairedDelimiter{\tnorm}{\vvvert}{\vvvert} % Three-bar norm
-\DeclarePairedDelimiter{\jump}{\llbracket}{\rrbracket} % Jump
-\DeclarePairedDelimiter{\avg}{\{\!\!\{}{\}\!\!\}} % Average
-
+\usepackage{definitions}
 % Revision
 \usepackage[many]{tcolorbox}
 \long\def\rev#1{\par
@@ -217,13 +165,13 @@ Partial Differential Equations \\
 
 \mainmatter
 
-%\input{Files/0-title-page}
+\input{files/0-title-page}
 
 %****************************************************************
 % Contents
 %****************************************************************
 
-\maketitle
+% \maketitle
 
 %\begingroup
 %\manualmark
@@ -233,19 +181,19 @@ Partial Differential Equations \\
 
 %\part{Theory}
 
-\input{Files/1-overview}
+\input{files/1-overview}
 
-\input{Files/2-error-estimates-lax-milgram}
+\input{files/2-error-estimates-lax-milgram}
 
-\input{Files/3-a-posteriori-error-estimates}
+\input{files/3-a-posteriori-error-estimates}
 
-\input{Files/4-discontinuous-galerkin-methods}
+\input{files/4-discontinuous-galerkin-methods}
 
-\input{Files/5-saddle-point-problems}
+\input{files/5-saddle-point-problems}
 
 %\part{Appendix}
 
-%\input{Files/6-lab}
+%\input{files/6-lab}
 
 %****************************************************************
 % Bibliography
