@@ -43,7 +43,7 @@ For functions that are not sufficiently smooth, we introduce the concept of weak
 \begin{definition}[Weak derivative]
 Let $u \in L^1_{\text{loc}}(\Omega)$ and $\alpha$ be a multi-index. A function $v \in L^1_{\text{loc}}(\Omega)$ is called the $\alpha$-th weak derivative of $u$, denoted by $D^\alpha u = v$, if
 \[
-  \int_\Omega v(x) \phi(x) \diff x =  (-1)^{|\alpha|} \int_\Omega u(x) D^\alpha \phi(x) \diff x = \quad \forall \phi \in C_0^\infty(\Omega).
+  \int_\Omega v(x) \phi(x) \diff x =  (-1)^{|\alpha|} \int_\Omega u(x) D^\alpha \phi(x) \diff x  \quad \forall \phi \in C_0^\infty(\Omega).
 \]
 \end{definition}
 
@@ -55,23 +55,28 @@ W^{k,p}(\Omega) = \{u \in L^p(\Omega) : D^\alpha u \in L^p(\Omega) \text{ for al
 \]
 where $D^\alpha u$ are weak derivatives. For $p < \infty$, this space is equipped with the norm
 \[
-\|u\|_{W^{k,p}(\Omega)} = \left( \sum_{|\alpha| \leq k} \|D^\alpha u\|_{L^p(\Omega)}^p \right)^{1/p}.
+\|u\|_{k,p,\Omega} := \left( \sum_{|\alpha| \leq k} \|D^\alpha u\|_{L^p(\Omega)}^p \right)^{1/p}.
 \]
 
 For $p = \infty$, we define
 \[
-\|u\|_{W^{k,\infty}(\Omega)} = \max_{|\alpha| \leq k} \|D^\alpha u\|_{L^\infty(\Omega)}.
+\|u\|_{k,\infty,\Omega} = \max_{|\alpha| \leq k} \|D^\alpha u\|_{L^\infty(\Omega)}.
 \]
 
 We also define the seminorm
 \[
-|u|_{W^{k,p}(\Omega)} = \left( \sum_{|\alpha| = k} \|D^\alpha u\|_{L^p(\Omega)}^p \right)^{1/p},
+|u|_{k,p,\Omega} = \left( \sum_{|\alpha| = k} \|D^\alpha u\|_{L^p(\Omega)}^p \right)^{1/p},
 \]
 with a similar modification for $p = \infty$.
 
 When $p = 2$, we denote $W^{k,2}(\Omega)$ by $H^k(\Omega)$, which is a Hilbert space with the inner product
 \[
 (u, v)_{H^k(\Omega)} = \sum_{|\alpha| \leq k} (D^\alpha u, D^\alpha v)_{L^2(\Omega)}.
+\]
+
+In this case, we simplify the notation for the definition of the norm, and we omit the subscript $2$ (and the domain $\Omega$ if no confusion can arise) for the $H^k$-norm:
+\[
+  \|u\|_{k} \equiv \|u\|_{k,\Omega} := \|u\|_{k,2,\Omega} = \left( \sum_{|\alpha| \leq k} \|D^\alpha u\|_{L^2}^2 \right)^{1/2}.
 \]
 
 \subsection{Sobolev spaces with vanishing boundary values}
@@ -91,7 +96,61 @@ This implies that the seminorm $|u|_{H^1(\Omega)} = \|\nabla u\|_{L^2(\Omega)}$ 
 
 \subsection{Dual spaces}
 
-For a Banach space $X$, we denote by $X'$ its dual space, i.e., the space of continuous linear functionals on $X$. For example, $H^{-1}(\Omega) = (H_0^1(\Omega))'$ denotes the dual of $H_0^1(\Omega)$.
+For a Banach space $X$, we denote by $X'$ its dual space, i.e., the space of continuous linear functionals on $X$. For example, $H^{-1}(\Omega) = (H_0^1(\Omega))'$ denotes the dual of $H_0^1(\Omega)$. We indicate with $\langle \cdot, \cdot \rangle$ the duality pairing between $X$ and $X'$, and we write $f(u) \equiv \langle f, u \rangle$ for $f \in X'$ and $u \in X$.
+
+The norm of a functional $f \in X'$ is defined as
+\[
+\|f\|_{X'} = \sup_{u \in X} \frac{|\langle f, u \rangle|}{\|u\|_X}.
+\]
+
+\subsection{Riesz representation theorem}
+
+For Hilbert spaces, we have a powerful characterization of the dual space through the Riesz representation theorem.
+
+\begin{theorem}[Riesz representation theorem]
+  \label{theo:riesz_representation}
+Let $H$ be a Hilbert space with inner product $(\cdot, \cdot)_H$. For every bounded linear functional $f \in H'$, there exists a unique element $\tau f \in H$ such that
+\[
+f(v) = \langle f, v \rangle = (\tau f, v)_H \quad \forall v \in H,
+\]
+and furthermore,
+\[
+\|f\|_{H'} = \|\tau f\|_H.
+\]
+The operator $\tau$ is the so called Riesz operator.
+\end{theorem}
+
+This theorem establishes an isometric isomorphism between a Hilbert space and its dual. In particular, for $H = L^2(\Omega)$, given $f \in L^2(\Omega)$, we can identify the functional 
+\[
+v \mapsto \int_\Omega f v \, \mathrm{d}x
+\]
+with $f$ itself. Similarly, for $H = H^1_0(\Omega)$, every element in $H'$ can be represented uniquely as an inner product with some element in $H$.
+
+The Riesz representation theorem is especially useful in characterizing the action of operators and in proving existence of solutions to variational problems, as it allows us to convert abstract duality pairings into concrete inner products.
+
+\subsection{Bilinear forms and operators}
+
+Let $X$ and $Y$ be Banach spaces. A bilinear form $a: X \times Y \to \mathbb{R}$ is said to be bounded (or continuous) if there exists a constant $C > 0$ such that
+\[
+|a(u, v)| \leq C \|u\|_X \|v\|_Y \quad \forall u \in X, \forall v \in Y.
+\]
+
+Given a bilinear form $a: X \times Y \to \mathbb{R}$, we can define its associated operator $A: X \to Y'$ by
+\[
+\langle Au, v \rangle = a(u, v) \quad \forall u \in X, \forall v \in Y,
+\]
+where $\langle \cdot, \cdot \rangle$ denotes the duality pairing between $Y'$ and $Y$.
+
+The operator $A$ is linear and it inherits the boundedness of $a$, i.e.,
+\[ 
+  \|A\|_* := \|A\|_{\mathcal{L}(X,Y')} = \sup\limits_{u \in X, v \in Y} \frac{|a(u,v)|}{\|u\|_X \|v\|_Y}.
+\]
+
+When $X = Y$ is a Hilbert space, a bilinear form $a: X \times X \to \mathbb{R}$ is said to be:
+\begin{itemize}
+  \item Symmetric if $a(u, v) = a(v, u)$ for all $u, v \in X$
+  \item Coercive (or elliptic) if there exists $\alpha > 0$ such that $a(u, u) \geq \alpha \|u\|_X^2$ for all $u \in X$
+\end{itemize}
 
 \subsection{Trace spaces and the trace operator}
 
@@ -105,13 +164,57 @@ The space $H^{1/2}(\partial\Omega)$ is a fractional Sobolev space on the boundar
 
 A fundamental result is that $u \in H_0^1(\Omega)$ if and only if $u \in H^1(\Omega)$ and $\gamma(u) = 0$.
 
+\subsection{Sobolev embeddings}
+
+Sobolev spaces embed into other spaces in ways that formalize the intuitive notion that functions with more derivatives tend to be more regular. The Sobolev embedding theorems are crucial tools that allow us to relate Sobolev spaces to classical function spaces.
+
+\begin{theorem}[Sobolev embedding]
+Let $\Omega \subset \mathbb{R}^d$ be a bounded domain with Lipschitz boundary, $k \geq 0$ an integer, and $1 \leq p < \infty$. Then:
+
+\begin{enumerate}
+  \item If $kp > d$, then the following continuous embedding holds:
+  \[
+  W^{k,p}(\Omega) \hookrightarrow C^{0}(\overline{\Omega}),
+  \]
+  i.e., every function in $W^{k,p}(\Omega)$ has a continuous representative.
+  
+  \item If $s \geq 1$, $p,q \in [1, \infty]$, and 
+  \[
+  s - \frac{d}{p} > k - \frac{d}{q},
+  \]
+  then the following continous inclusion holds true:
+  \[ 
+    W^{s,p}(\Omega) \subset W^{t,q}(\Omega).
+  \]
+\end{enumerate}
+\end{theorem}
+
+The first case is of particular interest when we need our functions to be continuous. The condition $kp > d$ gives us a relationship between:
+
+\begin{itemize}
+  \item The order of derivatives $k$
+  \item The integrability $p$ of those derivatives
+  \item The dimension $d$ of the domain
+\end{itemize}
+
+For example, in two dimensions ($d=2$):
+\begin{itemize}
+  \item $H^2(\Omega) = W^{2,2}(\Omega) \hookrightarrow C^0(\overline{\Omega})$ since $2 \cdot 2 > 2$
+  \item $W^{1,p}(\Omega) \hookrightarrow C^0(\overline{\Omega})$ for any $p > 2$
+  \item $H^{1}(\Omega) \not\hookrightarrow C^0(\overline{\Omega})$
+\end{itemize}
+
+More generally, in $d$ dimensions, we need $k > \frac{d}{p}$ to ensure continuity.
+
+These embedding results are particularly important in numerical analysis, as they help determine when finite element approximations lead to continuous functions. For standard Lagrangian finite elements, the continuity of basis functions is essential, and these embedding theorems provide the theoretical foundation for when such continuity can be expected.
+
 %****************************************************************
 % Lezione 27 febbraio
 %****************************************************************
 
-\section{Construction of the approximation, Ceà's lemma}
+\section{Model problem: the Poisson equation}
 
-Let $\Omega$ be an open, bounded, Lipschitz subset of $\R^n$. Let also $\partial\Omega$ be its boundary.
+Let $\Omega$ be an open, bounded, Lipschitz subset of $\R^d$. Let also $\partial\Omega$ be its boundary.
 Consider the following Poisson problem:
 \[
 \begin{cases} \marginpar{Strong formulation}
@@ -121,7 +224,7 @@ u =  0 \qquad &\text{on $\partial \Omega$}
 \]
 where, as usual,
 \[
-\Delta = \sum_{i=1}^n \frac{\partial^2}{\partial x_i^2}.
+\Delta = \sum_{i=1}^d \frac{\partial^2}{\partial x_i^2}.
 \]
 If we want to find a numerical solution for this problem, two approaches can be followed:
 \begin{itemize}
@@ -129,51 +232,50 @@ If we want to find a numerical solution for this problem, two approaches can be 
 \item consider the \emph{weak formulation} of the problem (\emph{finite elements}).
 \end{itemize}
 
-\rev{Maybe add some reference to the finite difference construction.}
+Finite differences work well if $\Omega$ is a rectangular or parallelepiped domain (e.g. a square, a cube and so on) and if $f$ is regular enough (e.g. continuous). In applications, however, the domain's boundary may not be nice at all, and $f$ may not even be continuous.
+The finite element approach tries to overcome these difficulties, by shifting the problem to finding a good finite dimensional space that approximates the functional space where the exact solution lives.
 
-Finite differences work well if $\Omega$ is a nice domain (e.g. a square, a cube and so on) and if $f$ is regular enough (e.g. continuous). In applications, however, the domain's boundary may not be nice at all, and $f$ may not be $C^0$ but, instead, at most $L^2$ or, worse, it may have singularities (e.g., it may be a Dirac delta).
-The finite element approach tries to overcome these difficulties. The advantage is that we don't have to discretize the differential operator anymore, but instead we integrate by parts and dump the derivatives onto a test function. Also, the solution $u$ no longer needs to be defined pointwise.
+The advantage, when compared to, e.g., finite differences, is that we don't discretize the differential operator -- which maintains its continuous definition --  but instead we restrict our exploration of candidate solutions to simple spaces (i.e., space of piecewise polynomial functions), for which we can easily compute the action of the differential operator in an exact way.
 
-In order to derive a weak formulation for the problem above, let $\phi \in \D$ a test function (usually $\D=C_0^\infty(\Omega)$). We multiply by $\phi$ both sides of the PDE in the strong formulation and then integrate:
+To make a concrete example, let us consider the Poisson problem, and let's derive its weak formulation.
+Let $\phi \in \D$ a test function (usually $\D=C_0^\infty(\Omega)$). We multiply by $\phi$ both sides of the PDE in the strong formulation and then integrate:
 \[
 \int_\Omega -\Delta u \phi = \int_\Omega f \phi.
 \]
-If we integrate by parts and suppose that $\restr{u}{\partial \Omega} = \restr{\phi}{\partial\Omega} = 0$, we get:
+If we integrate by parts and use the fact that $\restr{u}{\partial \Omega} = \restr{\phi}{\partial\Omega} = 0$, we get:
 \[
 \int_\Omega \nabla u \nabla \phi = \int_\Omega f \phi.
 \]
-More in general, if we replace $\D$ with some function space $V$, the weak formulation will be: given $f\in V'$, find $u\in V$ such that
+More in general, if we replace $\D$ with some appropriate function space $V$, the weak formulation will be: given $f\in V'$, find $u\in V$ such that
 \begin{equation} \label{eqn:weak_1} \marginpar{Weak form (1)}
 \int_\Omega \nabla u \nabla v = \int_\Omega f v \quad \forall v\in V.
 \end{equation}
 with the agreement that, being $f \in V'$, the RHS is in fact a duality.
 
-Some further clarification is needed:
-\begin{itemize}
-\item Does the LHS make sense? We need that
+On one side, we need that $\int_\Omega | \nabla u \nabla v | < +\infty$, and on the other side, we need that $u$ and $v$ should be zero on the domain boundary.
+A natural choice is then the Hilbert space $H^1_0(\Omega)$, which is defined as
 \[
-\int_\Omega | \nabla u \nabla v | < +\infty
+V:= H^1_0(\Omega) = \Set{u \in L^2(\Omega) : \nabla u \in L^2(\Omega), \restr{u}{\partial\Omega}=0},
 \]
-hence a possibility is to require $\nabla u, \nabla v \in L^2(\Omega)$, i.e. be weak derivatives.
-\item We said before that $u$ and $v$ are assumed to be zero on the domain boundary. What does it mean? Remember that, for instance, Sobolev space functions are not well defined on a zero measure set, such as $\partial \Omega$. Hence, a workaround (the trace) will be needed.
-\end{itemize}
-Let us choose
+where we recall that $H^1_0(\Omega) = \overline{C^\infty_0(\Omega)}^{\norm{\cdot}_{1,
+2,\Omega}}$, where $\norm{\cdot}_{1,2,\Omega}$ is the Sobolev norm induced by the scalar product
 \[
-V:= H^1_0(\Omega) = \Set{u \in L^2(\Omega) : \nabla u \in L^2(\Omega), \restr{u}{\partial\Omega}=0}.
+(u,v)_{1,2,\Omega} = \int_\Omega uv + \int_\Omega \nabla u \nabla v.
 \]
-It is well known that $H^1_0(\Omega) = \overline{C^\infty_0(\Omega)}^{\norm{\cdot}_{1,
-2}}$, where $\norm{\cdot}_{1,2}$ is the Sobolev norm induced by the scalar product
-\[
-(u,v)_{1,2} = \int_\Omega uv + \int_\Omega \nabla u \nabla v.
-\]
-In particular, the space $V$ with this scalar product is a Hilbert space.
 
-In order to try to approximate a solution of the weak problem, we first need to prove that such a solution exists. To do so, we take advantage of the Lax-Milgram lemma:
+How do we guarantee that a solution to such problem exists? We prove this in an abstract Hilbert setting:
 \begin{lemma}[Lax-Milgram]\label{lemma:lax-milgram}\marginpar{Lax-Milgram lemma}
-Let $V$ a Hilbert space and let $a: V\times V \to \R$ be a bilinear operator such that:
+Let $V$ be a Hilbert space and let $a: V\times V \to \R$ be a bilinear operator such that:
 \begin{itemize}
-\item $a$ is \emph{bounded}, i.e. $\exists c>0$ s.t. $a(u,v) \le c \norm{u}_V \norm{v}_V$ for every $u,v \in V$ \\ (sometimes, we refer to the constant $c$ as $\norm{A}_*$);
-\item $a$ is \emph{coercive} (or \emph{bounding}), i.e. $\exists \alpha >0$ s.t. $a(u,u) \ge \alpha \norm{u}_V^2$.
+\item $a$ is \emph{bounded}, i.e. $\exists c>0$ s.t. 
+\[
+ a(u,v) \le c \norm{u}_V \norm{v}_V \qquad \forall u,v \in V
+ \] 
+ (sometimes, we refer to the constant $c$ as $\norm{A}_*$);
+\item $a$ is \emph{coercive}, i.e. $\exists \alpha >0$ s.t. 
+\[
+  a(u,u) \ge \alpha \norm{u}_V^2 \qquad \forall u \in V.
+\]
 \end{itemize}
 Then, given $f\in V'$, the following problem
 \begin{equation}\label{eqn:weak_laxmilgram}
@@ -184,6 +286,35 @@ admits a unique solution $u_0$. Moreover, $u_0$ satisfies the following inequali
 \norm{u_0}_V \le \frac{\norm{f}_{V'}}{\alpha}.
 \]
 \end{lemma}
+\begin{proof}
+  Let's consider the linear operator $A: V \to V'$ defined by $A(u) = a(u,\cdot)$.
+  Boundedness of $a$ implies that $A$ is a bounded operator, and coercivity implies that $A$ is bounding, i.e., 
+  \[
+    \langle A u, u \rangle = a(u,u) \ge \alpha \norm{u}_V^2 \quad \forall u \in V.
+  \]
+  
+  Let us consider the map $\phi: V \mapsto V$ defined by 
+  \[ 
+    \phi(v) = v - \rho \tau(A v - f),
+  \]
+  where $\rho$ is a positive constant to be chosen later, and $\tau$ is the Riesz operator defined in Theorem~\ref{theo:riesz_representation}. By construction, if $u$ is a fixed point of $\phi$, i.e., $u= \phi(u)$, then $u$ necessarily satisfies $A u = f$. Conversely, if $u$ satisfies $Au=f$, then $u$ is also a fixed point of $\phi(u)=u$. 
+  
+  We want to show that ellipticity is enough to guarantee that there exists a $\rho$ such that $\phi$ is a contraction, i.e., $\exists! ~u$ s.t. $Au=f$.
+  
+  We have:
+  \begin{align*}
+    \norm{\phi(u) - \phi(v)}_V^2 & = \norm{u - v - \rho \tau(A(u - v))}_V^2 \\
+    & = \norm{u - v}_V^2 - 2 \rho \langle A(u - v), u - v \rangle + \rho^2 \norm{A(u - v)}_{V'}^2 \\
+    & \leq \norm{u - v}_V^2 - 2 \rho \alpha \norm{u - v}^2_V + \rho^2 \|A\| \norm{u - v}_V^2 \\
+    & \leq  (1 - 2\rho \alpha + \rho^2 \|A\|) \norm{u - v}_V^2.
+  \end{align*}
+  By choosing $\rho$ such that $0<1 - 2\rho \alpha + \rho^2 \|A\| < 1$, (i.e., $\rho<\frac{2\alpha}{\|A\|}$) we have that $\phi$ is a contraction, and by the Banach fixed point theorem, we have that there exists a unique fixed point $u$ of $\phi$, which is the solution of the problem.
+  
+  Finally, we can estimate the norm of $u$ by the norm of $f$ and the coercivity constant $\alpha$:
+  \[
+  \alpha \norm{u}_V^2 \leq \langle A u, u \rangle = \langle f, u \rangle \leq \norm{f}_{V'} \norm{u}_V \qquad \Longrightarrow \qquad \norm{u}_V \leq \frac{\norm{f}_{V'}}{\alpha}.
+  \]
+\end{proof}
 
 In the Poisson problem's case, the bilinear operator is
 \[
@@ -195,32 +326,32 @@ which is clearly bounded and coercive if $V=H_0^1(\Omega)$. In particular, coerc
 \]
 Hence, the weak formulation of the Poisson problem admits a unique solution by the Lax-Milgram lemma.
 
-The reason why the finite element method is powerful is that the differential operators stay untouched and, instead, what is to be simplified is \emph{the set in which the solutions live}. We construct a sequence of subspaces $V_h \subset V$ such that $V_h = \Span\Set{v_i}_{i=1}^n$, with $n$ depending on $h$. Then we restrict the weak problem to $V_h$, which inherits the norm from $V$: given $f \in V'$, we find $u_h \in V_h$ s.t.
-\begin{equation} \label{eqn:weak_2} \marginpar{Weak form (2)}
+The reason why the finite element method is powerful is that the differential operators stay untouched and, instead, what is to be simplified is \emph{the set in which the solutions live}. We construct a sequence of subspaces $V_h \subset V$ such that $V_h = \Span\Set{v_i}_{i=1}^n$, with $n$ depending on $h$. Then we restrict the weak problem to $V_h$, which inherits the norm from $V$: given $f \in V'$, find $u_h \in V_h$ s.t.
+\begin{equation} \label{eqn:weak_2} \marginpar{Discrete weak form}
 a(u_h,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
 \end{equation}
-Our $u_h$ will be our candidate approximate solution. We shall first prove its existence.
+The element $u_h$ will be our candidate approximate solution. We shall first prove its existence.
 
 Since $u_h \in V_h$, there exist unique coefficients $\Set{u^j}_{j=1}^n$ such that
 \[
-u_h = \sum_{j=1}^n u^j v_j.
+u_h = \sum_{j} u^j v_j.
 \]
-If we use the Einstein notation, i.e. we omit the summation on repeated indices, the weak problem \ref{eqn:weak_2} becomes:
+The weak problem \ref{eqn:weak_2} then becomes:
 \[
-a(u^j v_j ,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
+a(\sum_{j} u^j v_j ,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
 \]
-In particular, in order to achieve this equality, it will suffice for us to check it for a basis of $V_h$:
+In particular, it will suffice for us to check it for a basis of $V_h$:
 \[
-a(v_i, v_j)  u^j = \langle v_i,f \rangle \quad \forall i=1,\dots,n.
+\sum_{j} a(v_j, v_i)  u^j = \langle v_i,f \rangle \quad \forall i=1,\dots,n.
 \]
-Here we have rearranged the objects in the brackets and used linearity to make it clearer that this is a matrix identity: if $A$ is the matrix whose entries are $A_{ij}=a(v_i, v_j)$, then we have to solve the linear system
+Here we have rearranged the objects in the brackets and used linearity to make it clearer that this is a matrix identity: if $A$ is the matrix whose entries are $A_{ij}=a(v_j, v_i)$, then we have to solve the linear system
 \[
 A \mathbf{u} = \mathbf{f}
 \]
-where $\mathbf{u}=(u^i)_{i=1}^n$ and $\mathbf{f}=(\langle v_i,f \rangle)_{i=1}^n$.
+where $\mathbf{u}=\{u^i\}_{i=1}^n$ and $\mathbf{f}=\{\langle f, v_i\rangle\}_{i=1}^n$.
 In particular, $A$ is clearly symmetric and positive definite due to the coercivity of $a$:
 \[
-\mathbf{u}^T A \mathbf{u} = a(u^i v_i, u^i v_i) \ge \alpha \norm{u^i v_i}^2 \ge 0
+\mathbf{u}^T A \mathbf{u} = a(\sum_{i} u^i v_i, \sum_{j} u^j v_j) \ge \alpha \norm{\sum_{i} u^i v_i}^2 \ge 0
 \]
 and this, by linearity, is zero if and only if every $u^i$ is zero. We conclude that $A$ is non singular, hence $u_h$ exists and is unique.
 
@@ -254,7 +385,7 @@ This is an orthogonality property of the error. Now we exploit the properties of
 The conclusion follows by simplifying $\norm{u - u_h}$ on both sides of the inequality.
 \end{proof}
 
-The meaning of Ceà's inequality is: it suffices to control the error only in $V_h$ in order to have a good approximation of $u$. This is a step in the right direction, because in practice the functions in $V_h$ will be polynomials, hence their derivatives will be well defined and we won't need to approximate them. However, there are still some problems left:
+The meaning of Ceà's inequality is: it suffices to control the error only in $V_h$ in order to have a good approximation of $u$. This is a step in the right direction, because in practice the functions in $V_h$ will be piecewise polynomials, hence their derivatives will be well defined and we won't need to approximate them. However, there are still some problems left:
 \begin{itemize}
 \item How do we approximate an arbitrary domain $\Omega$?
 \item How do we approximate $V$ with $V_h$? Meaning, we seek to construct $V_h$ in such a way that $\text{dist}(V,V_h) = c h^k$ for some $k$, where
@@ -300,7 +431,7 @@ In practice, for every node $x_j$ in the interior of $[a,b]$ we are considering 
 
 Let us now get back to the Poisson problem. In the 1-dimensional case, the entries of the matrix $A$ are of the form
 \[
-A_{ij} = \int_a^b v_i'(x) v_j'(x) \diff x.
+A_{ij} = \int_a^b v_j'(x) v_i'(x) \diff x.
 \]
 Since the nodal functions have been constructed in a \emph{localized} way, it is immediate to notice that $A_{ij} = 0$ whenever the supports of the involved nodal functions do not intersect. This is a distinguishing feature of a finite element method: the matrix $A$ is constructed in a way that makes it \emph{sparse}. In particular, in this case we have
 \[
@@ -310,9 +441,7 @@ A_{ij} = \begin{cases}
 \frac{2}{h} \quad &\text{if } i=j
 \end{cases}.
 \]
-Notice that we have obtained the same matrix we would get with a finite difference method of the same order.
-\rev{I am a bit uncertain about the last sentence: this is very close to the matrix we would get with second order centered finite differences... but here we got $h$ instead of $h^2$.}
-
+Notice that we have obtained the same matrix we would get with a finite difference method of the same order (with the exception of a scaling factor of $1/h$).
 
 \section{The definition of finite element}
 

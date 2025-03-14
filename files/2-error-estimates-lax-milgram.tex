@@ -7,55 +7,59 @@
 %%%%%
 % Lecture of 20 of March
 %%%%%
+\begin{figure}[!ht]
+\centering
+\includegraphics{affine_mapping}
+\caption{A triangle $T_m$ and its reference triangle $\hat{T}$. The affine mapping $F_m$ maps $\hat{T}$ to $T_m$.}
+\end{figure}
 
-Consider an affine mapping from the reference triangle to a generic one in the mesh:
+Consider an affine mapping from a reference triangle $\hat T$, to a generic triangle $T_m$:
 \begin{align}
 F_m: &\hat{T} \to T_m \\
-&\hat{x} \mapsto B \hat{x} + b.
+&\hat{x} \mapsto x = B \hat{x} + b.
 \end{align}
-We want to see how Sobolev norms change under the action of $F_m$. Recall that, if $\alpha = (\alpha_1, \dots, \alpha_d) \in \N^d$ is a multi-index, $D^\alpha v$ is the usual notation for the partial derivative of $v$ with respect to $\alpha$. The order of the derivative is $\abs{\alpha} = \norm{\alpha}_{l^1}$.
-
-We say that $g = D^\alpha v$ is the weak derivative of $v$ if
+We would like to analyze how Sobolev norms change under the action of $F_m$. Recall the the definition of the Sobolev norm in $W^{k,p}$:
 \[
-\int_\Omega g \phi = (-1)^{\abs{\alpha}} \int_\Omega v D^\alpha \phi \quad \forall \phi \in C^\infty_0(\Omega).
+\norm{v}^p_{k,p,\Omega} = \sum_{\abs{\alpha} \le k} \norm{D^\alpha v}^p_{L^p(\Omega)},
 \]
-Recall also the definition of Sobolev spaces:
-\begin{align}
-W^{k,p}(\Omega) &= \Set{v : D^\alpha v \in L^p(\Omega)  \forall \abs{\alpha} \le k}, \\
-H^k(\Omega) &= W^{k,2}(\Omega).
-\end{align}
-The norm in $W^{k,p}$ is the following:
-\[
-\norm{v}^p_{k,p,\Omega} = \sum_{\abs{\alpha} \le k} \norm{D^\alpha v}^p_{L^p(\Omega)}.
-\]
-We also consider the following seminorm:
+with the corresponding seminorm:
 \[
 \abs{v}^p_{k,p,\Omega} = \sum_{\abs{\alpha} = k} \norm{D^\alpha v}^p_{L^p(\Omega)}.
 \]
-It is a seminorm because any constant function has seminorm zero, but nonzero Sobolev norm.
 
 Now let
 \[
-\rho_m := \sup_{\tilde{B} \subset T_m} \diam(\tilde{B}), \quad h_m := \max_{x,y \in T_m} \abs{x-y}.
+\rho_m := \sup_{\tilde{B} \subset T_m} \diam(\tilde{B}), \quad h_m := \max_{x,y \in T_m} \abs{x-y},
 \]
-where $\tilde{B}$ denotes a ball.
-As we will see from the analysis below, when using finite element methods it is important to avoid circumstances in which $h_m \gg \rho_m$ or $\rho_m \ll 1$, i.e. when triangles are close to degenerate.
-\rev{Add a picture to get the idea.}
+and similarly for the reference triangle $\hat{T}$:
+\[
+\hat{\rho} := \sup_{\tilde{B} \subset \hat{T}} \diam(\tilde{B}), \quad \hat{h} := \max_{\hat x, \hat y  \in \hat T}|\hat x - \hat y|,
+\]
+where $\tilde{B}$ denotes a ball (see Figure~\ref{fig:scaling}).
+
+
+\begin{figure}[!ht]
+\centering
+\includegraphics{triangle_scales}
+\caption{The scales $\rho_m$ and $h_m$ for a triangle $T_m$, and $\hat \rho$, $\hat h$ for the reference triangle $\hat T$.}
+\label{fig:scaling}
+\end{figure}
+
 
 We start with some considerations on the matrix $B$. First, we notice that if $x,y \in T_m$ we have
 \[
-\abs{x-y} = \abs{B(\hat{x}-\hat{y})}
+\abs{x-y} = \abs{B(\hat{x}-\hat{y})} = \abs{B \xi}, \qquad \xi = \hat{x}-\hat{y}.
 \]
-hence, by homogeneity of the norm, we have that for every $\hat{\rho} \le \rho_0$ (for a suitable $\rho_0>0$):
+By the definition of the norm of B, we have that
 \[
 \norm{B} = \sup_{\abs{\xi} = \hat{\rho}} \frac{\abs{B \xi}}{\abs{\xi}} \le
-\sup_{\abs{\xi} = \hat{\rho}} \frac{\abs{B (\xi - 0)}}{\hat{\rho}} \le \frac{h_m}{\hat{\rho}}.
+\sup_{\abs{\xi} = \hat{\rho}} \frac{\abs{x-y}}{\hat{\rho}} \le \frac{h_m}{\hat{\rho}}.
 \]
 With a similar argument:
 \[
 \norm{B^{-1}} = \sup_{\abs{\xi} = \rho_m} \frac{\abs{B^{-1} \xi}}{\abs{\xi}} \le \frac{\hat{h}}{\rho_m}
 \]
-for some constant $\hat{h} > 0$ ($B$ is a bounded operator).
+where both $\hat \rho$ and $\hat h$ are constant, and depend only on the choice of the reference triangle $\hat T$.
 Also, since $F_m$ is affine, its differential is the matrix $B$ itself. This will come in handy to provide a simple formula for $\hat{D}^\alpha (v \circ F_m)$ when using the chain rule.
 
 Consider a function $v \in \P^l$ on the triangle $T_m$ and let $0\le k \le l$. Then:
@@ -72,9 +76,8 @@ where $J$ is the absolute value of the Jacobian of the transformation $F_m$ (in 
 \abs{v \circ F_m}_{k,p,\hat{T}} \le \norm{B}^k J^{-\frac{1}{p}} \abs{v}_{k,p,T}
 \le c h_m^k J^{-\frac{1}{p}} \abs{v}_{k,p,T}.
 \]
-In particular, since $\hat{\rho}$ is arbitrary, we have considered it as a fixed constant.
 
-We can reproduce the argument on the other way, getting:
+Following the same argument in the opposite direction, we obtain:
 \[
 \abs{v}_{k,p,T} \le \norm{B^{-1}}^k J^{\frac{1}{p}} \abs{v \circ F_m}_{k,p,\hat{T}}
 \le c \rho_m^{-k} J^{\frac{1}{p}} \abs{v \circ F_m}_{k,p,\hat{T}}.
