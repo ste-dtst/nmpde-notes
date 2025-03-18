@@ -2,6 +2,17 @@
 
 \chapter[A priori error estimates (Lax-Milgram case)]{A priori error estimates (Lax-Milgram case)}
 
+\section{Triangulation of the domain $\Omega$}
+In FEM (Finite Element Methods) we discretize the domain $\Omega$ in \emph{simple subdomains} (like triangles for example) where it's easy to define polynomials. Formally speaking we partition $\Omega$
+\begin{equation*}
+\Omega = \Bigl(\bigcup_{m=1}^M T_m \Bigr)
+\end{equation*}
+where 
+\begin{equation}
+T_i \cap T_j = \begin{cases}\emptyset \\ \text{vertex} \\ \text{boundary face}.\end{cases}
+\end{equation}
+We call this partition \emph{triangulation}. We emphasize that triangulation is just an historical term: we can have triangulations composed of different shapes.
+
 \section{Scaling argument for Sobolev norms}
 
 %%%%%
@@ -28,15 +39,15 @@ with the corresponding seminorm:
 \abs{v}^p_{k,p,\Omega} = \sum_{\abs{\alpha} = k} \norm{D^\alpha v}^p_{L^p(\Omega)}.
 \]
 
-Now let
+Let
 \[
-\rho_m := \sup_{\tilde{B} \subset T_m} \diam(\tilde{B}), \quad h_m := \max_{x,y \in T_m} \abs{x-y},
+\rho_m := \sup_{\tilde{B} \subset T_m} \diam(\tilde{B}), \quad h_m := \inf_{T_m \subset \tilde{B}} \diam(\tilde{B}),
 \]
 and similarly for the reference triangle $\hat{T}$:
 \[
-\hat{\rho} := \sup_{\tilde{B} \subset \hat{T}} \diam(\tilde{B}), \quad \hat{h} := \max_{\hat x, \hat y  \in \hat T}|\hat x - \hat y|,
+\hat{\rho} := \sup_{\tilde{B} \subset \hat{T}} \diam(\tilde{B}), \quad \hat{h} := \inf_{\hat{T} \subset \tilde{B}} \diam(\tilde{B}),
 \]
-where $\tilde{B}$ denotes a ball (see Figure~\ref{fig:scaling}).
+where $\tilde{B}$ denotes a ball in the right space (see Figure~\ref{fig:scaling}).
 
 
 \begin{figure}[!ht]
@@ -75,14 +86,17 @@ Consider a function $v \in \P^l$ on the triangle $T_m$ and let $0\le k \le l$. T
 where $J$ is the absolute value of the Jacobian of the transformation $F_m$ (in the present case, $J=\abs{\det B}$). Hence, if we use the inequality we got for $\norm{B}$ we have:
 \[
 \abs{v \circ F_m}_{k,p,\hat{T}} \le \norm{B}^k J^{-\frac{1}{p}} \abs{v}_{k,p,T}
-\le c h_m^k J^{-\frac{1}{p}} \abs{v}_{k,p,T}.
+\le c \Bigl(\frac{h_m}{\hat{\rho}}\Bigr)^k J^{-\frac{1}{p}} \abs{v}_{k,p,T}.
 \]
 
-Following the same argument in the opposite direction, we obtain:
+Following the same argument but starting with $\abs{\hat{v} \circ F_m^{-1}}_{k,p,T}$, we obtain:
 \[
 \abs{v}_{k,p,T} \le \norm{B^{-1}}^k J^{\frac{1}{p}} \abs{v \circ F_m}_{k,p,\hat{T}}
-\le c \rho_m^{-k} J^{\frac{1}{p}} \abs{v \circ F_m}_{k,p,\hat{T}}.
+\le c \Bigl(\frac{\rho_m}{\hat{h}}\Bigr)^{-k} J^{\frac{1}{p}} \abs{v \circ F_m}_{k,p,\hat{T}}.
 \]
+
+\rev{Polvere: I fixed the previous part. On the next lesson i am going to check in with the teacher what is the correct chain to switch $s$ and $k$. Like this i am not too convinced.}
+
 Combining the two inequalities yields a scaling inequality for any function $v \in \P^l(T)$:
 \begin{align}
 \abs{v}_{s,p,T} &\le c_1 \rho_m^{-s} J^{\frac{1}{p}} \abs{v \circ F_m}_{s,p,\hat{T}} \\

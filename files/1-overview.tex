@@ -26,10 +26,18 @@ For $p = \infty$, we define $L^\infty(\Omega)$ as the space of essentially bound
 \|u\|_{L^\infty(\Omega)} := \operatorname{ess\,sup}_{x \in \Omega} |u(x)| < \infty.
 \]
 
+Finally we define the space of locally integrable functions as $L^1_{loc}(\Omega)$ where every function $u: \Omega \to \R$ is:
+\begin{itemize}
+\item measurable;
+\item $u|_{K} \in L^1(K)$ for each compact subset $K \subseteq \Omega$.
+\end{itemize}
+
 These spaces, equipped with their respective norms, are Banach spaces. In particular, $L^2(\Omega)$ is a Hilbert space with the inner product
 \[
 (u, v)_{L^2(\Omega)} = \int_\Omega u(x) v(x) \diff x.
 \]
+
+
 
 \subsection{Weak derivatives}
 
@@ -252,16 +260,7 @@ More in general, if we replace $\D$ with some appropriate function space $V$, th
 \end{equation}
 with the agreement that, being $f \in V'$, the RHS is in fact a duality.
 
-On one side, we need that $\int_\Omega | \nabla u \nabla v | < +\infty$, and on the other side, we need that $u$ and $v$ should be zero on the domain boundary.
-A natural choice is then the Hilbert space $H^1_0(\Omega)$, which is defined as
-\[
-V:= H^1_0(\Omega) = \Set{u \in L^2(\Omega) : \nabla u \in L^2(\Omega), \restr{u}{\partial\Omega}=0},
-\]
-where we recall that $H^1_0(\Omega) = \overline{C^\infty_0(\Omega)}^{\norm{\cdot}_{1,
-2,\Omega}}$, where $\norm{\cdot}_{1,2,\Omega}$ is the Sobolev norm induced by the scalar product
-\[
-(u,v)_{1,2,\Omega} = \int_\Omega uv + \int_\Omega \nabla u \nabla v.
-\]
+On one side, we need that $\int_\Omega | \nabla u \nabla v | < +\infty$, and on the other side, we need that $u$ and $v$ should be zero on the domain boundary. A natural choice is then the Hilbert space $H^1_0(\Omega)$.
 
 How do we guarantee that a solution to such problem exists? We prove this in an abstract Hilbert setting:
 \begin{lemma}[Lax-Milgram]\label{lemma:lax-milgram}\marginpar{Lax-Milgram lemma}
@@ -305,10 +304,10 @@ admits a unique solution $u_0$. Moreover, $u_0$ satisfies the following inequali
   \begin{align*}
     \norm{\phi(u) - \phi(v)}_V^2 & = \norm{u - v - \rho \tau(A(u - v))}_V^2 \\
     & = \norm{u - v}_V^2 - 2 \rho \langle A(u - v), u - v \rangle + \rho^2 \norm{A(u - v)}_{V'}^2 \\
-    & \leq \norm{u - v}_V^2 - 2 \rho \alpha \norm{u - v}^2_V + \rho^2 \|A\| \norm{u - v}_V^2 \\
-    & \leq  (1 - 2\rho \alpha + \rho^2 \|A\|) \norm{u - v}_V^2.
+    & \leq \norm{u - v}_V^2 - 2 \rho \alpha \norm{u - v}^2_V + \rho^2 \|A\|^2 \norm{u - v}_V^2 \\
+    & \leq  (1 - 2\rho \alpha + \rho^2 \|A\|^2) \norm{u - v}_V^2.
   \end{align*}
-  By choosing $\rho$ such that $0<1 - 2\rho \alpha + \rho^2 \|A\| < 1$, (i.e., $\rho<\frac{2\alpha}{\|A\|}$) we have that $\phi$ is a contraction, and by the Banach fixed point theorem, we have that there exists a unique fixed point $u$ of $\phi$, which is the solution of the problem.
+  By choosing $\rho$ such that $0<1 - 2\rho \alpha + \rho^2 \|A\|^2 < 1$, (i.e., $\rho<\frac{2\alpha}{\|A\|}$) we have that $\phi$ is a contraction, and by the Banach fixed point theorem, we have that there exists a unique fixed point $u$ of $\phi$, which is the solution of the problem.
   
   Finally, we can estimate the norm of $u$ by the norm of $f$ and the coercivity constant $\alpha$:
   \[
@@ -320,11 +319,13 @@ In the Poisson problem's case, the bilinear operator is
 \[
 a(u,v) = \int_\Omega \nabla u \nabla v,
 \]
-which is clearly bounded and coercive if $V=H_0^1(\Omega)$. In particular, coercivity follows from using Poincaré inequality to observe that the norm in $V$ is equivalent to the $H^1$ seminorm
+which is clearly bounded and coercive if $V=H_0^1(\Omega)$. In particular, coercivity follows from the Poincaré inequality which implies that the norm in $V$ is equivalent to the $H^1$ seminorm
 \[
 \abs{u}_{1,2} = \norm{\nabla u}_{L^2}.
 \]
 Hence, the weak formulation of the Poisson problem admits a unique solution by the Lax-Milgram lemma.
+
+\section{Introduction to finite elements method}
 
 The reason why the finite element method is powerful is that the differential operators stay untouched and, instead, what is to be simplified is \emph{the set in which the solutions live}. We construct a sequence of subspaces $V_h \subset V$ such that $V_h = \Span\Set{v_i}_{i=1}^n$, with $n$ depending on $h$. Then we restrict the weak problem to $V_h$, which inherits the norm from $V$: given $f \in V'$, find $u_h \in V_h$ s.t.
 \begin{equation} \label{eqn:weak_2} \marginpar{Discrete weak form}
@@ -377,7 +378,7 @@ a(u - u_h, v_h - u_h) = 0 \quad \forall v_h\in V_h.
 \]
 This is an orthogonality property of the error. Now we exploit the properties of $a$:
 \begin{align}
-\alpha \norm{u - u_h} & \le a(u - u_h, u - u_h) \\
+\alpha \norm{u - u_h}^2 & \le a(u - u_h, u - u_h) \\
 & = a(u - u_h, u - v_h) + a(u - u_h, v_h - u_h) \\
 & = a(u - u_h, u - v_h) \\
 & \le \norm{A} \norm {u - u_h} \norm {u - v_h} \quad \forall v_h \in V_h.
@@ -399,7 +400,7 @@ The meaning of Ceà's inequality is: it suffices to control the error only in $V
 
 \section{An example: the 1-dimensional case}
 
-\rev{this section could be written better.}
+\rev{this section could be written better. Polvere note: to me it looks fine, i added a foot note}
 
 Let $\Omega = (a,b)$. In order to discretize it, we consider a set of points $\Set{x_i}_{i=1}^n$ such that
 \[
@@ -427,7 +428,7 @@ v^i(v_j) = \delta_{ij} = \begin{cases}
 \end{cases}
 \quad \forall i,j \in \Set{1,\dots,n}.
 \]
-In practice, for every node $x_j$ in the interior of $[a,b]$ we are considering a piecewise linear function that is one on that node and zero on any other node. It is clear that the functions $\Set{v_j}_{j=1}^{n}$ form a basis for the space $V_h$. These are the so-called \emph{shape functions}. Instead, the $v^i$-s form a basis for $V_h'$ and are called the \emph{nodal basis functions}.
+In practice, for every node $x_j$ in the interior of $[a,b]$ we are considering a piecewise linear function that is one on that node and zero on any other node. It is clear that the functions $\Set{v_j}_{j=1}^{n}$\footnote{These functions are also called "Hat functions" for their peculiar hat form.} form a basis for the space $V_h$. These are the so-called \emph{shape functions}. Instead, the $v^i$-s form a basis for $V_h'$ and are called the \emph{nodal basis functions}.
 
 Let us now get back to the Poisson problem. In the 1-dimensional case, the entries of the matrix $A$ are of the form
 \[
