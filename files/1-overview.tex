@@ -327,13 +327,13 @@ Hence, the weak formulation of the Poisson problem admits a unique solution by t
 
 \section{Introduction to finite elements method}
 
-The reason why the finite element method is powerful is that the differential operators stay untouched and, instead, what is to be simplified is \emph{the set in which the solutions live}. We construct a sequence of subspaces $V_h \subset V$ such that $V_h = \Span\Set{v_i}_{i=1}^n$, with $n$ depending on $h$. Then we restrict the weak problem to $V_h$, which inherits the norm from $V$: given $f \in V'$, find $u_h \in V_h$ s.t.
+The reason why the finite element method is powerful is that the differential operators stay untouched and, instead, what is to be simplified is \emph{the set in which the solutions live}. We construct a sequence of subspaces $V_h \subset V$ such that $V_h = \Span\{v_i\}_{i=1}^n$, with $n$ depending on $h$. Then we restrict the weak problem to $V_h$, which inherits the norm from $V$: given $f \in V'$, find $u_h \in V_h$ s.t.
 \begin{equation} \label{eqn:weak_2} \marginpar{Discrete weak form}
 a(u_h,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
 \end{equation}
 The element $u_h$ will be our candidate approximate solution. We shall first prove its existence.
 
-Since $u_h \in V_h$, there exist unique coefficients $\Set{u^j}_{j=1}^n$ such that
+Since $u_h \in V_h$, there exist unique coefficients $\{u^j\}_{j=1}^n$ such that
 \[
 u_h = \sum_{j} u^j v_j.
 \]
@@ -402,7 +402,7 @@ The meaning of Ceà's inequality is: it suffices to control the error only in $V
 
 \rev{this section could be written better. Polvere note: to me it looks fine, i added a foot note}
 
-Let $\Omega = (a,b)$. In order to discretize it, we consider a set of points $\Set{x_i}_{i=1}^n$ such that
+Let $\Omega = (a,b)$. In order to discretize it, we consider a set of points $\{x_i\}_{i=1}^n$ such that
 \[
 a = x_0 < x_1 < \dots < x_{n+1} = b.
 \]
@@ -426,9 +426,9 @@ v^i(v_j) = \delta_{ij} = \begin{cases}
 1 \quad \text{if } i=j \\
 0 \quad \text{if } i\ne j
 \end{cases}
-\quad \forall i,j \in \Set{1,\dots,n}.
+\quad \forall i,j \in \{1,\dots,n\}.
 \]
-In practice, for every node $x_j$ in the interior of $[a,b]$ we are considering a piecewise linear function that is one on that node and zero on any other node. It is clear that the functions $\Set{v_j}_{j=1}^{n}$\footnote{These functions are also called "Hat functions" for their peculiar hat form.} form a basis for the space $V_h$. These are the so-called \emph{shape functions}. Instead, the $v^i$-s form a basis for $V_h'$ and are called the \emph{nodal basis functions}.
+In practice, for every node $x_j$ in the interior of $[a,b]$ we are considering a piecewise linear function that is one on that node and zero on any other node. It is clear that the functions $\{v_j\}_{j=1}^{n}$\footnote{These functions are also called "Hat functions" for their peculiar hat form.} form a basis for the space $V_h$. These are the so-called \emph{shape functions}. Instead, the $v^i$-s form a basis for $V_h'$ and are called the \emph{nodal basis functions}.
 
 Let us now get back to the Poisson problem. In the 1-dimensional case, the entries of the matrix $A$ are of the form
 \[
@@ -453,9 +453,9 @@ Let $V$ a Banach space \rev{check if $V$ is only Banach} and $A \in \L(V,V')$ a 
     \label{eqn:op_pbm} \marginpar{Operator form}
     \langle Au,v \rangle = \langle f,v \rangle \quad \forall v\in V.
 \end{equation}
-Let $V \supset V_h = \Span\Set{v_i}_{i=1}^n$, with $\dim V_h = n$. The space $V_h'$ is usually described in terms of the \emph{covectors}:
+Let $V \supset V_h = \Span\{v_i\}_{i=1}^n$, with $\dim V_h = n$. The space $V_h'$ is usually described in terms of the \emph{covectors}:
 \[
-V_h' = \Span\Set{v^i}_{i=1}^n.
+V_h' = \Span\{v^i\}_{i=1}^n.
 \]
 In particular, each $v^i$ is extended via the Hahn-Banach theorem to $V'$, in order to see $V_h'$ as a subspace of $V'$. With this notation, each $v^i$ is the dual vector of $v_i$, i.e.
 \[

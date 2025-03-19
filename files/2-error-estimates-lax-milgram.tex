@@ -150,7 +150,7 @@ This statement is also called in Ciarlet \cite{ciarlet78} the \emph{Deny-Lions l
 \[
 \abs{u}_{k+1,p} = \abs{u+q}_{k+1,p} \le \norm{u+q}_{k+1,p} \quad \forall q \in \P^k.
 \]
-\item In order to prove that the converse holds, let $\Set{v_i}_{i=0}^N$ be a basis for $\P^k$. Then, with the usual notation, $(\P^k)'=\Span\Set{v^i}_{i=0}^N$, where the $v^i$-s are such that $v^i(v_j)=\delta_{ij}$. Since $\P^k \subset W^{k+1,p}$, by the Hahn-Banach theorem we can naturally extend these $v^i$-s to be elements of $(W^{k+1,p})'$. Hence we can consider the projection
+\item In order to prove that the converse holds, let $\{v_i\}_{i=0}^N$ be a basis for $\P^k$. Then, with the usual notation, $(\P^k)'=\Span\{v^i\}_{i=0}^N$, where the $v^i$-s are such that $v^i(v_j)=\delta_{ij}$. Since $\P^k \subset W^{k+1,p}$, by the Hahn-Banach theorem we can naturally extend these $v^i$-s to be elements of $(W^{k+1,p})'$. Hence we can consider the projection
 \begin{align}
 \Pi^k:  W^{k+1,p}(\Omega) & \to \P^k(\Omega)\\
 u & \mapsto \sum_{i=0}^N v^i(u) v_i.
@@ -167,7 +167,7 @@ The $\lesssim$ inequality, instead, can be proven by contradiction. If it were n
 \[
 \abs{w_c}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(w_c)}^p < c \norm{w_c}_{k+1,p}^p = c.
 \]
-If we choose $c=\frac{1}{j}$, we get a sequence $\Set{w_j}$ such that
+If we choose $c=\frac{1}{j}$, we get a sequence $\{w_j\}$ such that
 \begin{equation} \label{eqn:deny-lions-proof}
 \abs{w_j}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(w_j)}^p < \frac{1}{j} \quad \forall j.
 \end{equation}
@@ -177,7 +177,7 @@ Actually, the function $w$ belongs to $W^{k+1,p}$. In fact, from~\eqref{eqn:deny
 \[
 \abs{w_j}_{k+1,p}^p < \frac{1}{j} \quad \forall j.
 \]
-This implies that the sequence $\Set{w_j}$ is Cauchy also in $W^{k+1,p}$, because
+This implies that the sequence $\{w_j\}$ is Cauchy also in $W^{k+1,p}$, because
 \[
 \norm{w_i-w_j}_{k+1,p}^p = \norm{w_i-w_j}_{k,p}^p + \abs{w_i-w_j}_{k+1,p}^p.
 \]

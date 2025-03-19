@@ -5,7 +5,7 @@
 \section{Interpolation of non-smooth functions}
 
 This section is concerned with the problem of interpolating non-smooth functions, e.g. functions that are too rough to be in the domain of the Lagrange interpolation operator. This situation occurs, for instance, when interpolating discontinuous functions, e.g. in $L^2(\Omega)$ or $H^1(\Omega)$ in dimension $d \ge 2$.
-Throughout this section, $\Omega$ is a polyhedron and $\Set{\T_h}_{h>0}$ is a shape-regular family of affine, simplicial, geometrically conformal meshes.
+Throughout this section, $\Omega$ is a polyhedron and $\{\T_h\}_{h>0}$ is a shape-regular family of affine, simplicial, geometrically conformal meshes.
 
 \rev{check and add a reference to the Lagrange operator in section 1}
 
@@ -19,7 +19,7 @@ Our goal is to define an interpolation operator $\SZ: H^1(\Omega) \to V_h$ such 
 \end{enumerate}
 This will act as a regularization operator based on \emph{macroelements} consisting of element patches. In particular, the first condition means that $\SZ$ will preserve homogeneous boundary conditions.
 
-How do we construct it? Recall that $V_h = \Span\Set{v_i}_{i=1}^N$ for some $N$. Let $\Set{a_1, \dots , a_N}$ be the Lagrange nodes (support points).
+How do we construct it? Recall that $V_h = \Span\{v_i\}_{i=1}^N$ for some $N$. Let $\{a_1, \dots , a_N\}$ be the Lagrange nodes (support points).
 Given a node $a_i$, we associate either a $d$-simplex or a $(d-1)$-simplex $\Xi_i$ to it, as follows:
 \begin{itemize}
     \item If $a_i \in \mathring{\overline{T}}$ for some $T \in \T_h$, i.e. $a_i$ is in the interior of an element, then $\Xi_i := T$ itself.
@@ -28,7 +28,7 @@ Given a node $a_i$, we associate either a $d$-simplex or a $(d-1)$-simplex $\Xi_
 \end{itemize}
 In the first case, $\Xi_i$ is a $d$-simplex, otherwise it is a $(d-1)$-simplex. Notice that the choice of the face may not be unique, but this will not be relevant. It is only important to choose faces at the boundary for nodes at the boundary, in order for $\SZ$ to preserve homogeneous boundary conditions.
 
-Next, let $n_i$ be the number of nodes belonging to $\Xi_i$ and let $\Set{v_{i,q}}_{q=1}^{n_i}$ the restrictions to $\Xi_i$ of the basis functions associated to those support points. Conventionally, we order those functions to have $v_i = v_{i,1}$. Then, for every $q=1,\dots,n_i$, consider the function $\gamma_{i,q} \in \Span\Set{v_{i,q}}$ such that
+Next, let $n_i$ be the number of nodes belonging to $\Xi_i$ and let $\{v_{i,q}\}_{q=1}^{n_i}$ the restrictions to $\Xi_i$ of the basis functions associated to those support points. Conventionally, we order those functions to have $v_i = v_{i,1}$. Then, for every $q=1,\dots,n_i$, consider the function $\gamma_{i,q} \in \Span\{v_{i,q}\}$ such that
 \begin{equation}\label{eqn:sz_def}
     \int_{\Xi_i} \gamma_{i,q} v_{i,r} = \delta_{qr} \quad \forall r=1,\dots,n_i.
 \end{equation}
@@ -52,7 +52,7 @@ Let us verify that $\SZ$ has indeed the required properties:
     \[
     \int_{\Xi_i} \gamma_{i,1} v_j = \delta_{ij}
     \]
-    follows from \eqref{eqn:sz_def} because, for $j \ne i$, $v_j$ will be either outside $\Span\Set{v_{i,q}}$ or equal to $v_{i,r}$ for $r \ne 1$.
+    follows from \eqref{eqn:sz_def} because, for $j \ne i$, $v_j$ will be either outside $\Span\{v_{i,q}\}$ or equal to $v_{i,r}$ for $r \ne 1$.
 \end{itemize}
 
 \begin{remark}
@@ -113,7 +113,7 @@ In practice, $\Pi^0 u$ (respectively $\Pi^1 u$) gives us the closest function to
 We refer to $\Pi^0$ as the \emph{$L^2$ projection}, to $\Pi^1$ as the \emph{Riesz projection} or \emph{elliptic projection}.
 
 \textbf{------------start of probably wrong part\\}
-We look for a way to express these with respect to the basis functions $\Set{v_i}$. For simplicity, from now on we will use Einstein's notation. If $u \in L^2(\Omega)$, then $\Pi^0 u$ can be seen as a linear combination of the $v_i$-s:
+We look for a way to express these with respect to the basis functions $\{v_i\}$. For simplicity, from now on we will use Einstein's notation. If $u \in L^2(\Omega)$, then $\Pi^0 u$ can be seen as a linear combination of the $v_i$-s:
 \[
 \Pi^0 u = u^i v_i
 \]
@@ -139,7 +139,7 @@ Then,
         \forall v \in L^2(\Omega) \quad \norm{\Pi^0 v}_{0,\Omega} &\le \norm{v}_{0,\Omega}, \\
         \forall v \in H^1(\Omega) \quad \norm{\Pi^1 v}_{1,\Omega} &\le \norm{v}_{1,\Omega}.
     \end{align}
-    Moreover, if the family of meshes $\Set{\T_h}_{h>0}$ is quasi-uniform, then
+    Moreover, if the family of meshes $\{\T_h\}_{h>0}$ is quasi-uniform, then
     \[
         \forall v \in H^1(\Omega) \quad \norm{\Pi^0 v}_{1,\Omega} \lesssim \norm{v}_{1,\Omega}
     \]
@@ -152,7 +152,7 @@ Then,
         \norm{v - \Pi^0 v}_{0,\Omega} &\lesssim h^{l+1} \abs{v}_{l+1,\Omega}, \\
         \norm{v - \Pi^1 v}_{1,\Omega} &\lesssim h^l \abs{v}_{l+1,\Omega},
     \end{align}
-    and the constant is independent of $h$. Moreover, if the family of meshes $\Set{\T_h}_{h>0}$ is quasi-uniform, then for all $v \in H^{l+1}(\Omega)$ we have:
+    and the constant is independent of $h$. Moreover, if the family of meshes $\{\T_h\}_{h>0}$ is quasi-uniform, then for all $v \in H^{l+1}(\Omega)$ we have:
     \[
         \norm{v - \Pi^0 v}_{1,\Omega} \lesssim h^l \abs{v}_{l+1,\Omega},
     \]
