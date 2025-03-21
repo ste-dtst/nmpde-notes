@@ -128,22 +128,24 @@ Let $V$, $W$, $Q$ be Banach spaces and let $\tau \in \L(V,W)$ be an operator suc
 \norm{\tau(u)}_{s,p,\Omega} \lesssim \norm{\tau}_* \abs{u}_{k+1,p,\Omega} \quad \forall u\in W^{k+1,p}(\Omega).
 \]
 \end{enumerate}
+\label{lemma:bramble-hilbert}
 \end{lemma}
-\begin{remark} Meaning...
-\rev{say something}
-\end{remark}
 
 \begin{proof}
-The first inequality is immediate by adding and subtracting $q$ and observing that $\tau(q)=0$:
+The first inequality follows immediately by observing that $\tau$ is linear and that $q\in \ker(\tau)$ implies $\tau(u+q) = \tau(u) + \tau(q) = \tau(u)$, hence:
 \[
-\tau(u) = \tau(u-q+q) = \tau(u-q) \le \norm{\tau}_* \norm{u-q}.
+\tau(u) = \tau(u+q) = \le \norm{\tau}_* \norm{u+q} \qquad \forall q \in Q.
 \]
 
-For the second inequality, the conclusion will follow immediately from the first one (just replace $q$ with $-q$) if we prove that
-\[
-\abs{u}_{k+1,p,\Omega} \sim \inf_{q \in \P^k} \norm{u+q}_{k+1,p,\Omega}.
-\]
-This statement is also called in Ciarlet \cite{ciarlet78} the \emph{Deny-Lions lemma}. From now on, we'll omit $\Omega$ for simplicity where its presence is obvious.
+The second inequality follow from the first one by showing that~\cite{ciarlet78}
+\begin{lemma}[Denis-Lions]
+  \begin{equation}
+    \abs{u}_{k+1,p,\Omega} \sim \inf_{q \in \P^k} \norm{u+q}_{k+1,p,\Omega} \qquad \forall u \in W^{k+1,p}(\Omega).
+    \label{eqn:deny-lions}
+  \end{equation}
+\end{lemma}
+
+From now on, we'll omit $\Omega$ for simplicity where its presence is obvious.
 \begin{itemize}
 \item The inequality $\abs{u}_{k+1,p} \lesssim \inf_{q \in \P^k} \norm{u+q}_{k+1,p}$ is trivial, because every polynomial of degree at most $k$ has zero derivatives of $(k+1)$-th order. Hence
 \[
@@ -164,15 +166,15 @@ In fact, the $\gtrsim$ inequality follows from bounding the Sobolev seminorm wit
 \]
 The $\lesssim$ inequality, instead, can be proven by contradiction. If it were not true, then for every constant $c$ there would exist $w_c \in W^{k+1,p}$ such that $\norm{w_c}_{k+1,p} = 1$ and
 \[
-\abs{w_c}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(w_c)}^p < c \norm{w_c}_{k+1,p}^p = c.
+c(\abs{w_c}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(w_c)}^p) < \norm{w_c}_{k+1,p}^p = c.
 \]
-If we choose $c=\frac{1}{j}$, we get a sequence $\{w_j\}$ such that
+If we choose $c=j$ in $[1,2,\dots)$, we obtain a sequence $\{w_j\}$ such that
 \begin{equation} \label{eqn:deny-lions-proof}
 \abs{w_j}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(w_j)}^p < \frac{1}{j} \quad \forall j.
 \end{equation}
 Now, thanks to the compact embedding $W^{k+1,p} \hookrightarrow W^{k,p}$, we have, up to a subsequence, that $w_j \to w$ strongly in $W^{k,p}$ for some $w \in W^{k,p}$.
 
-Actually, the function $w$ belongs to $W^{k+1,p}$. In fact, from~\eqref{eqn:deny-lions-proof} we deduce
+However, we can easily show that the function $w$ belongs also to $W^{k+1,p}$. In fact, from~\eqref{eqn:deny-lions-proof} we deduce
 \[
 \abs{w_j}_{k+1,p}^p < \frac{1}{j} \quad \forall j.
 \]
@@ -180,13 +182,13 @@ This implies that the sequence $\{w_j\}$ is Cauchy also in $W^{k+1,p}$, because
 \[
 \norm{w_i-w_j}_{k+1,p}^p = \norm{w_i-w_j}_{k,p}^p + \abs{w_i-w_j}_{k+1,p}^p.
 \]
-Hence, by uniqueness of the limit, $w \in W^{k+1,p}$. Then, by (strong) continuity of the norm, $\norm{w}_{k+1,p}=1$; also we can pass to the limit the inequality~\eqref{eqn:deny-lions-proof} to get:
+Hence, by uniqueness of the limit, $w \in W^{k+1,p}$. Then, by (strong) continuity of the norm, we obtain $\norm{w}_{k+1,p}=1$ and we can pass to the limit the inequality~\eqref{eqn:deny-lions-proof} to get:
 \[
 \abs{w}_{k+1,p}^p = 0, \quad \sum_{i=0}^N \abs{v^i(w)}^p = 0.
 \]
 The first equality, since $\Omega$ is an open connected domain, implies that $w \in \P^k(\Omega)$. The second equality implies that $\Pi^k(w)=0$. But for a polynomial in $\P^k$ we have $\Pi^k(w)=w$, hence $w=0$, which is in contradiction with $\norm{w}_{k+1,p}=1$.
 
-We can now conclude, exploiting the inequality~\eqref{eqn:deny-lions-exp}, by noticing that
+We can now conclude, exploiting inequality~\eqref{eqn:deny-lions-exp}, by noticing that
 \begin{align}
 \inf_{q \in \P^k} \norm{u+q}_{k+1,p} &\le \norm{u- \Pi^k(u)}_{k+1,p} \\
 & \lesssim \abs{u-\Pi^k(u)}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(u-\Pi^k(u))}^p \\
@@ -196,17 +198,19 @@ where the last equality holds because the summation term is equal to zero by lin
 \end{itemize}
 \end{proof}
 
-The Bramble-Hilbert lemma allows us to make error estimates for a finite element method. As in the previous section, consider an affine mapping $F_T: \hat{T} \to T$ and its related quantities $h_T$ and $\rho_T$. If $k$ is the degree of the polynomial approximation of the solution $u$ on $T$, then such an approximation is indeed $\Pi^k(u)$ and the related error is $u-\Pi^k(u)$. Hence we can choose $\tau = Id - \Pi^k$ in the Bramble-Hilbert lemma and repeat the same scaling argument:
+Bramble-Hilbert lemma allows us to provide a-priori error estimates for a finite element method, by quantifying the constants in the inequality throught the scaling arguments presented in the previous section. Consider an affine mapping $F_T: \hat{T} \to T$ and its related quantities $h_T$ and $\rho_T$. 
+
+We can use Bramble-Hilbert lemma applied to the operator $(I-\Pi^k)\circ F_T$ to control the $s$-Sobolev norm of the error $u - \Pi^k(u)$. By repeating the scaling arguments on both $\norm{(u- \Pi^k(u)) \circ F_T}_{s,p,\hat{T}}$ and $\abs{u \circ F_T }_{k+1,p,\hat{T}}$, we get, for any triangle $T = F_T(\hat{T})$:
 \begin{align}
 \norm{u- \Pi^k(u)}_{s,p,T} &\lesssim \rho_T^{-s} J^{\frac{1}{p}} \norm{(u- \Pi^k(u)) \circ F_T}_{s,p,\hat{T}} \\
 & = \rho_T^{-s} J^{\frac{1}{p}} \norm{u \circ F_T - \Pi^k(u) \circ F_T}_{s,p,\hat{T}} \\
 & \lesssim \rho_T^{-s} J^{\frac{1}{p}} \abs{u \circ F_T }_{k+1,p,\hat{T}} \\
 & \lesssim h_T^{k+1} \rho_T^{-s} \abs{u}_{k+1,p,T} \quad \forall 0\le s \le k.
 \end{align}
-This means we can control the Sobolev norm of the error up to order $k$ with the same quantity.
-For example: a piecewise linear approximation ($k=1$) allows us to control at most the norm of the gradient of the error. If we also want to control the Laplacian, or the Hessian, then raising the degree of the approximation is mandatory. 
 
-As a follow-up, we can sum over the cells of the triangulation to get a global inequality:
+Overall, we can control the $s$-Sobolev norm of the error up to order $k$ with the Sobolev semi-norm of order $k+1$ of the solution $u$.
+
+If we sum over the cells of the triangulation, we obtain a global \emph{a-priori} inequality:
 \[
 \sum_{T \in \T_h} \norm{u- \Pi^k(u)}_{s,p,T}^p \lesssim
 \sum_{T \in \T_h} \bigl( h_T^{k+1} \rho_T^{-s} \abs{u}_{k+1,p,T} \bigr)^p.
@@ -220,29 +224,30 @@ then we can bound the RHS of the inequality in this way:
 \Bigl( \sum_{T \in \T_h} \norm{u- \Pi^k(u)}_{s,p,T}^p \Bigr)^\frac{1}{p} \lesssim
 h^{k+1} \rho^{-s} \abs{u}_{k+1,p,\Omega}.
 \]
-The LHS is called the \emph{broken Sobolev norm} of $u-\Pi^k(u)$, since it is defined element-wise. It is not automatically equal to $\norm{u- \Pi^k(u)}_{s,p,\Omega}$: in order to be, the space $\Omega$ must be \emph{conforming}, i.e. the shape functions must be continuous.
-\rev{Specify better what a conforming space is. Here we want that $V_h \subset C^0$, but elsewhere I see $V_h \subset V$, or that $V_h\subset H^s$ means $H^s$-conforming space.}
+The LHS is also called a \emph{broken Sobolev norm}, since it is defined element-wise. It is not automatically equal to $\norm{u- \Pi^k(u)}_{s,p,\Omega}$: in order to be, the global space $V_h$, obtained by gluing together the local spaces $P^k(T_m)$, must be \emph{conforming} to $V$. 
 
-\begin{remark}
-The same inequality can be proven if the triangulation $\T_h$ is made of quadrilaterals. The only difference is that the constants are way better, and this is why meshes with quadrilaterals are used today: they are more difficult to construct, but then the user gets a numerical advantage when approximating the solution.
+\begin{remark}[Conformity] For a finite element space to be conforming, we need to guarantee that the resulting finite dimensional space $V_h$ is indeed included in $V$. While locally every polynomial space $P^k(T)$ is always contained in every Sobolev space $W^{k,p}(T)$ (since $P^k(T) \subset C^{\infty}(T)$ for any $k$), the same cannot be said for the \emph{union} of the local spaces $P^k(T_m)$. Such a space is in general discontinuous (i.e., there is no reason to expect that the polynomials in $P^k(T_m)$ and $P^k(T_n)$ agree on the common face between the two cells $T_m$ and $T_n$), and although continuity is in general not required for Sobolev spaces $W^{k,p}(\Omega)$ (i.e., $W^{k,p}(\Omega)\not\subset C^0(\Omega)$ for $kp\leq d$), one can show that if $k \geq 1/p$, then a discontinuity along a surface of co-dimension one is not allowed.
+
+If we want the finite dimensional space $V_h$ to be conforming with $W^{k,p}(\Omega)$ (for example), then we need to restrict the polynomial spaces on the elements $T_m$ and $T_n$ so that $P^k(T_m)$ and $P^k(T_n)$ agree on the common face between the two cells $T_m$ and $T_n$ for all derivatives up to the degree $k-1$.
 \end{remark}
 
-Finally, we can couple the estimate from Ceà's lemma~\ref{lemma:cea} with the latter to get the following \emph{a priori} error estimate for finite element methods: provided that $A$ is bounded and coercive and that \emph{we can use} $\norm{\cdot}_{s,p,\Omega}$ as a norm, for a conforming space we have
+\begin{remark}
+The same inequality can be proven if the triangulation $\T_h$ is made of quadrilaterals, and if the mapping is bi-linear instead of affine. In this case, the constants that appear in the error estimates are generally better, and this is why meshes made of quadrilaterals and hexahedra are usually preferred (when available): they are more difficult to construct, but they offer better approximation properties.
+\end{remark}
+
+Finally, we can put togetner Ceà's lemma~\ref{lemma:cea} with Bramble-Hilbert lemma~\ref{lemma:bramble-hilbert} to get the following \emph{a priori} error estimate for finite element methods: provided that $A$ is bounded and coercive in $H^s(\Omega)$, for a conforming approximation $V_h \subset V \equiv H^s(\Omega)$ space we have that, if the exact solution is regular enough, i.e. $u \in H^{k+1}(\Omega)$, then
 \begin{align} \label{ineq:cea_scaling}
-\norm{u - u_h}_{s,p,\Omega} &\le \frac{\norm{A}}{\alpha} \inf_{v_h \in V_h} \norm{u - v_h}_{s,p,\Omega} \\
-& \le \frac{\norm{A}}{\alpha} \norm{u - \Pi^k(u)}_{s,p,\Omega} \\
-& \lesssim \frac{\norm{A}}{\alpha} h^{k+1} \rho^{-s} \abs{u}_{k+1,p,\Omega} \quad \forall 0\le s \le k.
+\norm{u - u_h}_{s,\Omega} &\le \frac{\norm{A}}{\alpha} \inf_{v_h \in V_h} \norm{u - v_h}_{s,\Omega} \\
+& \le \frac{\norm{A}}{\alpha} \norm{u - \Pi^k(u)}_{s,\Omega} \\
+& \lesssim \frac{\norm{A}}{\alpha} \rho^{-s} h^{k+1} \abs{u}_{k+1,\Omega} \quad \forall 0\le s \le k.
 \end{align}
 The inequality hints at some strategies for error reduction:
 \begin{itemize}
 \item take $h$ smaller, i.e. \emph{refine the mesh};
-\item take $s$ bigger, which implies increasing the polynomial degree.
+\item take $k$ bigger (if possible), which implies increasing the polynomial degree.
 \end{itemize}
-However, there are two very important \emph{caveats}:
-\begin{itemize}
-\item Since the first line of the inequality relies on Ceà's lemma, we have to check that the space $V$, with $\norm{\cdot}_{s,p,\Omega}$ as a norm, satisfies the hypotheses of the Lax-Milgram lemma. This will likely yield some additional constraint to just requiring $s \in [0,k]$.
-\item In order to be able to use the inequality, we need to prove that the solution $u$ is indeed in the space $W^{k+1,p}(\Omega)$, which is not trivial and depends on $A$ and $f$ and on the regularity of the domain $\Omega$. This is what the theory of regularity for PDEs attempts to do. In particular, in the following section we will mention the concept of $r$-regularity.
-\end{itemize}
+\begin{remark}[Regularity] In order use the \emph{a-priori} estimate, we need to make sure that the solution $u$ is indeed in the space $H^{k+1}(\Omega)$. This, in general, will depend on $A$, on $f$ and on the regularity of the domain $\Omega$, and it is what the theory of regularity for PDEs attempts to do. In particular, in the following section we will mention the concept of $r$-regularity.
+\end{remark}
 
 %%%%%
 % Lecture of 27 of March

@@ -386,7 +386,7 @@ This is an orthogonality property of the error. Now we exploit the properties of
 The thesis follows by simplifying $\norm{u - u_h}$ on both sides of the inequality, and taking the infimum over $v_h \in V_h$.
 \end{proof}
 
-The meaning of Ceà's inequality is: it suffices to control the error only in $V_h$ in order to have a good approximation of $u$. This is a step in the right direction, because in practice the functions in $V_h$ will be piecewise polynomials, hence their derivatives will be well defined and we won't need to approximate them. However, there are still some problems left:
+The meaning of Ceà's Lemma is: it suffices to control the error only in $V_h$ in order to have a good approximation of $u$. This is a step in the right direction, because in practice the functions in $V_h$ will be piecewise polynomials, hence their derivatives will be well defined and we won't need to approximate them. However, there are still some problems left:
 \begin{itemize}
 \item How do we approximate an arbitrary domain $\Omega$?
 \item How do we approximate $V$ with $V_h$? Meaning, we seek to construct $V_h$ in such a way that $\text{dist}(V,V_h) = c h^k$ for some $k$, where
@@ -396,7 +396,26 @@ The meaning of Ceà's inequality is: it suffices to control the error only in $V
 \item In practice, $u$ is unknown, but the RHS of the error estimate contains $u$. How do we manage this?
 \end{itemize}
 
+To approximate an arbitrary domain $\Omega$, we typically employ a process called mesh generation:
 
+\begin{itemize}
+  \item We partition the domain $\Omega$ into a collection of simple geometric shapes called elements (triangles/tetrahedra or quadrilaterals/hexahedra).
+  \item This collection $\mathcal{T}_h = \{K_1, K_2, \ldots, K_M\}$ forms a triangulation or mesh of $\Omega$.
+  \item The parameter $h$ represents the maximum diameter of any element in the mesh.
+  \item For domains with curved boundaries, we often use:
+  \begin{itemize}
+    \item Piecewise linear/polynomial approximation of the boundary
+    \item Isoparametric elements where the same shape functions describe both the geometry and solution
+  \end{itemize}
+\end{itemize}
+
+The second problem is solved by using a \emph{finite element space} $V_h$ that is \emph{locally} defined on the elements of the mesh. The idea is to construct a finite dimensional space $V_h$ such that:
+\begin{itemize}
+  \item The functions in $V_h$ are piecewise polynomials defined on the elements of the mesh;
+  \item Globally, the functions in $V_h$ are also members of the continuous space $V$ (i.e., the approximation is conforming, or $V_h \subseteq V$);
+  \item The dimension of $V_h$ grows with the number of elements in the mesh, and the approximation improves as the mesh is refined (i.e., as $h$ decreases);
+  \item The functions (and their derivatives) in $V_h$ can be easily evaluated and manipulated.
+\end{itemize}
 
 \section{An example: the 1-dimensional case}
 
