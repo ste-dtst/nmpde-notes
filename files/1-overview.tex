@@ -287,7 +287,7 @@ admits a unique solution $u_0$. Moreover, $u_0$ satisfies the following inequali
 \end{lemma}
 \begin{proof}
   Let's consider the linear operator $A: V \to V'$ defined by $A(u) = a(u,\cdot)$.
-  Boundedness of $a$ implies that $A$ is a bounded operator, and coercivity implies that $A$ is bounding, i.e., 
+  Boundedness of $a$ implies that $A$ is a bounded operator, and coercivity implies that 
   \[
     \langle A u, u \rangle = a(u,u) \ge \alpha \norm{u}_V^2 \quad \forall u \in V.
   \]
@@ -331,7 +331,7 @@ The reason why the finite element method is powerful is that the differential op
 \begin{equation} \label{eqn:weak_2} \marginpar{Discrete weak form}
 a(u_h,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
 \end{equation}
-The element $u_h$ will be our candidate approximate solution. We shall first prove its existence.
+The element $u_h$ will be our candidate approximate solution. Since $V_h$ is a Hilbert space, and the bilinear operator $a(\cdot, \cdot)$ is coercive in the entire $V$, then also Problem~\eqref{eqn:weak_2} satisfies the hypotheses of Lax-Milgram lemma, and we conclude that there exists a unique solution. For completeness, however, we shall  prove its existence also using Ritz method.
 
 Since $u_h \in V_h$, there exist unique coefficients $\{u^j\}_{j=1}^n$ such that
 \[
@@ -339,7 +339,7 @@ u_h = \sum_{j} u^j v_j.
 \]
 The weak problem \ref{eqn:weak_2} then becomes:
 \[
-a(\sum_{j} u^j v_j ,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
+a\left(\sum_{j} u^j v_j ,v_h\right) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
 \]
 In particular, it will suffice for us to check it for a basis of $V_h$:
 \[
@@ -381,9 +381,9 @@ This is an orthogonality property of the error. Now we exploit the properties of
 \alpha \norm{u - u_h}^2 & \le a(u - u_h, u - u_h) \\
 & = a(u - u_h, u - v_h) + a(u - u_h, v_h - u_h) \\
 & = a(u - u_h, u - v_h) \\
-& \le \norm{A} \norm {u - u_h} \norm {u - v_h} \quad \forall v_h \in V_h.
+& \le \norm{A} ~\norm {u - u_h} ~ \norm {u - v_h} \quad \forall v_h \in V_h.
 \end{align}
-The conclusion follows by simplifying $\norm{u - u_h}$ on both sides of the inequality.
+The thesis follows by simplifying $\norm{u - u_h}$ on both sides of the inequality, and taking the infimum over $v_h \in V_h$.
 \end{proof}
 
 The meaning of Ceà's inequality is: it suffices to control the error only in $V_h$ in order to have a good approximation of $u$. This is a step in the right direction, because in practice the functions in $V_h$ will be piecewise polynomials, hence their derivatives will be well defined and we won't need to approximate them. However, there are still some problems left:
@@ -402,7 +402,7 @@ The meaning of Ceà's inequality is: it suffices to control the error only in $V
 
 \rev{this section could be written better. Polvere note: to me it looks fine, i added a foot note}
 
-Let $\Omega = (a,b)$. In order to discretize it, we consider a set of points $\{x_i\}_{i=1}^n$ such that
+Let $\Omega = (a,b)$. In order to discretize it, we consider a set of $n+2$ points $\Set{x_i}_{i=0}^{n+1}$ such that
 \[
 a = x_0 < x_1 < \dots < x_{n+1} = b.
 \]
@@ -410,7 +410,7 @@ To keep things simple, let
 \[
 x_i = a+ih, \quad h = \frac{b-a}{n+1}.
 \]
-As prompted in the previous section, let $V=H_0^1((a,b))$. Now consider
+Let $V=H_0^1((a,b))$. Now consider
 \[
 V_h = \Set{v \in C^0([a,b]): \restr{v}{[x_i, x_{i+1}]}\in \P^1([x_i, x_{i+1}]) \,\forall i=0,\dots,n, \, v(a)=v(b)=0}
 \]

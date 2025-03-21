@@ -65,49 +65,45 @@ We start with some considerations on the matrix $B$. First, we notice that if $x
 \abs{x-y} = \abs{B(\hat{x}-\hat{y})} = \abs{B \xi}, \qquad \xi = \hat{x}-\hat{y}.
 \]
 By the definition of the norm of B, we have that
-\[
+\begin{equation}
 \norm{B} = \sup_{\abs{\xi} = \hat{\rho}} \frac{\abs{B \xi}}{\abs{\xi}} \le
 \sup_{\abs{\xi} = \hat{\rho}} \frac{\abs{x-y}}{\hat{\rho}} \le \frac{h_m}{\hat{\rho}}.
-\]
+\label{eqn:scaling_B}
+\end{equation}
 With a similar argument:
-\[
-\norm{B^{-1}} = \sup_{\abs{\xi} = \rho_m} \frac{\abs{B^{-1} \xi}}{\abs{\xi}} \le \frac{\hat{h}}{\rho_m}
-\]
+\begin{equation}
+  \norm{B^{-1}} = \sup_{\abs{\xi} = \rho_m} \frac{\abs{B^{-1} \xi}}{\abs{\xi}} \le \frac{\hat{h}}{\rho_m},
+  \label{eqn:scaling_B_inv}
+\end{equation}
 where both $\hat \rho$ and $\hat h$ are constant, and depend only on the choice of the reference triangle $\hat T$.
 Also, since $F_m$ is affine, its differential is the matrix $B$ itself. This will come in handy to provide a simple formula for $\hat{D}^\alpha (v \circ F_m)$ when using the chain rule.
 
-Consider a function $v \in \P^l$ on the triangle $T_m$ and let $0\le k \le l$. Then:
+Consider a function $v \in W^{k,p}(T_m)$ on the triangle $T_m$. Then:
 \begin{align}
 \abs{v \circ F_m}^p_{k,p,\hat{T}} 
-&= \sum_{\abs{\alpha} = k} \int_{\hat{T}} \abs{ \hat{D}^\alpha (v \circ F_m)}^p d\hat{T} \\
-&= \sum_{\abs{\alpha} = k} \int_{\hat{T}} \abs{ [(D^\alpha v) \circ F_m)] B^{\abs{\alpha}}}^p d\hat{T} \\
-&= \sum_{\abs{\alpha} = k} \int_{\hat{T}} \abs{ [(D^\alpha v) \circ F_m)] B^{\abs{\alpha}}}^p J J^{-1} d\hat{T} \\
-&= \sum_{\abs{\alpha} = k} \int_{T} \abs{ D^\alpha v B^{\abs{\alpha}}}^p J^{-1} dT \\
-&\le \norm{B}^{kp} J^{-1} \sum_{\abs{\alpha} = k} \int_{T} \abs{ D^\alpha v}^p dT
+&= \sum_{\abs{\alpha} = k} \int_{\hat{T}} \abs{ \hat{D}^\alpha (v \circ F_m)}^p \diff\hat{T} \\
+&= \sum_{\abs{\alpha} = k} \int_{\hat{T}} \abs{ [(D^\alpha v) \circ F_m)] B^{\abs{\alpha}}}^p \diff\hat{T} \\
+&= \sum_{\abs{\alpha} = k} \int_{\hat{T}} \abs{ [(D^\alpha v) \circ F_m)] B^{\abs{\alpha}}}^p J^{-1} J \diff\hat{T} \\
+&= \sum_{\abs{\alpha} = k} \int_{T} \abs{ D^\alpha v B^{\abs{\alpha}}}^p J^{-1} \diff T \\
+&\le \norm{B}^{kp} J^{-1} \sum_{\abs{\alpha} = k} \int_{T} \abs{ D^\alpha v}^p \diff T,
 \end{align}
-where $J$ is the absolute value of the Jacobian of the transformation $F_m$ (in the present case, $J=\abs{\det B}$). Hence, if we use the inequality we got for $\norm{B}$ we have:
+where $J$ is the absolute value of the Jacobian of the transformation $F_m$ (in the present case, $J=\abs{\det B}$). Hence, using~\eqref{eqn:scaling_B}, we conclude:
 \[
 \abs{v \circ F_m}_{k,p,\hat{T}} \le \norm{B}^k J^{-\frac{1}{p}} \abs{v}_{k,p,T}
-\le c \Bigl(\frac{h_m}{\hat{\rho}}\Bigr)^k J^{-\frac{1}{p}} \abs{v}_{k,p,T}.
+\le c h_m^k J^{-\frac{1}{p}} \abs{v}_{k,p,T},
 \]
-
-Following the same argument but starting with $\abs{\hat{v} \circ F_m^{-1}}_{k,p,T}$, we obtain:
+and similarly, using~\eqref{eqn:scaling_B_inv}:
 \[
 \abs{v}_{k,p,T} \le \norm{B^{-1}}^k J^{\frac{1}{p}} \abs{v \circ F_m}_{k,p,\hat{T}}
-\le c \Bigl(\frac{\rho_m}{\hat{h}}\Bigr)^{-k} J^{\frac{1}{p}} \abs{v \circ F_m}_{k,p,\hat{T}}.
+\le c \rho_m^{-k} J^{\frac{1}{p}} \abs{v \circ F_m}_{k,p,\hat{T}},
 \]
+where $c$ is a constant depending on the reference triangle $\hat{T}$, but not on the triangle $T_m$.
 
-\rev{Polvere: I fixed the previous part. On the next lesson i am going to check in with the teacher what is the correct chain to switch $s$ and $k$. Like this i am not too convinced.}
-
-Combining the two inequalities yields a scaling inequality for any function $v \in \P^l(T)$:
+For $h_m \le 1$, we can write similar scaling arguments for the full norms:
 \begin{align}
-\abs{v}_{s,p,T} &\le c_1 \rho_m^{-s} J^{\frac{1}{p}} \abs{v \circ F_m}_{s,p,\hat{T}} \\
-& \le c_2 \rho_m^{-s} J^{\frac{1}{p}} \abs{v \circ F_m}_{k,p,\hat{T}} \\
-& \le c_3 \rho_m^{-s} h_m^k \abs{v}_{k,p,T} \quad \forall 0\le s,k \le l.
+    \norm{v \circ F_m}_{k,p,\hat{T}} & \le c h_m^k J^{-\frac{1}{p}} \norm{v}_{k,p,T},\\
+    \norm{v}_{k,p,T} & \le c \rho_m^{-k} J^{\frac{1}{p}} \norm{v \circ F_m}_{k,p,\hat{T}}.
 \end{align}
-The constraint on $s,k$ is there because of the degree of the polynomial (in the formula we have assumed it to be exactly $l$). Notice that we have used the equivalence of norms in finite dimensional spaces (such as $\P^l$) to move from $\abs{v \circ F_m}_{s,p,\hat{T}}$ to $\abs{v \circ F_m}_{k,p,\hat{T}}$.
-
-We would like to make a similar kind of scaling estimate also for functions which are in Sobolev spaces, but are not polynomials. In order to do so, we will need the Bramble-Hilbert lemma.
 
 
 \section{The Bramble-Hilbert lemma}
