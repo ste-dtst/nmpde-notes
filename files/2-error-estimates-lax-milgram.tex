@@ -317,13 +317,13 @@ Now consider the usual problem in operator form $A u = \tilde{f}$, i.e.
 \begin{equation}
 \langle Au,v \rangle = \langle \tilde{f},v \rangle = (f, v)_H \quad \forall v\in V.
 \end{equation}
-By the Lax-Milgram lemma, we know that this problem has a unique solution $u \in V$.
+By Lax-Milgram lemma, we know that this problem has a unique solution $u \in V$.
 
 With the same philosophy, let $g \in H$ and consider the \emph{dual problem} $A^T \phi = g$, i.e.
 \begin{equation}
 \langle Av,\phi \rangle = \langle \tilde{g},v \rangle = (g, v)_H \quad \forall v\in V.
 \end{equation}
-Since also $A^T$ satisfies the hypotheses of the Lax-Milgram lemma, the adjoint problem admits itself a unique solution $\phi_g \in V$.
+Since also $A^T$ satisfies the hypotheses of  Lax-Milgram lemma, the adjoint problem admits itself a unique solution $\phi_g \in V$.
 \end{remark}
 
 \begin{proof}
@@ -352,13 +352,13 @@ Now we use the continuity of $A$ on~\eqref{eqn:nitsche_norm} to produce the desi
 
 In practice, we want to use this lemma with $V \subset H^k$ and $H \subset H^s$, with $0\le s < k$, or at least we want that $\norm{\cdot}_V \sim \norm{\cdot}_k$ and $\norm{\cdot}_H \sim \norm{\cdot}_s$. For instance, think as $V=H^1$, $H=L^2$.
 \rev{Fix inconsistencies between $\Pi^k$ and $I_h$.}
-In order to find a relation between $\norm{\phi_g - \phi_h}_k$ and $\norm{g}_s$, we use the Bramble-Hilbert lemma and the scaling argument, plus the $r$-regularity, but for $A^T$:
+In order to find a relation between $\norm{\phi_g - \phi_h}_k$ and $\norm{g}_s$, we use Bramble-Hilbert lemma and the scaling argument, plus the $r$-regularity, but for $A^T$:
 \begin{align}
-\inf_{\phi_h \in V_h} \norm{\phi_g - \phi_h}_k &\lesssim \norm{\phi_g - I_h(\phi_g)}_k  \\
+\inf_{\phi_h \in V_h} \norm{\phi_g - \phi_h}_k &\lesssim \norm{\phi_g - \Pi_h(\phi_g)}_k  \\
 &\lesssim h^{s+r-k} \abs{\phi_g}_{s+r}  \\
 &\lesssim h^{s+r-k} \norm{g}_s.
 \end{align}
-\emph{Careful}, though: this is true as soon as $s+r-k \ge 0$, i.e. $s \ge k-r$. Hence, Nitsche's lemma extends the range of available Sobolev norms for the error estimate according to the regularity of the operator. Plugging the result into the inequality~\eqref{eqn:nitsche_lemma} of the Nitsche lemma, we get:
+\emph{Careful}, though: this is true as soon as $s+r-k \ge 0$, i.e. $s \ge k-r$. Hence, Nitsche's lemma extends the range of available Sobolev norms for the error estimate according to the regularity of the operator. Plugging the result into the inequality~\eqref{eqn:nitsche_lemma} of Nitsche lemma, we get:
 \[
 \norm{u-u_h}_s \lesssim h^{s+r-k} \norm{u-u_h}_k \quad \text{if $s \ge k-r$}.
 \]
@@ -381,13 +381,13 @@ For instance, if $t=0$, we have convergence of order $1$ in $H^1$, of order $2$ 
 
 
 \section{Inverse estimates}
-Suppose that $V_h \subset H^k$ and let $v \in V_h$. In the previous sections we have proved that, for quasi-uniform meshes, on each triangle $T$ the following inequality holds:
+Suppose that $V_h|_T \equiv P^k(T)$ and let $v_h \in V_h$. In the previous sections we have proved that, for quasi-uniform meshes, on each triangle $T$ the following inequality holds:
 \[
-\abs{v}_{s,p,T} \lesssim h^{k-s} \abs{v}_{k,p,T} \quad \forall 0 \le s \le k.
+\abs{v_h}_{s,p,T} \lesssim h^{k-s} \abs{v_h}_{k,p,T} \quad \forall 0 \le s \le k.
 \]
 With the same scaling argument, we can also prove that, if $h<1$, then
 \[
-\abs{v}_{s,p,T} \lesssim h^{k-s} \abs{v}_{k,p,T} \quad \forall 0 \le k \le s.
+\abs{v_h}_{s,p,T} \lesssim h^{\ell-s} \abs{v_h}_{\ell,p,T} \quad \forall 0 \le \ell \le s \le k.
 \]
 Of course, in either case, $k$, $s$ must be chosen smaller or equal to the degree of $v$. The proof relies once more on the fact that all norms in finite dimensional spaces are equivalent.
 
@@ -443,7 +443,7 @@ i.e. $\forall g\in H^{s-\frac{1}{2}}(\Gamma)$ we have $\norm{E g}_{s,\Omega} \le
 In particular, $\ker(\gamma) = H^s_0(\Omega) = \Set{u \in H^s(\Omega) : \gamma u = 0}$.
 \end{theorem}
 
-Trace is a fundamental concept when dealing with boundary conditions. Consider as a motivating example the Poisson problem on $\Omega$ with both Dirichlet and Neumann boundary conditions:
+The trace is a fundamental concept when dealing with boundary conditions. Consider as a motivating example the Poisson problem on $\Omega$ with both Dirichlet and Neumann boundary conditions:
 \[
 \begin{cases} 
 -\Delta u = f \qquad &\text{in $\Omega$} \\
