@@ -32,7 +32,7 @@ Consider an affine mapping from a reference triangle $\hat T$, to a generic tria
 F_m: &\hat{T} \to T_m \\
 &\hat{x} \mapsto x = B \hat{x} + b.
 \end{align}
-We would like to analyze how Sobolev norms change under the action of $F_m$. Recall the the definition of the Sobolev norm in $W^{k,p}$:
+We would like to analyze how Sobolev norms change under the action of $F_m$. Recall the definition of the Sobolev norm in $W^{k,p}$:
 \[
 \norm{v}^p_{k,p,\Omega} = \sum_{\abs{\alpha} \le k} \norm{D^\alpha v}^p_{L^p(\Omega)},
 \]
@@ -49,7 +49,7 @@ and similarly for the reference triangle $\hat{T}$:
 \[
 \hat{\rho} := \sup_{\tilde{B} \subset \hat{T}} \diam(\tilde{B}), \quad \hat{h} := \inf_{\hat{T} \subset \tilde{B}} \diam(\tilde{B}),
 \]
-where $\tilde{B}$ denotes a ball in the right space (see Figure~\ref{fig:scaling}).
+where $\tilde{B}$ denotes a ball in the right space (see Figure~\ref{fig:scaling}). We emphasize that both $\hat{\rho}$ and $\hat{h}$ are \emph{constants}.
 
 
 \begin{figure}[!ht]
@@ -166,7 +166,7 @@ In fact, the $\gtrsim$ inequality follows from bounding the Sobolev seminorm wit
 \]
 The $\lesssim$ inequality, instead, can be proven by contradiction. If it were not true, then for every constant $c$ there would exist $w_c \in W^{k+1,p}$ such that $\norm{w_c}_{k+1,p} = 1$ and
 \[
-c(\abs{w_c}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(w_c)}^p) < \norm{w_c}_{k+1,p}^p = c.
+c(\abs{w_c}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(w_c)}^p) < \norm{w_c}_{k+1,p}^p = 1.
 \]
 If we choose $c=j$ in $[1,2,\dots)$, we obtain a sequence $\{w_j\}$ such that
 \begin{equation} \label{eqn:deny-lions-proof}
