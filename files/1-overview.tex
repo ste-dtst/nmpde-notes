@@ -542,7 +542,7 @@ In particular, $\Pi$ is indeed a projection, since for any $u_h\in V_h$, we have
 \begin{split}
   \Pi(u_h) = & \sum_{i=1}^n \tilde{v}^i(u_h) v_i = \sum_{i=1}^n v^i(u_h) v_i = \\
   &\sum_{i=1}^n v^i\left(\sum_{j=1}^n u^j v_j\right) v_i = \sum_{i=1}^n \sum_{j=1}^n u^j  v^i(v_j) v_i  = \\
-  &\sum_{i=1}^n \sum_{j=1}^n u^j  \delta_ij  v_i  = \sum_{i=1}^n u^i v_i = u_h.
+  &\sum_{i=1}^n \sum_{j=1}^n u^j  \delta_{ij}  v_i  = \sum_{i=1}^n u^i v_i = u_h.
 \end{split}
 \]
 
@@ -587,8 +587,6 @@ In what follows, we assume for simplicity that a triangulation is made by
 elements or cells that are all of the same type (e.g. all triangles, all
 quadrilaterals, etc.). In this case we say that the triangulation is
 \emph{regular}.
-
-\subsection{Example of a triangulation}
 
 Figure~\ref{fig:triangulation} shows an example of a triangulation of a two-dimensional domain. The domain is divided into a set of triangular elements, which are used to approximate the geometry and define finite element spaces.
 
@@ -642,7 +640,17 @@ The two tables below provide the minimal data structure required to describe thi
 \end{minipage}
 \end{table}
 
-Implementing such data structure require at the bare minimum two containers, one for the vertex coordinates (generally stored as floating point numbers) and one for the triangles (generally stored as a list of vertex indices, pointing to entries in the first container).
+Implementing such data structure require at the bare minimum two containers, one
+for the vertex coordinates (generally stored as floating point numbers) and one
+for the triangles (generally stored as a list of vertex indices, pointing to
+entries in the first container). In general, it may be necessary also to store
+(or to compute on the fly) additional information, such as edge connectivity
+(i.e., which triangles share a common edge), vertex connectivty (i.e., which
+triangles share a common vertex, or which edges share a common vertex), etc.
+This information is useful for many purposes, such as mesh refinement, mesh
+generation, and visualization. In practice, the data structure may be more
+complex than the one shown in the example, depending on the specific
+requirements of the application.
 
 \subsection{Finite element}
 
