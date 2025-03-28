@@ -2,19 +2,6 @@
 
 \chapter[A priori error estimates (Lax-Milgram case)]{A priori error estimates (Lax-Milgram case)}
 
-\section{Triangulation of the domain $\Omega$}
-In FEM (Finite Element Methods) we discretize the domain $\Omega$ in \emph{simple subdomains} (like triangles for example) where it's easy to define polynomials. Formally speaking we partition $\Omega$
-\begin{equation*}
-\Omega = \Bigl(\bigcup_{m=1}^M T_m \Bigr)
-\end{equation*}
-where 
-\begin{equation}
-T_i \cap T_j = \begin{cases}\emptyset \\ \text{vertex} \\ \text{boundary face}.\end{cases}
-\end{equation}
-We call this partition \emph{triangulation}. We emphasize that triangulation is just an historical term: we can have triangulations composed of different shapes.
-
-Generally speaking the domain $\Omega$ might be a manifold so it might be needed to have some kind of family of maps (an atlas) that connects a "generic standard" element (we will call it reference triangle) of the triangulation to the true elements of the partitioning of $\Omega$. 
-
 \section{Scaling argument for Sobolev norms}
 
 %%%%%
@@ -134,10 +121,10 @@ Let $V$, $W$, $Q$ be Banach spaces and let $\tau \in \L(V,W)$ be an operator suc
 \begin{proof}
 The first inequality follows immediately by observing that $\tau$ is linear and that $q\in \ker(\tau)$ implies $\tau(u+q) = \tau(u) + \tau(q) = \tau(u)$, hence:
 \[
-\tau(u) = \tau(u+q) = \le \norm{\tau}_* \norm{u+q} \qquad \forall q \in Q.
+\norm{\tau(u)}_W = \norm{\tau(u+q)}_W = \le \norm{\tau}_* \norm{u+q}_V \qquad \forall q \in Q.
 \]
 
-The second inequality follow from the first one by showing that~\cite{ciarlet78}
+The second inequality follow from by showing that~\cite{ciarlet78}
 \begin{lemma}[Denis-Lions]
   \begin{equation}
     \abs{u}_{k+1,p,\Omega} \sim \inf_{q \in \P^k} \norm{u+q}_{k+1,p,\Omega} \qquad \forall u \in W^{k+1,p}(\Omega).
@@ -254,7 +241,7 @@ The inequality hints at some strategies for error reduction:
 %%%%%
 
 
-\section{\texorpdfstring{$H^k$}{Hk} error estimates, Nitsche's lemma}
+\section{\texorpdfstring{$H^k$}{Hk} error estimates}
 Consider a triangulation $\T_h$ and recall the quantities $h$ and $\rho$ we defined in the previous section:
 \[
 h := \max_{T \in \T_h} h_T, \quad \rho := \min_{T \in \T_h} \rho_T.
@@ -275,7 +262,6 @@ Let $V \subset H^k$ and $A \in \L(V,V')$. We say that $A$ is $r$-\emph{regular} 
 \norm{u}_{s+r} \lesssim \norm{f}_s.
 \]
 \end{definition}
-\rev{Check if on the LHS there is norm or seminorm of $u$.}
 The inequality~\eqref{ineq:cea_scaling2}, combined with the assumption of $r$-regularity, becomes
 \begin{equation}\label{ineq:cea_scaling3}
 \norm{u-u_h}_k \lesssim h^{s+r-k} \abs{u}_{s+r} \lesssim h^{s+r-k} \norm{f}_s \quad \forall 0\le k \le s+r-1.
@@ -294,6 +280,7 @@ This means that, for instance, if $f \in L^2$, i.e. $s=0$, the order of converge
 Unfortunately, we cannot use the $L^2$ norm in Ceà's lemma, and this means that we cannot get an estimate in the $L^2$ norm.
 \end{example}
 
+\subsection{Nitsche's trick}
 With some bit of additional work, we can produce error estimates on weaker norms, such as the $L^2$ one, from the estimates on stronger norms.
 \begin{lemma}[Nitsche] \label{lemma:nitsche}
 Let $A \in \L(V,V')$ an operator as in the hypotheses of Lax-Milgram's lemma. Assume that $V$ is a subspace of some Hilbert space $H$, with the following properties:

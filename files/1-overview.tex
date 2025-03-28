@@ -1,6 +1,6 @@
 % !TeX source = ../main.tex
 
-\chapter[Overview]{Overview}
+\chapter[Introduction]{Introduction}
 
 \section{Notations on Sobolev spaces}
 \label{sec:sobolev_notations}
@@ -222,10 +222,11 @@ These embedding results are particularly important in numerical analysis, as the
 
 \section{Model problem: the Poisson equation}
 
+\subsection{Strong formulation}
 Let $\Omega$ be an open, bounded, Lipschitz subset of $\R^d$. Let also $\partial\Omega$ be its boundary.
 Consider the following Poisson problem:
 \[
-\begin{cases} \marginpar{Strong formulation}
+\begin{cases} \marginpar{Strong formulation of Poisson problem}
 -\Delta u = f \qquad &\text{in $\Omega$} \\
 u =  0 \qquad &\text{on $\partial \Omega$}
 \end{cases}
@@ -243,8 +244,9 @@ If we want to find a numerical solution for this problem, two approaches can be 
 Finite differences work well if $\Omega$ is a rectangular or parallelepiped domain (e.g. a square, a cube and so on) and if $f$ is regular enough (e.g. continuous). In applications, however, the domain's boundary may not be nice at all, and $f$ may not even be continuous.
 The finite element approach tries to overcome these difficulties, by shifting the problem to finding a good finite dimensional space that approximates the functional space where the exact solution lives.
 
-The advantage, when compared to, e.g., finite differences, is that we don't discretize the differential operator -- which maintains its continuous definition --  but instead we restrict our exploration of candidate solutions to simple spaces (i.e., space of piecewise polynomial functions), for which we can easily compute the action of the differential operator in an exact way.
+The advantage, when compared to, e.g., finite differences, is that we don't discretize the differential operator -- which maintains its continuous definition --  but instead we restrict our exploration of candidate solutions to simpler spaces (i.e., spaces of piecewise polynomial functions), for which we can easily compute the action of the differential operator in an exact way.
 
+\subsection{Weak formulation}
 To make a concrete example, let us consider the Poisson problem, and let's derive its weak formulation.
 Let $\phi \in \D$ a test function (usually $\D=C_0^\infty(\Omega)$). We multiply by $\phi$ both sides of the PDE in the strong formulation and then integrate:
 \[
@@ -254,24 +256,24 @@ If we integrate by parts and use the fact that $\restr{u}{\partial \Omega} = \re
 \[
 \int_\Omega \nabla u \nabla \phi = \int_\Omega f \phi.
 \]
-More in general, if we replace $\D$ with some appropriate function space $V$, the weak formulation will be: given $f\in V'$, find $u\in V$ such that
+In general we replace $\D$ with a Sobolev space $V$ such that every entry of the weak formulation makes sense. In this case, the weak formulation will be: given $f\in V'$, find $u\in V$ such that
 \begin{equation} \label{eqn:weak_1} \marginpar{Weak form (1)}
 \int_\Omega \nabla u \nabla v = \int_\Omega f v \quad \forall v\in V.
 \end{equation}
 with the agreement that, being $f \in V'$, the RHS is in fact a duality.
 
-On one side, we need that $\int_\Omega | \nabla u \nabla v | < +\infty$, and on the other side, we need that $u$ and $v$ should be zero on the domain boundary. A natural choice is then the Hilbert space $H^1_0(\Omega)$.
+On one side, we need that $\int_\Omega | \nabla u \nabla v | < +\infty$, and on the other side, we need that $u$ and $v$ should be zero on the domain boundary. For the example above, the natural choice is then the Hilbert space $H^1_0(\Omega)$.
 
+\subsection{Lax-Milgram lemma}
 How do we guarantee that a solution to such problem exists? We prove this in an abstract Hilbert setting:
 \begin{lemma}[Lax-Milgram]\label{lemma:lax-milgram}\marginpar{Lax-Milgram lemma}
 Let $V$ be a Hilbert space and let $a: V\times V \to \R$ be a bilinear operator such that:
 \begin{itemize}
 \item $a$ is \emph{bounded}, i.e. $\exists c>0$ s.t. 
 \[
- a(u,v) \le c \norm{u}_V \norm{v}_V \qquad \forall u,v \in V
- \] 
- (sometimes, we refer to the constant $c$ as $\norm{A}_*$);
-\item $a$ is \emph{coercive}, i.e. $\exists \alpha >0$ s.t. 
+ a(u,v) \le c \norm{u}_V \norm{v}_V \qquad \forall u,v \in V;
+ \]
+\item $a$ is \emph{coercive}, i.e. $\exists \alpha >0$ s.t.
 \[
   a(u,u) \ge \alpha \norm{u}_V^2 \qquad \forall u \in V.
 \]
@@ -280,9 +282,9 @@ Then, given $f\in V'$, the following problem
 \begin{equation}\label{eqn:weak_laxmilgram}
 a(u,v) = \langle f,v \rangle \quad \forall v\in V
 \end{equation}
-admits a unique solution $u_0$. Moreover, $u_0$ satisfies the following inequality:
+admits a unique solution $u$. Moreover, $u$ satisfies the following inequality:
 \[
-\norm{u_0}_V \le \frac{\norm{f}_{V'}}{\alpha}.
+\norm{u}_V \le \frac{\norm{f}_{V'}}{\alpha}.
 \]
 \end{lemma}
 \begin{proof}
@@ -319,25 +321,68 @@ In the Poisson problem's case, the bilinear operator is
 \[
 a(u,v) = \int_\Omega \nabla u \nabla v,
 \]
-which is clearly bounded and coercive if $V=H_0^1(\Omega)$. In particular, coercivity follows from the Poincaré inequality which implies that the norm in $V$ is equivalent to the $H^1$ seminorm
+which is clearly bounded and coercive if $V=H_0^1(\Omega)$. In particular, coercivity follows from Poincaré inequality which implies that the norm in $H^1(\Omega)$ is equivalent to the $H^1$ seminorm
 \[
 \abs{u}_{1,2} = \norm{\nabla u}_{L^2}.
 \]
-Hence, the weak formulation of the Poisson problem admits a unique solution by the Lax-Milgram lemma.
+Hence, the weak formulation of the Poisson problem admits a unique solution by Lax-Milgram lemma.
 
-\section{Introduction to finite elements method}
+\subsection{Functional minimization}
 
-The reason why the finite element method is powerful is that the differential operators stay untouched and, instead, what is to be simplified is \emph{the set in which the solutions live}. We construct a sequence of subspaces $V_h \subset V$ such that $V_h = \Span\{v_i\}_{i=1}^n$, with $n$ depending on $h$. Then we restrict the weak problem to $V_h$, which inherits the norm from $V$: given $f \in V'$, find $u_h \in V_h$ s.t.
+\begin{theorem}[Minimization problem]
+When the bilinear operator $a$ is also symmetric (i.e., $a(u,v) = a(v,u)$ for any pair $u,v \in V$), then existence and uniqueness of a solution to the weak formulation~\eqref{eqn:weak_1} is equivalent to finding the unique minimizer of the quadratic (and strongly convex) minimization problem:
+\[
+u = \arg\min_{v \in V} \Phi(v) := \frac{1}{2} a(v,v) - \langle f, v \rangle.
+\]
+\end{theorem}
+\begin{proof}
+ We start by showing that if $u$ is a minimizer of $\Phi$, then it satisfies the weak formulation. We have in fact that for any $v$ in $V$, and for any $\varepsilon \in \R^+$:
+ \begin{equation*}
+\begin{split}
+  \Phi(u) \leq \Phi(u+\varepsilon v)  & = \frac{1}{2} a(u+\varepsilon v, u+\varepsilon v) - \langle f, u+\varepsilon v \rangle \\
+  & = \Phi(u) + \varepsilon a(u,v) + \frac{\varepsilon^2}{2} a(v,v) - \varepsilon \langle f, v \rangle, \\
+  - \frac{\varepsilon^2}{2} \alpha \|v\|^2 \leq - \frac{\varepsilon^2}{2} a(v,v) & \leq \varepsilon a(u,v) - \varepsilon \langle f, v \rangle \\
+  - \frac{\varepsilon}{2} \alpha \|v\|^2 & \leq a(u,v) - \langle f, v \rangle \leq \frac{\varepsilon}{2} \alpha \|v\|^2,
+  \end{split}
+ \end{equation*}
+ where the second line follows by the symmetry of the bilinear form $a$, while the last chain of inequalities follow from dividing once for $\varepsilon$, and once for $-\varepsilon$ both sides of the inequality. We can now take the limit $\varepsilon \to 0$ and we get that
+  \[
+  a(u,v) = \langle f, v \rangle \quad \forall v \in V.
+  \]
+  Conversely, if $u$ satisfies the weak formulation, we can show that it is a minimizer of $\Phi$.
+  We have:
+  \[
+  \begin{split}
+  \Phi(v) - \Phi(u) & = \frac{1}{2} a(v,v)  \underbrace{- \langle f, v \rangle}_{= - a(u,v)=-\frac12a(u,v)-\frac12a(v,u)} - \frac{1}{2} a(u,u)  + \underbrace{\langle f, u \rangle}_{=a(u,u)} \\
+   & = \frac{1}{2} a(v-u,v-u) \geq \frac{\alpha}{2} \|v-u\|_V^2, 
+  \end{split}
+  \]
+  where we used the coercivity of $a$ and the symmetry of $a$ to rearrange the terms. This shows that $\Phi(u)$ is a global minimum of $\Phi$, and since $\Phi$ is strongly convex, it is also the unique minimizer.
+\end{proof}
+
+\subsection{Ceà's lemma}
+Lax-Milgram lemma guarantees the existence of a unique solution to the weak
+problem, but it does not provide any information about the error we make when we
+restrict our search to a finite dimensional space. 
+
+One of the reason why the finite element method is powerful is that the
+differential operators stay untouched and, instead, what is to be simplified is
+\emph{the set in which the solutions live}. This fact makes it possible to
+derive a very simple yet powerful property of the finite element approximations,
+namely, the \emph{orthogonality property of the error}. We construct a sequence
+of subspaces $V_h \subset V$ such that $V_h = \Span\{v_i\}_{i=1}^n$, with $n$
+depending on $h$. Then we restrict the weak problem to $V_h$, which inherits the
+norm from $V$: given $f \in V'$, find $u_h \in V_h$ s.t.
 \begin{equation} \label{eqn:weak_2} \marginpar{Discrete weak form}
 a(u_h,v_h) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
 \end{equation}
 The element $u_h$ will be our candidate approximate solution. Since $V_h$ is a Hilbert space, and the bilinear operator $a(\cdot, \cdot)$ is coercive in the entire $V$, then also Problem~\eqref{eqn:weak_2} satisfies the hypotheses of Lax-Milgram lemma, and we conclude that there exists a unique solution. For completeness, however, we shall  prove its existence also using Ritz method.
 
-Since $u_h \in V_h$, there exist unique coefficients $\{u^j\}_{j=1}^n$ such that
+Since $u_h \in V_h$, there exist a unique set of coefficients $\{u^j\}_{j=1}^n$ such that
 \[
 u_h = \sum_{j} u^j v_j.
 \]
-The weak problem \ref{eqn:weak_2} then becomes:
+The discrete counterpart of the weak problem \ref{eqn:weak_2} then becomes:
 \[
 a\left(\sum_{j} u^j v_j ,v_h\right) = \langle f,v_h \rangle \quad \forall v_h\in V_h.
 \]
@@ -358,7 +403,7 @@ and this, by linearity, is zero if and only if every $u^i$ is zero. We conclude 
 
 We now seek a way to control \emph{a priori} the error introduced by the restriction to $V_h$.
 \begin{lemma}[Ceà]\marginpar{Ceà's lemma} \label{lemma:cea}
-In the setting of the Lax-Milgram lemma, let $u\in V$ be the solution of the weak problem~\eqref{eqn:weak_laxmilgram} and $u_h \in V_h$ a solution of~\eqref{eqn:weak_2}. Then:
+In the setting of Lax-Milgram lemma, let $u\in V$ be the solution of the weak problem~\eqref{eqn:weak_laxmilgram} and $u_h \in V_h$ a solution of~\eqref{eqn:weak_2}. Then:
 \[
 \norm{u - u_h} \le \frac{\norm{A}}{\alpha} \inf_{v_h \in V_h} \norm{u - v_h}.
 \]
@@ -386,40 +431,11 @@ This is an orthogonality property of the error. Now we exploit the properties of
 The thesis follows by simplifying $\norm{u - u_h}$ on both sides of the inequality, and taking the infimum over $v_h \in V_h$.
 \end{proof}
 
-The meaning of Ceà's Lemma is: it suffices to control the error only in $V_h$ in order to have a good approximation of $u$. This is a step in the right direction, because in practice the functions in $V_h$ will be piecewise polynomials, hence their derivatives will be well defined and we won't need to approximate them. However, there are still some problems left:
-\begin{itemize}
-\item How do we approximate an arbitrary domain $\Omega$?
-\item How do we approximate $V$ with $V_h$? Meaning, we seek to construct $V_h$ in such a way that $\text{dist}(V,V_h) = c h^k$ for some $k$, where
-\[
-\text{dist}(V,V_h) = \sup_{u\in V} \inf_{v_h \in V_h} \norm{u - v_h}.
-\]
-\item In practice, $u$ is unknown, but the RHS of the error estimate contains $u$. How do we manage this?
-\end{itemize}
+The lemma shows that the error in the finite element approximation is proportional to the best possible approximation in $V_h$, i.e., the error is controlled by the distance between the exact solution $u$ and the finite dimensional space $V_h$. This will be exploited in the next sections to derive both \emph{a-priori} and \emph{a-posteriori} error estimates for the finite element method.
 
-To approximate an arbitrary domain $\Omega$, we typically employ a process called mesh generation:
+\subsection{The one-dimensional case}
 
-\begin{itemize}
-  \item We partition the domain $\Omega$ into a collection of simple geometric shapes called elements (triangles/tetrahedra or quadrilaterals/hexahedra).
-  \item This collection $\mathcal{T}_h = \{K_1, K_2, \ldots, K_M\}$ forms a triangulation or mesh of $\Omega$.
-  \item The parameter $h$ represents the maximum diameter of any element in the mesh.
-  \item For domains with curved boundaries, we often use:
-  \begin{itemize}
-    \item Piecewise linear/polynomial approximation of the boundary
-    \item Isoparametric elements where the same shape functions describe both the geometry and solution
-  \end{itemize}
-\end{itemize}
-
-The second problem is solved by using a \emph{finite element space} $V_h$ that is \emph{locally} defined on the elements of the mesh. The idea is to construct a finite dimensional space $V_h$ such that:
-\begin{itemize}
-  \item The functions in $V_h$ are piecewise polynomials defined on the elements of the mesh;
-  \item Globally, the functions in $V_h$ are also members of the continuous space $V$ (i.e., the approximation is conforming, or $V_h \subseteq V$);
-  \item The dimension of $V_h$ grows with the number of elements in the mesh, and the approximation improves as the mesh is refined (i.e., as $h$ decreases);
-  \item The functions (and their derivatives) in $V_h$ can be easily evaluated and manipulated.
-\end{itemize}
-
-\section{An example: the 1-dimensional case}
-
-Let $\Omega = (a,b)$. In order to discretize it, we consider a set of $n+2$ points $\Set{x_i}_{i=0}^{n+1}$ such that
+Let $\Omega = (a,b)$. We consider a set of $n+2$ points $\Set{x_i}_{i=0}^{n+1}$ such that
 \[
 a = x_0 < x_1 < \dots < x_{n+1} = b.
 \]
@@ -437,6 +453,12 @@ We proceed to find a basis for it: let $v^i(u) := u(x_i)$ the evaluation of $u$ 
 \[
 \langle v^i, u \rangle = \int_\Omega \delta(x-x_i) u(x) \diff x = u(x_i).
 \]
+\begin{figure}[!htb]
+\centering
+\includegraphics{p1_basis_1d.pdf}
+\caption{The basis functions $v_i$ in the 1D case.}
+\label{fig:1d_basis}
+\end{figure}
 We construct functions $v_j \in V_h$ such that
 \[
 v^i(v_j) = \delta_{ij} = \begin{cases}
@@ -445,13 +467,13 @@ v^i(v_j) = \delta_{ij} = \begin{cases}
 \end{cases}
 \quad \forall i,j \in \{1,\dots,n\}.
 \]
-In practice, for every node $x_j$ in the interior of $[a,b]$ we are considering a piecewise linear function that is one on that node and zero on any other node. It is clear that the functions $\{v_j\}_{j=1}^{n}$\footnote{These functions are also called "Hat functions" for their peculiar hat form.} form a basis for the space $V_h$. These are the so-called \emph{shape functions}. Instead, the $v^i$-s form a basis for $V_h'$ and are called the \emph{nodal basis functions}.
+For every node $x_j$ in the interior of $[a,b]$ we are considering a piecewise linear function that is one on that node and zero on any other node. It is clear that the functions $\{v_j\}_{j=1}^{n}$\footnote{These functions are also called "Hat functions" for their peculiar hat form.} form a basis for the space $V_h$. These are the so-called \emph{shape functions}. Instead, the $v^i$-s form a basis for $V_h'$ and are called the \emph{nodal basis functions}. The coefficients $\{u^i\}_{i=1}^n\in \R$ such that $u_h = \sum_{i=1}^{n} u^i v_i$ are the \emph{degrees of freedom} (DoFs) of the finite element function $u_h$. 
 
-Let us now get back to the Poisson problem. In the 1-dimensional case, the entries of the matrix $A$ are of the form
+In the one-dimensional case, the entries of the matrix $A$ are of the form
 \[
 A_{ij} = \int_a^b v_j'(x) v_i'(x) \diff x.
 \]
-Since the nodal functions have been constructed in a \emph{localized} way, it is immediate to notice that $A_{ij} = 0$ whenever the supports of the involved nodal functions do not intersect. This is a distinguishing feature of a finite element method: the matrix $A$ is constructed in a way that makes it \emph{sparse}. In particular, in this case we have
+Since the basis functions have a compact support, it is immediate to notice that $A_{ij} = 0$ whenever the supports of the involved basis functions do not intersect. This is a distinguishing feature of a finite element method: the matrix $A$ is constructed in a way that makes it \emph{sparse}. In particular, in this case we have
 \[
 A_{ij} = \begin{cases}
 0 \quad &\text{if } \abs{i-j}>1 \\
@@ -461,40 +483,168 @@ A_{ij} = \begin{cases}
 \]
 Notice that we have obtained the same matrix we would get with a finite difference method of the same order (with the exception of a scaling factor of $1/h$).
 
-\section{The definition of finite element}
+\section{Finite dimensional spaces}
 
-Let $V$ a Banach space and $A \in \L(V,V')$ a linear, continuous operator from $V$ to its dual space. Given $f \in V'$, we want to solve the problem $Au=f$ in $V'$, i.e.
+One of the key aspects of the finite element method is the construction of
+finite dimensional spaces that approximate infinite dimensional Sobolev spaces,
+with good approximation properties. Independently of how we construct such
+finite dimensional spaces, we can exploit the fact all such spaces are
+iso-morphic to $\R^n$ for some $n$. This in turns implies that any bilinear form
+defined on such spaces can be represented as a matrix, and linear functionals
+defined on such spaces can be represented as (co-)vectors, opening up the
+possibility to use the machinery of linear algebra to solve the resulting
+(non-)linear systems.
+
+Let $V$ be a Banach space on the domain $\Omega$, and let $V_h$ be an $h$-parameter family of finite dimensional discretizations of $V$ with finite dimension $n$. We say that $V_h$ is a conforming discretization of $V$, if, for any $h\in \R$, the space $V_h$ is a proper linear subspace of $V$, i.e., $V_h \subseteq V$. 
+
+\subsection{Basis functions}
+
+Generally speaking, we indicate with the set $\{v_i\}_{i=1}^n$ a choice of (linearly independent) basis functions for $V_h$, i.e., 
+\[
+V_h = \Span\{v_i\}_{i=1}^n, \qquad \forall u_h \in V_h , \quad \exists! \quad \{u^i\}_{i=1}^n \text{ s.t. } u_h(x) = \sum_{i=1}^n u^i v_i(x),
+\]
+The functions $v_i$ are often also called \emph{shape functions}, and the coefficients $\{u^i\}_{i=1}^n$ are called \emph{degrees of freedom} (DoFs).
+
+\subsection{Nodal functions}
+
+We denote with $V_h'$ the dual space of $V_h$, i.e., the space of continuous linear functionals on $V_h$. Since $V_h$ is finite dimensional, so is $V_h'$, and its dimension is the same of $V_h$. We identify a canonical basis for the dual space $V_h'$ given by a set of $n$ linear functionals on $V_h$, given by $\{v^i\}_{i=1}^n$ such that 
+\[
+V_h' = \Span\{v^i\}_{i=1}^n, \qquad \forall f_h \in V_h', \quad \exists! \quad \{f_i\}_{i=1}^n \text{ s.t. } f_h(x) = \sum_{i=1}^n f_i v^i(x).
+\]
+
+The elements of the canonical basis also called \emph{nodal functions} and are
+denoted by $\{v^i\}_{i=1}^n$. A generic element of $V_h'$ is often called a
+\emph{co-vector}. The basis (or \emph{shape functions}) and the dual basis (or
+\emph{nodal functions}) are related by the following property:
+\[
+v^i(v_j) = \delta_{ij} = \begin{cases}
+1 \quad &\text{if } i=j \\
+0 \quad &\text{if } i\ne j
+\end{cases}
+\quad \forall i,j \in \{1,\dots,n\}.
+\]
+
+\subsection{Projection operators}
+
+The functions $v^i$ are linear functionals on $V_h$. By the Hann-Banach extension theorem, we can extend them to functionals in $V'$. We choose $n$ such extensions and call them $\{\tilde{v}^i\}_{i=1}^n$. They are chosen such that
+\[
+\tilde{v}^i \in V', \qquad \tilde{v}^i(u_h) = v^i(u_h) \quad \forall u_h \in V_h.
+\]
+
+With this choice of extensions, we can define a projection operator $\Pi: V \to V_h$ as
+\[
+\Pi(u) = \sum_{i=1}^n \tilde{v}^i(u) v_i = \sum_{i=1}^n \duality{\tilde{v}^i, u} v_i, 
+\]
+where $\tilde{v}^i(u)=\duality{\tilde{v}^i, u}$ is the value of the functional $\tilde{v}^i$ applied on the function $u$, and it represents the $i$-th component (or the $i$-th \emph{degree of freedom}) of the function $\Pi(u)$ in the basis $\{v_i\}_{i=1}^n$. The projection operator $\Pi$ maps any function $u \in V$ to its finite dimensional approximation in $V_h$. 
+
+In particular, $\Pi$ is indeed a projection, since for any $u_h\in V_h$, we have 
+\[
+\begin{split}
+  \Pi(u_h) = & \sum_{i=1}^n \tilde{v}^i(u_h) v_i = \sum_{i=1}^n v^i(u_h) v_i = \\
+  &\sum_{i=1}^n v^i\left(\sum_{j=1}^n u^j v_j\right) v_i = \sum_{i=1}^n \sum_{j=1}^n u^j  v^i(v_j) v_i  = \\
+  &\sum_{i=1}^n \sum_{j=1}^n u^j  \delta_ij  v_i  = \sum_{i=1}^n u^i v_i = u_h.
+\end{split}
+\]
+
+\subsection{Degrees of freedom}
+The set of nodal functions $\Sigma := \{v^i\}_{i=1}^n$ is used to map the finite
+dimensional space $V_h$ to the vector of coefficients of the basis functions,
+i.e., it can be seen as an operator $\Sigma: V_h \to \R^n$, defined as
+\[ 
+\R^n \ni \Sigma(u_h) = \left(v^1(u_h), v^2(u_h), \ldots, v^n(u_h)\right) = \left(\duality{v^1, u_h}, \duality{v^2, u_h}, \ldots, \duality{v^n, u_h}\right).
+\]
+
+$\Sigma$ is clearly invertible and its inverse $\Sigma^{-1}$ is simply defined as 
+\[
+\Sigma^{-1}(\mathbf{u}) = \sum_{i=1}^n u^i v_i,
+\]
+where $\mathbf{u} = \{u^i\}_{i=1}^n$ is the vector of coefficients.
+
+\rev{Talk about the difference between vectors and co-vectors, and why it is important to use them correctly, i.e., there is a difference between $v^i$ and $v_i$, and there is a difference between the ``units of measure'' of the two.}
+
+\subsection{Triangulations}
+
+One of the most common way to define finite dimensional spaces is to use a
+\emph{triangulation} of the domain $\Omega$. The idea is to partition the domain
+$\Omega$ into simple subdomains (like triangles or quadrilaterals in 2D and
+tetrahedra, hexahedra, prisms, or pyramids in 3D) where it is easy to define
+local basis functions, and to compute integrals.
+
+Formally speaking we partition $\Omega$
+\begin{equation*}
+\Omega = \mathring{\overline{\Bigl(\bigcup_{m=1}^M T_m \Bigr)}}
+\end{equation*}
+into a set of simple (closed, Lipschitz, and convex) subdomains $T_m$ (called \emph{elements} or \emph{cells})
+such that 
 \begin{equation}
-    \label{eqn:op_pbm} \marginpar{Operator form}
-    \langle Au,v \rangle = \langle f,v \rangle \quad \forall v\in V.
+T_i \cap T_j = \begin{cases}\emptyset \\ \text{vertex} \\ \text{common edge or face}.\end{cases}
 \end{equation}
-Let $V \supset V_h = \Span\{v_i\}_{i=1}^n$, with $\dim V_h = n$ (generally speaking the space $V_h$ will be a space of polynomials of some degree).  The space $V_h'$ is usually described in terms of the \emph{covectors}:
-\[
-V_h' = \Span\{v^i\}_{i=1}^n.
-\]
-In particular, each $v^i$ is extended via the Hahn-Banach theorem to $V'$, in order to see $V_h'$ as a subspace of $V'$. Let's call the Hahn-Banach extensions $\tilde{v}^i$. With this notation, each $v\tilde{v}^i$ is the dual vector of $v_i$, i.e.
-\[
-\tilde{v}^i(v_j) = \delta_{ij}.
-\]
-In particular, if $u_h\in V_h$, we have
-\[
-u_h = \sum_{i=1}^n u^i v_i = \sum_{i=1}^n \tilde{v}^i(u_h) v_i.
-\]
-This leads to the natural definition of the \emph{interpolation operator} in $V_h$:
-\begin{align}
-\Pi_{V_h}: &V \to V_h \\
-& u \mapsto \sum_{i=1}^n \tilde{v}^i(u) v_i = \sum_{i=1}^n u^i v_i.
-\end{align}
+We call this partition a \emph{triangulation} $\mathcal{T}_h$, where
+``triangulation'' is just an historical term, and we assume that we can have
+triangulations composed of different shapes.
 
-\begin{remark}
-$\Pi_{V_h}$ is a projection onto $V_h$. In fact:
-\begin{align}
-\Pi_{V_h}(\Pi_{V_h}(u)) &= \tilde{v}^i (u^j  v_j) v_i \\
-&= u^j \tilde{v}^i(v_j) v_i \\
-&= \delta_{ij} u^j  v_i \\
-&= u^i  v_i.
-\end{align}
-\end{remark}
+In what follows, we assume for simplicity that a triangulation is made by
+elements or cells that are all of the same type (e.g. all triangles, all
+quadrilaterals, etc.). In this case we say that the triangulation is
+\emph{regular}.
+
+\subsection{Example of a triangulation}
+
+Figure~\ref{fig:triangulation} shows an example of a triangulation of a two-dimensional domain. The domain is divided into a set of triangular elements, which are used to approximate the geometry and define finite element spaces.
+
+The two tables below provide the minimal data structure required to describe this triangulation. The first table lists the coordinates of the vertices, while the second table specifies the connectivity of the triangles, i.e., which vertices form each triangle.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=.7\textwidth]{ball_2.pdf}
+\caption{An example of a triangulation in $\R^2$. The domain is divided into triangular elements.}
+\label{fig:triangulation}
+\end{figure}
+
+\begin{table}[!htb]
+  \centering
+  \caption{Miniimal data structure of a triangulation: a list of vertex coordinates (left), and a list of triangle connectivity (right).}
+  \label{tab:vertex-coordinates}
+  \begin{minipage}[t]{0.45\textwidth}
+    \centering
+  \begin{tabular}{|c|c|c|}
+  \hline
+  \textbf{Vertex} & $x_1$ & $x_2$ \\ \hline
+  1 & 0.0 & 0.0 \\ \hline
+  2 & 0.5 & 0.0 \\ \hline
+  3 & 1.0 & 0.0 \\ \hline
+  4 & 0.5 & 0.5 \\ \hline
+  5 & 0.0 & 0.5 \\ \hline
+  6 & 1.0 & 0.5 \\ \hline
+  7 & 1.5 & 0.5 \\ \hline
+  8 & 2.0 & 0.5 \\ \hline
+  9 & 0.5 & 1.0 \\ \hline
+  10 & 1.5 & 1.0 \\ \hline
+  \end{tabular}
+\end{minipage}
+\begin{minipage}[t]{0.45\textwidth}
+  \centering
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    \textbf{Triangle} & $v_1$ & $v_2$ & $v_3$ \\ \hline
+    1 & 1 & 4 &  5 \\ \hline
+    2 & 1 & 2 &  4  \\ \hline
+    3 & 2 & 7 &  4 \\ \hline
+    4 & 2 & 3 &  7 \\ \hline
+    5 & 4 & 6 &  5 \\ \hline
+    6 & 4 & 7 &  6 \\ \hline
+    7 & 3 & 8 &  7 \\ \hline
+    8 & 5 & 6 &  9 \\ \hline
+    9 & 6 & 10 &  9  \\ \hline
+    10 & 6 & 7 &  10 \\ \hline
+    11 & 7 & 8 &  10 \\ \hline
+    \end{tabular}
+\end{minipage}
+\end{table}
+
+Implementing such data structure require at the bare minimum two containers, one for the vertex coordinates (generally stored as floating point numbers) and one for the triangles (generally stored as a list of vertex indices, pointing to entries in the first container).
+
+\subsection{Finite element}
 
 \begin{definition}[Ciarlet, 1978] \marginpar{Definition of finite element}
 A \emph{finite element} is a triplet $(K,P,\Sigma)$, where:
@@ -509,5 +659,3 @@ We emphasize that this definition is of a \emph{local} finite element: the set $
 
 
 \section{Lagrangian finite elements}
-
-\section{DoFs and finite dimensional spaces}
