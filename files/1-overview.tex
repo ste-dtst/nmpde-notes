@@ -244,7 +244,7 @@ If we want to find a numerical solution for this problem, two approaches can be 
 Finite differences work well if $\Omega$ is a rectangular or parallelepiped domain (e.g. a square, a cube and so on) and if $f$ is regular enough (e.g. continuous). In applications, however, the domain's boundary may not be nice at all, and $f$ may not even be continuous.
 The finite element approach tries to overcome these difficulties, by shifting the problem to finding a good finite dimensional space that approximates the functional space where the exact solution lives.
 
-The advantage, when compared to, e.g., finite differences, is that we don't discretize the differential operator -- which maintains its continuous definition --  but instead we restrict our exploration of candidate solutions to simpler spaces (i.e., spaces of piecewise polynomial functions), for which we can easily compute the action of the differential operator in an exact way.
+The advantage, when compared to, e.g., finite differences, is that we don't discretize the differential operator -- which maintains its (weak) continuous definition --  but instead we restrict our exploration of candidate solutions to simpler spaces (i.e., spaces of piecewise polynomial functions), for which we can easily compute the action of the differential operator in an exact way.
 
 \subsection{Weak formulation}
 To make a concrete example, let us consider the Poisson problem, and let's derive its weak formulation.
@@ -321,9 +321,9 @@ In the Poisson problem's case, the bilinear operator is
 \[
 a(u,v) = \int_\Omega \nabla u \nabla v,
 \]
-which is clearly bounded and coercive if $V=H_0^1(\Omega)$. In particular, coercivity follows from Poincaré inequality which implies that the norm in $H^1(\Omega)$ is equivalent to the $H^1$ seminorm
+which is clearly bounded and coercive if $V=H_0^1(\Omega)$. In particular, coercivity follows from Poincaré inequality which implies that the norm in $H^1(\Omega)$ is equivalent to the $H^1$ seminorm when the solution is zero on the boundary:
 \[
-\abs{u}_{1,2} = \norm{\nabla u}_{L^2}.
+c_1 \norm{u}_{1} \leq \abs{u}_{1,2} = \norm{\nabla u}_{L^2} \leq c_2 \norm{u}_{1} \qquad \forall u \in H_0^1(\Omega).
 \]
 Hence, the weak formulation of the Poisson problem admits a unique solution by Lax-Milgram lemma.
 
@@ -482,6 +482,50 @@ A_{ij} = \begin{cases}
 \end{cases}.
 \]
 Notice that we have obtained the same matrix we would get with a finite difference method of the same order (with the exception of a scaling factor of $1/h$).
+
+In fact, for a finite difference method, the second derivative approximation using a three-point stencil is given by
+\[
+-\frac{d^2 u}{dx^2}(x_i) \approx -\frac{u(x_{i-1}) - 2u(x_i) + u(x_{i+1})}{h^2}.
+\]
+
+When applied at each interior point of the domain, this leads to the linear system
+\[
+\frac{1}{h^2}
+\begin{bmatrix}
+2 & -1 & 0 & \cdots & 0 \\
+-1 & 2 & -1 & \cdots & 0 \\
+0 & -1 & 2 & \cdots & 0 \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0 & \cdots & 2
+\end{bmatrix}
+\begin{bmatrix}
+u_1 \\
+u_2 \\
+\vdots \\
+u_n
+\end{bmatrix}
+=
+\begin{bmatrix}
+f_1 \\
+f_2 \\
+\vdots \\
+f_n
+\end{bmatrix}
+\]
+
+where $u_i = u(x_i)$ and $f_i = f(x_i)$. The corresponding finite difference matrix can be expressed as:
+
+\[
+A_{FD,ij} = \begin{cases}
+0 \quad &\text{if } \abs{i-j}>1 \\
+-\frac{1}{h^2} \quad &\text{if } \abs{i-j}=1 \\
+\frac{2}{h^2} \quad &\text{if } i=j
+\end{cases}.
+\]
+
+Comparing with the finite element matrix above, we notice that $A_{FD} = -\frac{1}{h} A_{FE}$, meaning they differ only by a constant factor. 
+
+However, there is an important difference in the right-hand sides. In the finite difference method, the right-hand side consists of point evaluations $f_i = f(x_i)$, while in the finite element method, the right-hand side involves integrals $\int_\Omega f v_i \diff x$. For non-smooth functions $f$, these two approaches can yield significantly different results, with the finite element method generally providing better stability for irregular data.
 
 \section{Finite dimensional spaces}
 
@@ -725,38 +769,40 @@ More generally, for $\mathbb{Q}^k$ on a hypercube, nodes are often placed as ten
   \label{fig:q_nodes_2d}
   \end{figure}
 
-\subsection{Completeness on faces and edges}
+\subsection{Polynomial conformity}
 
-A critical property for finite element spaces is that the trace of the polynomial space on any face or edge must be a complete polynomial space of the same degree on that lower-dimensional entity. This ensures:
+A critical property for polynomial based finite element spaces is that the restriction of the polynomial space on any lower-dimensional entity (i.e., face, edge, or point) is a polynomial space of the same degree on that lower-dimensional entity. The dimension of the polynomial space on the lower-dimensional entity follows from the polynomial degree and the dimension of the entity.
 
+\begin{definition}[Polynomial conformity] \marginpar{Polynomial conformity}
+Let $T$ be a $d$-dimensional element (e.g., a line, triangle, quadrilateral, tetrahedron, or hexahedron) and let $\mathbb{X}^i$ be an $i$-dimensional entity of $T$ (i.e., one of its faces, edges, or vertices). A Lagrange finite element space is said to be polynomially conforming of degree $k$, if the number of support points located on each $i$-dimensional entity $\mathbb{X}^i$ (including all its lower dimensional entities) is equal to the dimension of the polynomial space on that entity, with the convention that the dimension of the polynomial space on a $0$-dimensional entity (i.e., a vertex) is $1$ for $k \geq 1$ and $0$ for $k=0$.
+\label{def:polynomial_conformity}
+\end{definition}
+
+\begin{figure}
+\centering
+\includegraphics[width=.7\textwidth]{polynomial_conformity.pdf}
+\caption{Polynomial conformity: the number of nodes on any any lower-dimensional entity (i.e., face, edge, or point) must match the dimension of the restriction of the polynomial space on that lower-dimensional entity. On the left we see polynomially conforming quadrilateral and triangular elements of degree $k=1$, where the number of nodes on the edges (two) matches the dimension of the polynomial space on the edges. On the right, we see non-polynomially conforming elements (namelly the Crouzier-Raviart elements), where the number of nodes on the edges (one) does not match the dimension of the polynomial degree of the restriction.}
+\label{fig:polynomial_conformity}
+\end{figure}
+
+Considering, for example, the case of a $\mathbb{P}^3$ finite element on a triangle (see Figure~\ref{fig:p_nodes_2d} -- right), we have the following:
 \begin{itemize}
-\item Consistency across element boundaries
-\item Ability to satisfy continuity requirements
-\item Optimal approximation properties
+\item The triangle has $3$ vertices, $3$ edges, and $1$ face.
+\item The polynomial space $\mathbb{P}^3$ on the triangle has dimension $10$.
+\item The polynomial space $\mathbb{P}^3$ on each edge has dimension $4$.
+\item The polynomial space $\mathbb{P}^3$ on each vertex has dimension $1$.
 \end{itemize}
 
-For $\mathbb{P}^k$ elements on simplices, this property is automatically satisfied since the restriction of a polynomial of total degree $\leq k$ to a face is still a polynomial of total degree $\leq k$.
-
-For $\mathbb{Q}^k$ elements on hypercubes, the trace on each face is a complete $\mathbb{Q}^k$ space in one dimension lower, maintaining the tensor-product structure.
-
-\subsection{Examples of common Lagrangian elements}
-
-\subsubsection{Linear elements ($k=1$)}
-
+Starting from the lower-dimensional entities, if we want to ensure polynomial conformity, we musth define, respectively:
 \begin{itemize}
-\item Triangle $\mathbb{P}^1$: 3 nodes at vertices
-\item Quadrilateral $\mathbb{Q}^1$: 4 nodes at vertices
+\item $1$ node on each vertex;
+\item $2$ nodes on the interior of the edges (so that, including the vertices, we have $4$ nodes on each edge);
+\item $1$ node on the interior of the face (so that, including the edges, we have a total of $10$ nodes on the face).
 \end{itemize}
 
-\subsubsection{Quadratic elements ($k=2$)}
-
-\begin{itemize}
-\item Triangle $\mathbb{P}^2$: 6 nodes (3 at vertices, 3 at edge midpoints)
-\item Quadrilateral $\mathbb{Q}^2$: 9 nodes (4 at vertices, 4 at edge midpoints, 1 at center)
-\end{itemize}
-
-Higher-order elements follow similar patterns, with nodes placed to ensure unisolvence and to preserve the completeness of polynomial spaces on lower-dimensional entities.
-
+\begin{remark}
+Polynomial conformity \emph{per-se} is not required to define a Lagrangian finite element (and it is in fact often not asked, see, for example, the definition of the Crouzier-Raviart elements in Figure~\ref{fig:polynomial_conformity}). It is however a necessary condition to ensure inter-element continuity, i.e., if we want to glue together different \emph{local} finite elements, and to ensure that the resulting \emph{global} finite element space is continuous.
+\end{remark}
 
 \subsection{Triangulations}
 
