@@ -643,7 +643,7 @@ Generally speaking, the Finite Element $(T, P, \Sigma)$ with $\dim(\Sigma) = \di
 \text{For any } u \in P, \text{ there exists a unique } \mathbf{u} \in \R^{k+1} \text{ s.t. } u = \sum_{i=1}^{k+1} u^i v_i(x) \text{ with } v^i(u) = u^i.
   \label{eqn:unisolvent}
 \end{equation}
-This means that the only element in $P$ that vanishes at all the support points $\{a_i\}_{i=1}^{k+1}$ must be the zero element. This property is crucial for ensuring that the finite element method is well-defined and that the degrees of freedom are uniquely determined by the nodal values.
+As a consequence, the only element in $P$ that vanishes at all the support points $\{a_i\}_{i=1}^{k+1}$ must be the zero element. This property is crucial for ensuring that the finite element method is well-defined and that the degrees of freedom are uniquely determined by the nodal values.
 \begin{figure}[!htb]
 \centering
 \begin{tikzpicture}
@@ -727,7 +727,7 @@ $\mathbb{Q}^3$ & $4$ & $16$ & $64$ \\
 
 \subsection{Selection of support points}
 
-For Lagrangian elements, the selection of support points (nodes) is critical. The number of nodes must match the dimension of the polynomial space, and their placement must ensure unisolvence - that is, there must be a unique polynomial in the space that takes prescribed values at those nodes.
+For Lagrangian elements, the selection of support points (nodes) is critical. The number of nodes must match the dimension of the polynomial space, and their placement must ensure unisolvence - that is, there must be a unique polynomial in the space that takes prescribed values at those nodes. Ensuring that there are enough nodes to span the polynomial space is necessary but not sufficient for the finite element to be unisolvant. As an example, consider any choice of three collinear nodes on a triangle. Such a choice is not unisolvent for the space $\mathbb{P}^1$, since in general we cannot choose the values of a linear polynomial at these three points independently, and when a linear polynomial exists, it is not unique. To generate a unique linear polynomial, we need to choose three non-collinear points. Any collection of three non-collinear points in $\R^2$ is unisolvent for the space of linear polynomials.
 
 \subsubsection{Unisolvent sets of points}
 
@@ -765,7 +765,7 @@ More generally, for $\mathbb{Q}^k$ on a hypercube, nodes are often placed as ten
 \begin{figure}[!htb]
   \centering
   \includegraphics{lagrange_nodal_functions_quads.pdf}
-  \caption{Position of nodes for $\mathbb{Q}^1, \mathbb{Q}^2$, and $\mathbb{Q}^3$ on a square.}
+  \caption{Position of nodes for $\mathbb{Q}^1$, $\mathbb{Q}^2$, and $\mathbb{Q}^3$ on a square.}
   \label{fig:q_nodes_2d}
   \end{figure}
 
@@ -806,11 +806,13 @@ Polynomial conformity \emph{per-se} is not required to define a Lagrangian finit
 
 \subsection{Triangulations}
 
-One of the most common way to define finite dimensional spaces is to use a
-\emph{triangulation} of the domain $\Omega$. The idea is to partition the domain
-$\Omega$ into simple subdomains (like triangles or quadrilaterals in 2D and
-tetrahedra, hexahedra, prisms, or pyramids in 3D) where it is easy to define
-local basis functions, and to compute integrals.
+The definition of a global finite dimensional space is then constructed by
+glueing together many small local finite element spaces. This is achieved
+through the concept of \emph{triangulation} of the domain $\Omega$. The idea is
+to partition the domain $\Omega$ into simple subdomains (like triangles or
+quadrilaterals in 2D and tetrahedra, hexahedra, prisms, or pyramids in 3D) where
+it is easy to define local basis functions, and to compute integrals. Once the domain is partitioned, we
+define a finite dimensional space on each of these subdomains, and then ``glue them together'' to form a global finite dimensional space.
 
 Formally speaking we partition $\Omega$
 \begin{equation*}
@@ -895,3 +897,114 @@ complex than the one shown in the example, depending on the specific
 requirements of the application, but the basic idea remains the same: to store
 the coordinates of the vertices and the connectivity of the elements in a way
 that allows efficient access and manipulation of the mesh data.
+
+\subsection{Enumeration of degrees of freedom}
+
+Once we have defined a triangulation and chosen a finite element type, we need to distribute and enumerate the degrees of freedom (DoFs) on the mesh. This process establishes a relationship between local DoFs on each element and their global indices in the resulting finite dimensional space.
+
+\subsubsection{Degrees of freedom per object}
+
+A fundamental concept in DoF enumeration is the ``degrees of freedom per object'' vector ($\dpo$). This vector is attached to a finite element and specifies how many DoFs are associated with each type of topological entity in the mesh:
+
+\begin{itemize}
+  \item $\dpo_0$: Number of DoFs per vertex
+  \item $\dpo_1$: Number of DoFs per edge (excluding vertices)
+  \item $\dpo_2$: Number of DoFs per surface (excluding edges and vertices)
+  \item $\dpo_3$: Number of DoFs per volume (excluding surfaces, edges, and vertices)
+\end{itemize}
+
+For example, the DoF distribution for common Lagrangian elements would be given by Table~\ref{tab:dof_distribution}.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Element} & $\dpo_0$ & $\dpo_1$ & $\dpo_2$ & $\dpo_3$ \\
+\hline
+$\mathbb{P}^1_0$ Triangle & 1 & 0 & 0 & 0 \\
+$\mathbb{P}^2_0$ Triangle & 1 & 1 & 0 & 0 \\
+$\mathbb{P}^3_0$ Triangle & 1 & 2 & 1 & 0 \\
+$\mathbb{P}^1_{-1}$ Triangle & 0 & 0 & 3 & 0 \\
+$\mathbb{P}^2_{-1}$ Triangle & 0 & 0 & 6 & 0 \\
+$\mathbb{P}^3_{-1}$ Triangle & 0 & 0 & 10 & 0 \\
+$\mathbb{P}^3_0$ Tetrahedra & 1 & 2 & 1 & 0 \\
+$\mathbb{P}^4_0$ Tetrahedra & 1 & 3 & 3 & 1 \\
+$\mathbb{P}^3_{-1}$ Tetrahedra & 0 & 0 & 0 & 20 \\
+$\mathbb{P}^4_{-1}$ Tetrahedra & 0 & 0 & 0 & 35 \\
+\hline
+$\mathbb{Q}^1_0$ Quadrilateral & 1 & 0 & 0 & 0 \\
+$\mathbb{Q}^2_0$ Quadrilateral & 1 & 1 & 1 & 0 \\
+$\mathbb{Q}^2_0$ Hexahedra & 1 & 1 & 1 & 1 \\
+$\mathbb{Q}^1_{-1}$ Quadrilateral & 0 & 0 & 4 & 0 \\
+$\mathbb{Q}^2_{-1}$ Quadrilateral & 0 & 0 & 9 & 0 \\
+$\mathbb{Q}^2_{-1}$ Hexahedra & 0 & 0 & 0 & 27 \\
+\hline
+\end{tabular}
+\caption{DoF distribution per object for common element types. The first column indicates the type of element, while the other columns show the number of DoFs associated with vertices, edges, faces, and volumes, respectively. The subscript on the element type indicates the global continuity of the element, i.e., $\mathbb{P}^1_0$ is a globally continuous piecewise linear polynomial space, while $\mathbb{P}^1_{-1}$ is a discontinuous piecewise linear polynomial space.}
+\label{tab:dof_distribution}
+\end{table}
+
+This vector is essential for the enumeration algorithm as it determines how many indices need to be assigned to each mesh entity.
+
+\begin{remark}[$\dpo$ and polynomial conformity]
+  The $\dpo$ vector is closely related to the polynomial conformity property discussed earlier. For a finite element to be polynomially conforming, the number of DoFs assigned to each entity must match the dimension of the polynomial space on that entity. Notice however that there is a difference between the \emph{logical} association of DoFs to entities (i.e., the $\dpo$ vector) and the \emph{physical} association of DoFs to entities (i.e., the actual position of the nodes on the entities). The physical association of DoFs to entities is determined by the choice of support points and the polynomial degree. It is perfectly possible to have the same physical association for finite element spaces $\mathbb{P}^k_{0}$ and $\mathbb{P}^k_{-1}$, with a different logical association (i.e., a different global enumeration). For example, in the case of $\mathbb{P}^1_{0}$ and $\mathbb{P}^1_{-1}$ on a triangle, we have $\dpo_i = \delta_{1i}$ and $\dpo_i = 3\delta_{2i}$, respectively, but the physical location of the nodes could coincide (i.e., the $3$ nodes in the second case could be chosen to be physically on the vertices, even though they are not \emph{logically} assigned to vertices, i.e., $\dpo_0 = 0$ in the second case).
+\end{remark}
+
+\subsubsection{DoF enumeration algorithm}
+
+To understand the consequences of different choices for the $\dpo$ vector, we consider the actual degrees of freedom enumeration process, which typically follows a hierarchical approach, assigning indices to mesh entities in order of increasing dimension. Assuming a triangulation made of simplices, we can enumerate the DoFs as follows:
+
+\begin{enumerate}
+  \item Assign DoF indices to vertices: $0, 1, \ldots, \dpo_0 \cdot |V| - 1$, where $|V|$ is the number of vertices
+  \item Assign DoF indices to lines: $\dpo_0 \cdot |V|, \ldots, \dpo_0 \cdot |V| + \dpo_1 \cdot |L| - 1$, where $|L|$ is the number of lines
+  \item Assign indices to triangles: $\dpo_0 \cdot |V| + \dpo_1 \cdot |L|, \ldots, \dpo_0 \cdot |V| + \dpo_1 \cdot |L| + \dpo_2 \cdot |T| - 1$, where $|T|$ is the number of triangles
+  \item Assign indices to tetrahedra: $\dpo_0 \cdot |V| + \dpo_1 \cdot |L| + \dpo_2 \cdot |T|, \ldots, \dpo_0 \cdot |V| + \dpo_1 \cdot |L| + \dpo_2 \cdot |T| + \dpo_3 \cdot |Tets| - 1$, where $|Tets|$ is the number of tetrahedra.
+\end{enumerate}
+
+The total number of DoFs in the system is then:
+\[
+N_{dof} = \dpo_0 \cdot |V| + \dpo_1 \cdot |L| + \dpo_2 \cdot |T| + \dpo_3 \cdot |Tets|
+\]
+
+\subsubsection{Local-to-global DoF mapping}
+
+For each element, we then establish a mapping between local DoF indices and global indices. This mapping determines the relation between the local enumeration of DoFs and the global one.
+
+For an element $T$, this mapping can be represented as an array:
+\[
+\text{dof\_indices}_{T}[i] = \text{global index of local DoF}~i \text{ on element } T
+\]
+
+This mapping is constructed during DoF enumeration by:
+
+\begin{enumerate}
+  \item Identifying all the topological entities of the element (vertices, edges, etc.)
+  \item Looking up the global indices already assigned to those entities
+  \item Creating an ordered list that maps each local DoF to its corresponding global index
+\end{enumerate}
+
+A compact way to represent this mapping is to use a permutation tensor for each element $T_m$:
+\[
+ P_{m~i\alpha} = \begin{cases}
+  1 & \text{if the } i\text{-th DoF of element } T_m \text{ is the } \alpha\text{-th global DoF}, \\
+  0 & \text{otherwise}.
+ \end{cases}
+\]
+
+\subsubsection{Example}
+
+Consider a simple triangulation with two triangles and $\mathbb{P}^2$ elements ($\dpo_0 = 1, \dpo_1 = 1, \dpo_2 = \dpo_3 = 0$):
+
+\begin{figure}[h]
+\centering
+\includegraphics{dpo_example.pdf}
+\caption{Simple triangulation with global vertex indices}
+\end{figure}
+
+The DoF mapping for these elements would be:
+\begin{itemize}
+  \item Element $T_1$: $\text{dof\_indices}_{T_1} = [0, 1, 3, 4,5,6]$
+  \item Element $T_2$: $\text{dof\_indices}_{T_2} = [1, 2, 3, 7, 8, 5]$
+\end{itemize}
+
+This mapping ensures that the support points associated to the shared vertices and to the shared edge between elements are assigned the same global indices. Such a choice ensures global continuity of the finite element space, i.e., the finite element space is continuous across the entire triangulation.
