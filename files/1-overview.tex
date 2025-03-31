@@ -797,7 +797,7 @@ Starting from the lower-dimensional entities, if we want to ensure polynomial co
 \begin{itemize}
 \item $1$ node on each vertex;
 \item $2$ nodes on the interior of the edges (so that, including the vertices, we have $4$ nodes on each edge);
-\item $1$ node on the interior of the face (so that, including the edges, we have a total of $10$ nodes on the face).
+\item $1$ node on the interior of the triangle (so that, including the edges, we have a total of $10$ nodes on the triangle).
 \end{itemize}
 
 \begin{remark}
@@ -900,11 +900,30 @@ that allows efficient access and manipulation of the mesh data.
 
 \subsection{Enumeration of degrees of freedom}
 
-Once we have defined a triangulation and chosen a finite element type, we need to distribute and enumerate the degrees of freedom (DoFs) on the mesh. This process establishes a relationship between local DoFs on each element and their global indices in the resulting finite dimensional space.
+Once we have defined a triangulation and chosen a finite element type, we need to decide how to distribute and enumerate the local degrees of freedom (DoFs) defined on each element of the mesh to global degrees of freedom. This process establishes a relationship between local DoFs on each element and their global indices in the resulting finite dimensional space.
+
+Generally speaking, given a finite dimensional space $V_h$ defined on the triangulation $\mathcal{T}_h$, we need a way to identify the DoFs of the global space $V_h$ with the local DoFs defined on each element $T_m \in \mathcal{T}_h$. This is done for both the shape functions $v_i$ and the nodal functions $v^i$. The process of assigning global indices to local DoFs is called \emph{enumeration}. Given a local finite element $(T_m, P_m, \Sigma_m)$ with dimension $N_m = \dim(P_m)$, the enumeration process consists in defining a relationship between $v_{m~\alpha}$ and $v_{i}$, where $v_{m~\alpha}$ are the local shape functions defined on the element $T_m$ and $v_{i}|_{T_m} = v_{m~\alpha}$ are the global shape functions defined on the global finite dimensional space $V_h$, i.e., 
+\[
+  v_{\mathcal{I}_{m\alpha}}(x) = v_{m~\alpha}(x) \quad x \in T_m, \qquad m = 1,\ldots,M, \quad \alpha = 1,\ldots,N_m.
+\]
+
+The index $i = \mathcal{I}_{m\alpha} \in [1,n \equiv\dim(V_h) ]$ is the global index of the local basis function $v_{m~\alpha}$, and it is often conveniently defined through the permutation matrix $P_{m~i\alpha}$ that maps the local index $\alpha$ to the global index $i$:
+\[
+  v_{i}(x) = \sum_{\alpha=1}^{N_m} P_{m~i\alpha} v_{m~\alpha}(x) \quad x \in T_m, \qquad m = 1,\ldots,M, \quad i = 1,\ldots,n.
+\]
+where 
+\[
+  P_{m~i\alpha} = \begin{cases}
+    1 & \text{if } i = \mathcal{I}_{m\alpha}, \\
+    0 & \text{otherwise}.
+  \end{cases}
+\]
+
+The construction of the permutation matrix $P_{m~i\alpha}$ (or of the indexing function $\mathcal{I}_{m\alpha}$) is the key step in the enumeration process, and it defines both the global DoF numbering and the properties of the global finite element space.
 
 \subsubsection{Degrees of freedom per object}
 
-A fundamental concept in DoF enumeration is the ``degrees of freedom per object'' vector ($\dpo$). This vector is attached to a finite element and specifies how many DoFs are associated with each type of topological entity in the mesh:
+A fundamental concept in DoF enumeration is the ``degrees of freedom per object'' vector ($\dpo$). This vector is attached to a finite element space and it specifies how many DoFs are \emph{logically} associated with each type of topological entity in the mesh:
 
 \begin{itemize}
   \item $\dpo_0$: Number of DoFs per vertex
@@ -912,6 +931,8 @@ A fundamental concept in DoF enumeration is the ``degrees of freedom per object'
   \item $\dpo_2$: Number of DoFs per surface (excluding edges and vertices)
   \item $\dpo_3$: Number of DoFs per volume (excluding surfaces, edges, and vertices)
 \end{itemize}
+
+Notice that the $\dpo$ vector is defined in a \emph{logical} sense, i.e., it does not necessarily depend on the actual position of the nodes on the mesh entities. The $\dpo$ vector is a property of the \emph{global} finite element space, rather than of the \emph{local} one,  and it is used to determine how many indices need to be assigned to each mesh entity during the enumeration process.
 
 For example, the DoF distribution for common Lagrangian elements would be given by Table~\ref{tab:dof_distribution}.
 
@@ -947,7 +968,7 @@ $\mathbb{Q}^2_{-1}$ Hexahedra & 0 & 0 & 0 & 27 \\
 This vector is essential for the enumeration algorithm as it determines how many indices need to be assigned to each mesh entity.
 
 \begin{remark}[$\dpo$ and polynomial conformity]
-  The $\dpo$ vector is closely related to the polynomial conformity property discussed earlier. For a finite element to be polynomially conforming, the number of DoFs assigned to each entity must match the dimension of the polynomial space on that entity. Notice however that there is a difference between the \emph{logical} association of DoFs to entities (i.e., the $\dpo$ vector) and the \emph{physical} association of DoFs to entities (i.e., the actual position of the nodes on the entities). The physical association of DoFs to entities is determined by the choice of support points and the polynomial degree. It is perfectly possible to have the same physical association for finite element spaces $\mathbb{P}^k_{0}$ and $\mathbb{P}^k_{-1}$, with a different logical association (i.e., a different global enumeration). For example, in the case of $\mathbb{P}^1_{0}$ and $\mathbb{P}^1_{-1}$ on a triangle, we have $\dpo_i = \delta_{1i}$ and $\dpo_i = 3\delta_{2i}$, respectively, but the physical location of the nodes could coincide (i.e., the $3$ nodes in the second case could be chosen to be physically on the vertices, even though they are not \emph{logically} assigned to vertices, i.e., $\dpo_0 = 0$ in the second case).
+  The $\dpo$ vector is closely related to the polynomial conformity property discussed earlier. For a finite element to be polynomially conforming, the number of DoFs assigned to each entity must match the dimension of the polynomial space on that entity. Notice however that there is a difference between the \emph{logical} association of DoFs to entities (i.e., the $\dpo$ vector) and the \emph{physical} association of DoFs to entities (i.e., the actual position of the nodes on the entities). For Lagrangian finite element spaces, the physical association of DoFs to entities is determined by the choice of support points and the polynomial degree. It is perfectly possible to have the same physical association for finite element spaces $\mathbb{P}^k_{0}$ and $\mathbb{P}^k_{-1}$, with a different logical association (i.e., a different global enumeration). For example, in the case of $\mathbb{P}^1_{0}$ and $\mathbb{P}^1_{-1}$ on a triangle, we have $\dpo_i = \delta_{1i}$ and $\dpo_i = 3\delta_{2i}$, respectively, but the physical location of the nodes could coincide (i.e., the $3$ nodes in the second case could be chosen to be physically on the vertices, even though they are not \emph{logically} assigned to vertices, i.e., $\dpo_0 = 0$ in the second case).
 \end{remark}
 
 \subsubsection{DoF enumeration algorithm}
@@ -968,28 +989,13 @@ N_{dof} = \dpo_0 \cdot |V| + \dpo_1 \cdot |L| + \dpo_2 \cdot |T| + \dpo_3 \cdot 
 
 \subsubsection{Local-to-global DoF mapping}
 
-For each element, we then establish a mapping between local DoF indices and global indices. This mapping determines the relation between the local enumeration of DoFs and the global one.
-
-For an element $T$, this mapping can be represented as an array:
-\[
-\text{dof\_indices}_{T}[i] = \text{global index of local DoF}~i \text{ on element } T
-\]
-
-This mapping is constructed during DoF enumeration by:
+We are now in the position to define the mapping $i=\mathcal{I}_{m~\alpha}$ (or the permuation matrices $P_{m~i\alpha}$) between local DoF indices $\alpha \in [1,N_m]$ of the element $T_m$ and the global indices $i \in [1, n]$. This mapping determines the relation between the local enumeration of DoFs and the global one and it is constructed during DoF enumeration by:
 
 \begin{enumerate}
-  \item Identifying all the topological entities of the element (vertices, edges, etc.)
+  \item Identifying all the topological entities of the element $T_m$ (vertices, edges, etc.)
   \item Looking up the global indices already assigned to those entities
   \item Creating an ordered list that maps each local DoF to its corresponding global index
 \end{enumerate}
-
-A compact way to represent this mapping is to use a permutation tensor for each element $T_m$:
-\[
- P_{m~i\alpha} = \begin{cases}
-  1 & \text{if the } i\text{-th DoF of element } T_m \text{ is the } \alpha\text{-th global DoF}, \\
-  0 & \text{otherwise}.
- \end{cases}
-\]
 
 \subsubsection{Example}
 
@@ -1003,8 +1009,50 @@ Consider a simple triangulation with two triangles and $\mathbb{P}^2$ elements (
 
 The DoF mapping for these elements would be:
 \begin{itemize}
-  \item Element $T_1$: $\text{dof\_indices}_{T_1} = [0, 1, 3, 4,5,6]$
-  \item Element $T_2$: $\text{dof\_indices}_{T_2} = [1, 2, 3, 7, 8, 5]$
+  \item Element $T_1$: $\mathcal{I}_1 = [0, 1, 3, 4, 5, 6]$
+  \item Element $T_2$: $\mathcal{I}_2 = [1, 2, 3, 7, 8, 5]$
 \end{itemize}
 
-This mapping ensures that the support points associated to the shared vertices and to the shared edge between elements are assigned the same global indices. Such a choice ensures global continuity of the finite element space, i.e., the finite element space is continuous across the entire triangulation.
+This mapping ensures that the support points associated to the shared vertices and to the shared edge between elements are assigned the same global indices. Such a choice ensures global continuity of the finite element space, i.e., the finite element space is continuous across the entire triangulation. In particular, it holds:
+
+\begin{theorem}[Continuity of Lagrange finite element spaces]
+\label{thm:continuity_lagrange}
+  Let $\mathcal{T}_h$ be a triangulation of the domain $\Omega$ and let $V_h$ be the finite element space defined on $\mathcal{T}_h$ using Lagrangian finite elements. Then, the finite element space $V_h$ is continuous across the entire triangulation if and only if the following conditions are satisfied:
+  \begin{itemize}
+    \item The support points satisfy the polynomial conformity property (Definition~\ref{def:polynomial_conformity});
+    \item The $\dpo$ vector is defined such that also the \emph{logical} association between dofs and entities satisfies the polynomial conformity property (Definition~\ref{def:polynomial_conformity}), i.e., the sum of the number of DoFs assigned to each entity (vertex, edge, face, volume) must match the dimension of the polynomial space on that entity;
+    \item The support points associated to shared entities must coincide.
+  \end{itemize}
+\end{theorem}
+\begin{proof}
+  The proof of this theorem follows from the definition of polynomial conformity (Definition~\ref{def:polynomial_conformity}) and the properties of Lagrangian finite elements. 
+  
+  We start by showing that the polynomial conformity property is necessary for continuity.
+  
+  Let $\Xi$ be the entity shared by two elements $T_i$ and $T_j$, i.e., 
+  \[
+  \Xi := T_i \cap T_j \subset \partial T_i \cap \partial T_j,
+  \]
+  and let $v^{i\alpha}$ and $v^{j\beta}$, with $\alpha \in [1,\hat{n}]$ be the nodal functions associated with  $\Xi$ for a Lagrange space of order $k$. The polynomial conformity property ensures that the number of DoFs assigned to $\Xi$ matches the dimension of the polynomial space on that entity, i.e., $ \hat{n} = \dim(P^k(\Xi))$. By taking a continuous function $u\in V\cap C^0(\overline{\Omega})$, we have that $\Pi^i(u)$ and  $\Pi^j(u)$ are both functions in $P^k(\Xi)$. Since the support points on $\Xi$ coincide for both $\Pi^i$ and $\Pi^j$, and their number is equal to the dimension of $P^k(\Xi)$, we conclude that  $\Pi^i(u) = \Pi^j(u)$ on $\Xi$. 
+  
+  Conversely, if we take two finite element functions $u_{h,i}$ and $u_{h,j}$ defined on the elements $T^i$ and $T^j$, there is no reasons why they should coincide on $\Xi$, unless their values on the coinciding support points $a_{i~\alpha}$ and $a_{j~\beta}$ coincide. In order for this to be true, there cannot be two \emph{different} values of $u$ associated to the two local indices $\alpha$ and $\beta$: the global index of two coinciding support points $a_{i~\alpha}$ and $a_{j~\alpha}$ must be the same.
+  
+  By the enumeration algorithm described above, this is true only if the entries of the $\dpo$ vector are consistent with the polynomial conformity property. In this case, every dof associated to a vertex, edge, face, or volume is assigned a unique global index, and the number of DoFs assigned to each entity (vertex, edge, face, volume) matches the dimension of the polynomial space on that entity. In particular, if the $\dpo$ vector is defined such that the logical association between dofs on a shared entity $\Xi$ is consistent with the polynomial conformity property, then the global indices of the support points on $\Xi$ are the same for both elements $T_i$ and $T_j$, and therefore the values of the nodal functions associated to the shared entity $\Xi$ coincide, i.e., for any $\alpha$ there exists a $\beta$ such that $\mathcal{I}^{i~\alpha} = \mathcal{I}^{j~\beta}$, and therefore $v^{i\alpha}(u_{h,i}) = v^{j\beta}(u_{h,j})$ on $\Xi$, and we conclude that $u_{h,i} = u_{h,j}$ on $\Xi$.
+\end{proof}
+
+An illustration of this property is shown in Figure~\ref{fig:cg_vs_dg}, where we compare the numbering for a discontinuous and for a continuous Lagrangian finite element method of order two on two neighboring triangles.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=.7\textwidth]{cg_vs_dg.pdf}
+\caption{Comparison of the numbering for a continuous and for a discontinuous Lagrangian finite element method of order two on two neighboring triangles. Both finite element are polynomially conforming, and the support point locations coincide. The $\dpo$ vector on left is $\dpo = (1, 1, 0)$, while the $\dpo$ vector on the right is $\dpo = (0, 0, 6)$. We show the global indices of the support points on the left and on the right. The global indices of the support points on the shared edge are different for the discontinuous case, and we show in red the global numbering for the discontinuous case.}
+\label{fig:cg_vs_dg}
+\end{figure}
+
+For these two finite element spaces, we a global dimension $N_{cg} = 9$ on the left and $N_{dg} = 12$ on the right. The global indices of the support points on the shared edge are different for the discontinuous case, and we show in red the global numbering for the discontinuous case. In particular, in the discontinuous case, a discrete function is allowed to have different values in the points $(a_2, a_8)$, $(a_4, a_{11})$ and $(a_1, a_6)$. In the continuous case, those pairs of degrees of freedom are identified, and are associated with a single value of the discrete function (respectively, the entries with indices $3,5$ and $1$).
+
+\begin{theorem}[Conformity of $V_h$ and $V$]
+  For a global polinomial space $V_h$ to be conforming with the space $V \equiv W^{k,p}(\Omega)$, it is necessary and sufficient that the the space $V_h$ is continuous with degree of continuity $(k-1)$, i.e., $V_h \subset C^{k-1}(\overline{\Omega})$, with the understanding that $C^{-1}(\Omega)$ means that the space is discontinuous.
+  
+  In particular, a piecewise polynomial Lagrangian finite element space $V_h$ is continuous (therefore it is conforming w.r.t. $W^{1,p}(\Omega)$) if and only if i) the local finite element spaces are polynomially conforming, ii) the support points on shared entities coincide, and iii) their global indices are the same.
+\end{theorem}
