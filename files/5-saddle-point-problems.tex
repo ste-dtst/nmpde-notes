@@ -29,37 +29,50 @@ The previous two conditions are also known as \emph{BNB (Banach-Ne\v{c}as-Babusk
 		\item bounding.
 	\end{enumerate}
 	Note that injectivity is implied by being bounding, since no element in $\ker A$, other than zero, can satisfy the bounding condition.
-	
-	1., 2. and 3. are all different aspects of the \emph{closed range theorem} and the \emph{open mapping theorem}, the latter of which is recalled below.
 \end{remark}
 
-\begin{theorem}[Open mapping theorem]
+
+\subsection{Open mapping and closed range theorems}
+Injectivity, surjectivity and the bounding condition are all different aspects of the \emph{open mapping theorem} and the \emph{closed range theorem}. Let us recall them briefly in a general setting.
+
+\rev{after checking online, "polar" and the $^o$ symbol seem to refer to another kind of subset, below I used only "annihilator", with the $^\perp$ symbol}
+\begin{definition}
+	Let $X$ be a Banach space. If $Z \subset X$, we define the \emph{annihilator} of $Z$ as the set
+	\[
+	Z^\perp = \Set{f \in X' \vert \langle f, z \rangle = 0 \, \forall z \in Z}.
+	\]
+\end{definition}
+It is easy to prove that the annihilator of a set is closed.
+
+\begin{definition}
+	Let $X$, $Y$ be Banach spaces. Given $A \in \L(X;Y)$, its \emph{adjoint} is the operator $A^T \in \L(Y';X')$ given by
+	\[
+	\langle A^T y', x \rangle = \langle y', Ax \rangle, \qquad x \in X, y' \in Y'.
+	\]
+\end{definition}
+Recall that, by continuity, the kernel of a linear continuous map is closed. 
+
+\begin{theorem}[Open mapping theorem]\label{thm:open_mapping}
 	Let $T: E \to F$ be a surjective linear continuous map between Banach spaces. Then $T$ is an open mapping, i.e., if $U \subset E$ is an open set, then also $T(U)$ is open.
 \end{theorem}
 
-\rev{not sure about the marginpar argument of the following theorem}
-\begin{theorem}\label{thm:closed_range}\marginpar{Closed range theorem}
+\begin{theorem}[Closed range theorem]\label{thm:closed_range}
+	aa
+	\rev{insert theorem}
+\end{theorem}
+
+\subsection{Conditions equivalent to BNB}
+
+\begin{theorem}\label{thm:closed_range2}
     Let $A\in\L(V;W')$ for $V,W$ Banach spaces. Then the following are equivalent:
     \begin{enumerate}
         \item $\im A = \overline{\im A}$,
-%        \item A is bounding on $V \setminus \ker(A)$, i.e. there exists $\alpha >0$ such that $\norm{Au}_{W'}\geq\alpha\norm{u}_V$ for every $u\in V\setminus\ker(A)$.
         \item there exists $\alpha >0$ such that
         \begin{equation}
         	\forall w' \in \im A \, \exists u \in V \, \text{s.t. }\, Au = w' \, \text{and }\, \norm{Au}_{W'} = \norm{w'}_{W'} \ge \alpha\norm{u}_V.
         \end{equation}
     \end{enumerate}
 \end{theorem}
-%\begin{remark}
-%	The second condition (also called \emph{bounding condition}) is equivalent to the following \emph{limsup condition}:
-%	\begin{equation}\label{eqn:limsup condition}
-%		\inf_{u\in V\setminus\ker(A)}\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}\geq\alpha.
-%	\end{equation}
-%	This can be easily seen by remembering that $\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{w}_W}=\norm{Au}_{W'}$ by definition of operator norm, hence the limsup condition can be rewritten as
-%	\begin{equation*}
-%		\inf_{u\in V\setminus\ker(A)}\frac{\norm{Au}_{W'}}{\norm{u}_V}\geq\alpha,
-%	\end{equation*}
-%	which is clearly equivalent to the bounding condition.
-%\end{remark}
 \begin{proof}
     \hfill
     \begin{enumerate}[itemindent=25pt]
@@ -108,20 +121,36 @@ It is useful to relate the bounding condition to other equivalent properties.
 			|Av_n(w_n)|=|A^Tw_n(v_n)|=\gamma|v_n'(v_n)|\geq\gamma/2,
 		\end{equation*}
 		hence $\norm{Av_n}_{W'}\geq\gamma/2$, a contradiction.
-		\item[3. $\implies$ 2.] This is a consequence of Theorem \ref{thm:closed_range}, together with Remark \ref{rmk:bnb_conditions}.
-		\item[2. $\implies$ 1.] Being $\im A$ closed, a result from the book \emph{Functional Analysis} by H. Brezis assures that $\im (A^T) = (\ker A)^\perp$. Since $A$ is injective, $(\ker A)^\perp = V$.
-		\rev{Leaving this last implication a bit sketchy until an "official" proof is chosen. I added that reference to Brezis because I couldn't come up with a self-contained proof for $2.\implies1.$ or $3.\implies1.$. Probably, mentioning this result may be useful also for the following example. Otherwise, is there some better idea?}
+		\item[3. $\implies$ 2.] This is a consequence of Theorem \ref{thm:closed_range2}, together with Remark \ref{rmk:bnb_conditions}.
+		\item[2. $\implies$ 1.] Being $\im A$ closed, the closed range theorem \ref{thm:closed_range} implies that $\im (A^T) = (\ker A)^\perp$. Since $A$ is injective, $(\ker A)^\perp = V$.
 	\end{enumerate}
 \end{proof}
 
-In a similar fashion, if $V$ is reflexive as well, one can prove an analogous result for $A^T\in\L(W;V')$. In particular, we deduce that the following implications hold in general:
+In a similar fashion, if $V$ is reflexive as well, one can prove an analogous result for $A^T\in\L(W;V')$. Putting things together, we get an interesting consequence.
+\begin{theorem}\label{thm:bnb_boundingness}
+	Let $V$, $W$ be reflexive Banach spaces, let $A \in \L(V;W')$. Then, $A$ satisfies the BNB conditions \eqref{eqn:BNB} if and only if both $A$ and $A^T$ are bounding, i.e., there exists $\alpha>0$ such that
+	\begin{enumerate}
+		\item $\norm{Au}_{W'}\geq\alpha\norm{u}_V \quad  \forall u \in V$,
+		\item $\norm{A^Tw}_{V'}\geq\alpha\norm{w}_W \quad  \forall w \in W$.
+	\end{enumerate}
+\end{theorem}
+
+\begin{remark}
+	The bounding conditions above can be more suggestively written as
+	\begin{align}
+		\inf_{u\in V}\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}&\geq\alpha \\
+		\inf_{w\in W}\sup_{u\in V}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}&\geq\alpha.
+	\end{align}
+	This is true whenever both $V$ and $W$ are reflexive. In particular, when they are Hilbert spaces.
+	\rev{In the teacher's notes it is said that this is true in the Hilbert setting, but there seems to be no problem also if both the spaces are Banach+reflexive. Am I wrong?}
+\end{remark}
+
+We also deduce that the following implications hold in general:
 \begin{align}
 	\text{$A$ surjective} &\implies \text{$A^T$ injective} \\
 	\text{$A^T$ surjective} &\implies \text{$A$ injective}
 \end{align}
 Unfortunately, the converses fail, unless we deal with finite dimensional spaces. In fact, in finite dimensions, any subspace is closed by default, hence either $\im A$ and $\im (A^T)$ are closed.
-
-\rev{In the teacher's notes there is also a relation between boundingness of $A$ and $A^T$. Expand on this. The main idea should be: if either $V$ and $W$ are reflexive, showing that both $A$ and $A^T$ are bounding is enough to prove the invertibility of $A$.}
 
 \begin{example}
 	To understand what might go wrong in infinite dimensions, consider the inclusion
@@ -137,28 +166,6 @@ Unfortunately, the converses fail, unless we deal with finite dimensional spaces
 	If $(A^T q)(u) = 0$ for every $u \in H_0^1(\Omega)$, then $q = 0$, thanks to standard results (fundamental lemma of calculus of variations). Hence, $\ker (A^T)$ is trivial. In finite dimensions, having $\ker (A^T) = \{0\}$ would imply that $A$ is surjective, which is not the case.
 \end{example}
 
-Now we want to rewrite the BNB conditions in the special case of Hilbert spaces.
-\begin{lemma}\label{eqn:BNB for Hilbert}
-    Let $V,W$ be Hilbert spaces, and let $A\in\L(V;W')$. Then the BNB conditions \eqref{eqn:BNB} are equivalent to the following: there exists an $\alpha>0$ such that
-    \begin{enumerate}
-        \item $\norm{Au}_{W'}\geq\alpha\norm{u}_V$,
-        \item $\norm{A^Tw}_{V'}\geq\alpha\norm{w}_W$,
-    \end{enumerate}
-\end{lemma}
-\begin{proof}
-    Clearly 2. in \eqref{eqn:BNB} and 1. in \eqref{eqn:BNB for Hilbert} are equivalent. On the other hand, if for every $w\in W$ we define $w'\in W'$ such that $w'(z):=\tfrac{1}{\norm{w}_W}\langle w,z \rangle$, and we call $Au^*=w'$, then we have
-    \begin{equation*}
-        \norm{A^Tw}_{V'}=\sup_{u\in V}\frac{\langle A^Tw,u \rangle}{\norm{u}_V}\geq\frac{\langle A^Tw,u^* \rangle}{\norm{u^*}_V}=\frac{\langle Au^*,w \rangle}{\norm{u^*}_V}=\frac{1}{\norm{u^*}_V}\norm{w}_W.
-    \end{equation*}
-\end{proof}
-\rev{The proof does not work, it needs to be fixed.}
-\begin{remark}
-    Using the closed range theorem and Remark \ref{eqn:infsup_condition}, 1. and 2. of the previous Lemma can be more suggestively written as
-    \begin{align}
-        \inf_{u\in V}\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}&\geq\alpha \\
-        \inf_{w\in W}\sup_{u\in V}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}&\geq\alpha.
-    \end{align}
-\end{remark}
 Finally, we conclude this section with the following result, which we do not prove.
 \begin{theorem}
     Using the notations above, if we assume that $V=W$ and that $A$ is $\alpha$-elliptic, then ``Lax-Milgram implies BNB'', i.e. if the hypothesis of Lemma \ref{lemma:lax-milgram} are satisfied, then \eqref{eqn:BNB} holds.
