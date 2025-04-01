@@ -2,17 +2,17 @@
 
 \chapter{Saddle point problems}\label{chap:saddle}
 
-\section{Petrov-Galerkin Method and the BNB Condition}
-In this section we will consider a more general version of the classic problem \eqref{eqn:op_pbm}. In this setting, we consider a Banach space $V$ and a \emph{reflexive} Banach space $W$.
+\section{BNB conditions}
+In this section we will examine a more general version of the classic problem \eqref{eqn:weak_laxmilgram}, in which the target space of the operator $A$ is allowed to be different from the dual space of the domain.
 \begin{remark}
     Recall that a Banach space $W$ is said to be \emph{reflexive} if the natural map from $W$ to $W''$ is an isomorphism (it is, in fact, a canonical isomorphism, since it does not depend on the choice of a basis). This map takes a vector $w$ and associates it to the linear map $J_w$ such that $J_w(f)=f(w)$ for every $f\in W'$. In practice we require this hypothesis so that we can identify $W=W''$.
 \end{remark}
-As usual, we have the option to either consider a linear continuous operator $A\in\L(V;W')$ or a bilinear operator $a\in\L(V\times W;\R)$. Given $f\in V'$, the problem we want to solve is to find $u\in V$ such that
-\begin{equation}\label{eqn:petrov-galerkin}\marginpar{Petrov-Galerkin method}
-    Au=f \ \text{in} \ V', \ \text{or equivalently} \ a(u,w) = \langle f,w \rangle \ \forall w\in W,
+Consider a Banach space $V$ and a \emph{reflexive} Banach space $W$. As usual, we have the option to either consider a linear continuous operator $A\in\L(V;W')$ or a bilinear operator $a\in\L(V\times W;\R)$. Given $f\in W'$, the problem we want to solve is: find $u\in V$ such that
+\begin{equation}\label{eqn:petrov-galerkin}
+    Au=f \ \text{in} \ W', \ \text{or equivalently} \ a(u,w) = \langle f,w \rangle \ \forall w\in W,
 \end{equation}
 where as usual $a(\cdot,\cdot)$ is defined by $a(u,w):=\langle Au,w \rangle$ for all $u\in V$ and $w\in W$.\par
-The first question we must ask is whether the problem is well-posed. Note that we can not rely on the Lax-Milgram Lemma since here the bilinear operator $a:V\times W\to \R$, with $V\neq W$ in general.
+The first question we must ask ourselves is whether the problem is well-posed. Note that we can not rely on the Lax-Milgram Lemma since here the bilinear operator is $a:V\times W\to \R$, with $V\neq W$ in general.
 \begin{definition}\label{eqn:BNB}\marginpar{BNB conditions}
     A problem of the form \eqref{eqn:petrov-galerkin} is said to be \emph{well-posed} (in the sense of Hadamard) if the following two conditions are satisfied:
     \begin{itemize}
@@ -20,45 +20,56 @@ The first question we must ask is whether the problem is well-posed. Note that w
         \item $A$ is bounding, i.e. there exists $\alpha>0$ such that $\norm{u}_V \leq \tfrac{1}{\alpha}\norm{Au}_{W'}$ for every $u\in V$.
     \end{itemize}
 \end{definition}
-The previous two conditions are also known as \emph{BNB (Banach-Nechas-Babuska) conditions} in the literature.
-\begin{remark}
-    The previous two conditions can also be summarized by saying that $A$ is required to be:
-    \begin{enumerate}
-        \item injective (note that this is also implied by being bounding on all $V$, since clearly no element of the kernel can satisfy the bounding condition, hence the kernel must be trivial),
-        \item surjective,
-        \item bounding.
-    \end{enumerate}
-    1,2 and 3 are all different aspects of the \emph{closed range theorem}.
+The previous two conditions are also known as \emph{BNB (Banach-Ne\v{c}as-Babuska) conditions} in the literature.
+\begin{remark}\label{rmk:bnb_conditions}
+	The BNB conditions can be summarized by saying that $A$ is required to be:
+	\begin{enumerate}
+		\item injective,
+		\item surjective,
+		\item bounding.
+	\end{enumerate}
+	Note that injectivity is implied by being bounding, since no element in $\ker A$, other than zero, can satisfy the bounding condition.
+	
+	1., 2. and 3. are all different aspects of the \emph{closed range theorem} and the \emph{open mapping theorem}, the latter of which is recalled below.
 \end{remark}
-\begin{theorem}\label{theorem: closed range}\marginpar{Closed range theorem}
+
+\begin{theorem}[Open mapping theorem]
+	Let $T: E \to F$ be a surjective linear continuous map between Banach spaces. Then $T$ is an open mapping, i.e., if $U \subset E$ is an open set, then also $T(U)$ is open.
+\end{theorem}
+
+\rev{not sure about the marginpar argument of the following theorem}
+\begin{theorem}\label{thm:closed_range}\marginpar{Closed range theorem}
     Let $A\in\L(V;W')$ for $V,W$ Banach spaces. Then the following are equivalent:
     \begin{enumerate}
         \item $\im A = \overline{\im A}$,
-        \item A is bounding on $V \setminus \ker(A)$, i.e. there exists $\alpha >0$ such that $\norm{Au}_{W'}\geq\alpha\norm{u}_V$ for every $u\in V\setminus\ker(A)$.
+%        \item A is bounding on $V \setminus \ker(A)$, i.e. there exists $\alpha >0$ such that $\norm{Au}_{W'}\geq\alpha\norm{u}_V$ for every $u\in V\setminus\ker(A)$.
+        \item there exists $\alpha >0$ such that
+        \begin{equation}
+        	\forall w' \in \im A \, \exists u \in V \, \text{s.t. }\, Au = w' \, \text{and }\, \norm{Au}_{W'} = \norm{w'}_{W'} \ge \alpha\norm{u}_V.
+        \end{equation}
     \end{enumerate}
 \end{theorem}
-\begin{remark}
-    The second condition (also called \emph{bounding condition}) is equivalent to the following \emph{limsup condition}:
-    \begin{equation}\label{eqn:limsup condition}
-        \inf_{u\in V\setminus\ker(A)}\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}\geq\alpha.
-    \end{equation}
-    This can be easily seen by remembering that $\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{w}_W}=\norm{Au}_{W'}$ by definition of operatorial norm, hence the limsup condition can be rewritten as
-    \begin{equation*}
-        \inf_{u\in V\setminus\ker(A)}\frac{\norm{Au}_{W'}}{\norm{u}_V}\geq\alpha,
-    \end{equation*}
-    which is clearly equivalent to the bounding condition.
-\end{remark}
-\begin{proof}[Proof of Theorem \eqref{theorem: closed range}]
+%\begin{remark}
+%	The second condition (also called \emph{bounding condition}) is equivalent to the following \emph{limsup condition}:
+%	\begin{equation}\label{eqn:limsup condition}
+%		\inf_{u\in V\setminus\ker(A)}\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}\geq\alpha.
+%	\end{equation}
+%	This can be easily seen by remembering that $\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{w}_W}=\norm{Au}_{W'}$ by definition of operator norm, hence the limsup condition can be rewritten as
+%	\begin{equation*}
+%		\inf_{u\in V\setminus\ker(A)}\frac{\norm{Au}_{W'}}{\norm{u}_V}\geq\alpha,
+%	\end{equation*}
+%	which is clearly equivalent to the bounding condition.
+%\end{remark}
+\begin{proof}
     \hfill
     \begin{enumerate}[itemindent=25pt]
-        \item[1. $\implies$ 2.] Consider $A\in\L(V,\im A)$. Clearly $A$ is surjective on its image, and by hypothesis $\im A$ is a closed linear subspace of $W'$, and hence is a Banach space. Consider now the open unit ball $B_1(0_V)$: by the open mapping theorem (which we can apply since $A$ is a linear, continuous and surjective mapping between Banach spaces), $A(B_1(0_V))\subseteq\im A$ is open in $\im A$, and so there exists a $\gamma>0$ such that $B_\gamma(0_{W'})\subseteq A(B_1(0_V))$ (because $A(0_V)=0_{W'}$ by linearity).\par
-        It is also clear that, for any $w'\in \im A$, there exists $\alpha<\gamma$ such that $\overline{w'}:=\alpha\frac{w'}{\norm{w'}_{W'}}\in B_\gamma(0_{W'})$, which is contained in the image of $B_1(0_V)$ (here we require $w'\neq 0_{W'}$); this in turn implies the existence of a $z\in B_1(0_V)$ such that $Az=\overline{w'}$.\par
-        From this, we can easily conclude. Indeed, take $v:=\frac{\norm{w'}_{W'}}{\alpha}z$, so that $Av=w'$. Then we have
+        \item[1. $\implies$ 2.] By hypothesis, $\im A$ is a closed linear subspace of $W'$, hence it is a Banach space. As a consequence, $A: V \to \im A$ is still a linear continuous operator, moreover it is surjective. Consider now the open unit ball $B_1(0_V)$: by the open mapping theorem, $A(B_1(0_V))\subseteq\im A$ is open in $\im A$. Therefore, being $A(0_V)=0_{W'}$ by linearity, there exists $\gamma>0$ such that $B_\gamma(0_{W'})\subseteq A(B_1(0_V))$.\par
+        Pick any $\alpha < \gamma$ and let $w'\in \im A$. If $w' = 0_{W'}$, then it is sufficient to choose $u = 0_V$. Otherwise, $\overline{w'}:=\alpha\frac{w'}{\norm{w'}_{W'}}\in B_\gamma(0_{W'})$, which is contained in the image of $B_1(0_V)$. This in turn implies the existence of a vector $z\in B_1(0_V)$ such that $Az=\overline{w'}$.\par
+        From this, we can easily conclude: take $u:=\frac{\norm{w'}_{W'}}{\alpha}z$, so that $Au=w'$. Then we have
         \begin{equation*}
-            \norm{v}_V=\frac{\norm{w'}_{W'}}{\alpha}\norm{z}_V\leq\frac{\norm{w'}_{W'}}{\alpha}=\frac{\norm{Av}_{W'}}{\alpha}.
+            \norm{u}_V=\frac{\norm{w'}_{W'}}{\alpha}\norm{z}_V\leq\frac{\norm{w'}_{W'}}{\alpha}=\frac{\norm{Au}_{W'}}{\alpha}.
         \end{equation*}
-        Since this reasoning applies to any $v\not\in\ker(A)$, we proved that $A$ is bounding on $V\setminus\ker(A)$.
-        \item[2. $\implies$ 1.] We need to prove that $\im A$ is closed in $W'$. Take a Cauchy sequence $\{w_n'\}\subset \im A$ and let $w'\in W'$ be the limit. If we prove that $w'\in\im A$ we are done. For every $w_n'$, take $v_n\in V$ such that $Av_n=w_n'$. Then
+        \item[2. $\implies$ 1.] We need to prove that $\im A$ is closed in $W'$. Take a Cauchy sequence $\{w_n'\}\subset \im A$ and let $w'\in W'$ be its limit. If we prove that $w'\in\im A$ we are done. For every $w_n'$, take $v_n\in V$ such that $Av_n=w_n'$. Then
         \begin{equation*}
             \norm{w_n'-w_m'}_{W'}=\norm{A(v_n-v_m)}_{W'}\geq\alpha\norm{v_n-v_m}_V,
         \end{equation*}
@@ -66,24 +77,66 @@ The previous two conditions are also known as \emph{BNB (Banach-Nechas-Babuska) 
     \end{enumerate}
 \end{proof}
 
-\begin{example}
-    Let us consider the ``identity'' map $A:H_0^1(\Omega)\to L^2(\Omega)$, i.e. $Au=u$ for all $u\in H_0^1(\Omega)$. Observe that $\ker(A)=\{0_V\}$ but $A$ is not surjective (for example because not all functions in $L^2$ are continuous). However $H_0^1(\Omega)(=\im A)$ is dense in $L^2(\Omega)$ (recall that $H_0^1$ is the closure of $C_0^\infty$, which is dense in $L^2$). In particular, $\im A\neq\overline{\im A}$. This also shows a key difference between the infinite- and finite-dimensional cases: in finite dimensions $\ker(A)=\{0\}$ implies invertibility, while in infinite dimensions this is not enough.
-\end{example}
-\rev{Not super clear what is the meaning of this example... of course the map is not invertible, since it is not surjective...}
+It is useful to relate the bounding condition to other equivalent properties.
+\begin{proposition}\marginpar{inf-sup condition}\label{prop:inf-sup_condition}
+    Let $V, W$ be Banach spaces, with $W$ reflexive. Let $A\in\L(V;W')$. Then the following are equivalent:
+    \begin{enumerate}
+    	\item $A^T \in \L(W,V')$ is surjective.
+    	\item $A$ is injective and $\im A = \overline{\im A}$.
+    	\item $A$ is bounding.
+    	\item The \emph{inf-sup condition} is satisfied:
+		\begin{equation}\label{eqn:infsup_condition}
+			\exists \, \alpha>0 \, \text{s.t. } \inf_{u\in V}\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W} \ge \alpha.
+		\end{equation}    	
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+	The equivalence between 3. and 4. follows directly from the definition of operator norm:
+	\[
+	\norm{Au}_{W'} = \sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{w}_W}.
+	\]
+	In fact, the inf-sup condition can be rewritten as
+	\begin{equation*}
+		\inf_{u\in V}\frac{\norm{Au}_{W'}}{\norm{u}_V}\geq\alpha,
+	\end{equation*}
+	which is clearly equivalent to the bounding condition.
+		
+	Let us prove that 1. $\iff$ 2. $\iff$ 3.
+	\begin{enumerate}[itemindent=25pt]
+		\item[1. $\implies$ 3.] Assume that this is not the case; then there exists a sequence $\{v_n\}\subset V$ with $\norm{v_n}_{V}=1$ and $\norm{Av_n}_{W'}<1/n$ for all $n\in\N$. Note that, since $\norm{v_n}_{V}=1$, for every $n$ there exists a functional $v_n'\in V'$ such that $|v_n'(v_n)|\geq 1/2$. Since $A^T$ is surjective, by the open mapping theorem there exists $\gamma > 0$ such that $A^T(B_1(0_W))$ contains $B_\gamma(0_{V'})$. Thus we get a sequence $\{w_n\}\subset B_1(0_W)$ such that $A^Tw_n=\gamma v_n'$ for all $n$. Finally, observe that this implies that
+		\begin{equation*}
+			|Av_n(w_n)|=|A^Tw_n(v_n)|=\gamma|v_n'(v_n)|\geq\gamma/2,
+		\end{equation*}
+		hence $\norm{Av_n}_{W'}\geq\gamma/2$, a contradiction.
+		\item[3. $\implies$ 2.] This is a consequence of Theorem \ref{thm:closed_range}, together with Remark \ref{rmk:bnb_conditions}.
+		\item[2. $\implies$ 1.] Being $\im A$ closed, a result from the book \emph{Functional Analysis} by H. Brezis assures that $\im (A^T) = (\ker A)^\perp$. Since $A$ is injective, $(\ker A)^\perp = V$.
+		\rev{Leaving this last implication a bit sketchy until an "official" proof is chosen. I added that reference to Brezis because I couldn't come up with a self-contained proof for $2.\implies1.$ or $3.\implies1.$. Probably, mentioning this result may be useful also for the following example. Otherwise, is there some better idea?}
+	\end{enumerate}
+\end{proof}
 
-So far we have shown the following equivalences (here we give statements for $A\in\L(V,W')$, but analogous statements for $A^T\in\L(W,V')$ also hold):
-\begin{enumerate}
-    \item $A^T$ is surjective,
-    \item $A$ is injective and $\im A=\overline{\im A}$,
-    \item $A$ is bounding on $V$.
-\end{enumerate}
-Indeed, 2. and 3. are clearly equivalent thanks to the closed range theorem.\par
-Let us show that 1. implies 3. Assume that this is not the case; then there exists a sequence $\{v_n\}\subset V$ with $\norm{v_n}_{V}=1$ and $\norm{Av_n}_{W'}<1/n$ for all $n\in\N$. Note that, since $\norm{v_n}_{V}=1$, for every $n$ there exists a functional $v_n'\in V'$ such that $|v_n'(v_n)|\geq 1/2$. Since $A^T$ is surjective, by the open mapping theorem there exists $\gamma > 0$ such that $A^T(B_1(0_W))$ contains $B_\gamma(0_{V'})$. Thus we get a sequence $\{w_n\}\subset B_1(0_W)$ such that $A^Tw_n=\gamma v_n'$ for all $n$. Finally, observe that this implies that
-\begin{equation*}
-    |Av_n(w_n)|=|A^Tw_n(v_n)|=\gamma|v_n'(v_n)|\geq\gamma/2,
-\end{equation*}
-hence $\norm{Av_n}_{W'}\geq\gamma/2$, a contradiction.\par
-\rev{3. implies 1.?}
+In a similar fashion, if $V$ is reflexive as well, one can prove an analogous result for $A^T\in\L(W;V')$. In particular, we deduce that the following implications hold in general:
+\begin{align}
+	\text{$A$ surjective} &\implies \text{$A^T$ injective} \\
+	\text{$A^T$ surjective} &\implies \text{$A$ injective}
+\end{align}
+Unfortunately, the converses fail, unless we deal with finite dimensional spaces. In fact, in finite dimensions, any subspace is closed by default, hence either $\im A$ and $\im (A^T)$ are closed.
+
+\rev{In the teacher's notes there is also a relation between boundingness of $A$ and $A^T$. Expand on this. The main idea should be: if either $V$ and $W$ are reflexive, showing that both $A$ and $A^T$ are bounding is enough to prove the invertibility of $A$.}
+
+\begin{example}
+	To understand what might go wrong in infinite dimensions, consider the inclusion
+	\[
+	A: H_0^1(\Omega) \hookrightarrow L^2(\Omega) = \bigl(L^2(\Omega)\bigr)',
+	\]
+	i.e., $Au = u$ for all $u\in H_0^1(\Omega)$. Clearly, $\ker(A)=\{0\}$, but $A$ is not surjective: in fact, functions with a jump discontinuity can be in $L^2$ but not in $H^1_0$. Moreover, $\im A = H_0^1(\Omega)$ is dense in $L^2(\Omega)$ because $H_0^1$ is the closure of $C_0^\infty$, which is dense in $L^2$. Hence, $\im A\neq\overline{\im A}$.
+	
+	If we were in finite dimensions, $\ker A = \{0\}$ would be sufficient for $A$ to be invertible. However, let us look at this example from another point of view. The adjoint operator $A^T: L^2(\Omega) \to \bigl(H_0^1(\Omega)\bigr)'$ satisfies
+	\[
+	(A^T q)(u) = \int_{\Omega} uq \qquad \forall q \in L^2(\Omega).
+	\]
+	If $(A^T q)(u) = 0$ for every $u \in H_0^1(\Omega)$, then $q = 0$, thanks to standard results (fundamental lemma of calculus of variations). Hence, $\ker (A^T)$ is trivial. In finite dimensions, having $\ker (A^T) = \{0\}$ would imply that $A$ is surjective, which is not the case.
+\end{example}
+
 Now we want to rewrite the BNB conditions in the special case of Hilbert spaces.
 \begin{lemma}\label{eqn:BNB for Hilbert}
     Let $V,W$ be Hilbert spaces, and let $A\in\L(V;W')$. Then the BNB conditions \eqref{eqn:BNB} are equivalent to the following: there exists an $\alpha>0$ such that
@@ -100,7 +153,7 @@ Now we want to rewrite the BNB conditions in the special case of Hilbert spaces.
 \end{proof}
 \rev{The proof does not work, it needs to be fixed.}
 \begin{remark}
-    Using the closed range theorem and Remark \ref{eqn:limsup condition}, 1. and 2. of the previous Lemma can be more suggestively written as
+    Using the closed range theorem and Remark \ref{eqn:infsup_condition}, 1. and 2. of the previous Lemma can be more suggestively written as
     \begin{align}
         \inf_{u\in V}\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}&\geq\alpha \\
         \inf_{w\in W}\sup_{u\in V}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}&\geq\alpha.
@@ -112,7 +165,7 @@ Finally, we conclude this section with the following result, which we do not pro
 \end{theorem}
 
 
-\section{Ceà's Lemma for Petrov-Galerkin}
+\section{Ceà's Lemma for Petrov-Galerkin method}
 We consider the following slightly less general setting for Petrov-Galerkin: let $V,Q$ be Hilbert spaces, let $V_h\subset V$ and $Q_h\subset Q$ be some subspaces of finite dimension, and let $A\in\L(V;Q')$ be a linear continuous operator and let and $A_h\in\L(V_h;Q_h')$ be its discretization. It will prove useful in the following to introduce two \emph{projection} operators from the whole space to the discrete space $\Pi_h:V\to V_h$ and $P_h:Q\to Q_h$ defined as
 \begin{equation*}
     \langle\Pi_h v,v_h\rangle=\langle v,v_h\rangle \ \forall\, v\in V,
