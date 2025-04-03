@@ -33,33 +33,86 @@ The previous two conditions are also known as \emph{BNB (Banach-Ne\v{c}as-Babusk
 
 
 \subsection{Open mapping and closed range theorems}
-Injectivity, surjectivity and the bounding condition are all different aspects of the \emph{open mapping theorem} and the \emph{closed range theorem}. Let us recall them briefly in a general setting.
+\rev{This subsection is a bit reworked from the lecture notes. Main reference: Brezis, \emph{Functional Analysis}. After a quick online search, I found that "polar" and the $^o$ symbol seem to refer to another kind of subset, therefore below I used only "annihilator", with the $^\perp$ symbol. Also, $(Z^\perp)^\perp = \overline{Z}$ seems to be true only when $Z \subset X$. In case this part is ok, I think the book might be added to the bibliography.}
 
-\rev{after checking online, "polar" and the $^o$ symbol seem to refer to another kind of subset, below I used only "annihilator", with the $^\perp$ symbol}
-\begin{definition}
-	Let $X$ be a Banach space. If $Z \subset X$, we define the \emph{annihilator} of $Z$ as the set
-	\[
-	Z^\perp = \Set{f \in X' \vert \langle f, z \rangle = 0 \, \forall z \in Z}.
-	\]
-\end{definition}
-It is easy to prove that the annihilator of a set is closed.
-
-\begin{definition}
-	Let $X$, $Y$ be Banach spaces. Given $A \in \L(X;Y)$, its \emph{adjoint} is the operator $A^T \in \L(Y';X')$ given by
-	\[
-	\langle A^T y', x \rangle = \langle y', Ax \rangle, \qquad x \in X, y' \in Y'.
-	\]
-\end{definition}
-Recall that, by continuity, the kernel of a linear continuous map is closed. 
+Injectivity, surjectivity and the bounding condition are all different aspects of the \emph{open mapping theorem} and the \emph{closed range theorem}. Let us recall them in a general setting.
 
 \begin{theorem}[Open mapping theorem]\label{thm:open_mapping}
-	Let $T: E \to F$ be a surjective linear continuous map between Banach spaces. Then $T$ is an open mapping, i.e., if $U \subset E$ is an open set, then also $T(U)$ is open.
+	Let $A: X \to Y$ be a surjective linear continuous map between Banach spaces. Then $A$ is an open mapping, i.e., if $U \subset X$ is an open set, then also $A(U)$ is open.
 \end{theorem}
 
-\begin{theorem}[Closed range theorem]\label{thm:closed_range}
-	aa
-	\rev{insert theorem}
+It is also worth recalling the closed graph theorem.
+\begin{theorem}[Closed graph theorem]\label{thm:closed_graph}
+	Let $A: X \to Y$ be a linear operator between Banach spaces. Then, the following are equivalent:
+	\begin{itemize}
+		\item $A$ is continuous,
+		\item the graph of $A$ is closed in $X \times Y$.
+	\end{itemize}
 \end{theorem}
+Remember that the graph of a map $A: X \to Y$ is the set
+\[
+G(A) := \{(x,Ax) : x \in X\}.
+\]
+
+Before we look at the closed range theorem, some preliminary definitions are needed.
+\begin{definition}
+	Let $X$ be a Banach space. If $Z \subset X$ is a linear subspace, we define the \emph{annihilator} of $Z$ as the set
+	\[
+	Z^\perp = \{f \in X' : \langle f, z \rangle = 0 \, \forall z \in Z\}.
+	\]
+	If $W \subset X'$ is a linear subspace of the dual $X'$, its annihilator is the set
+	\[
+	W^\perp = \{x \in X : \langle f, x \rangle = 0 \, \forall f \in W\}.
+	\]
+\end{definition}
+It is easy to see that the annihilator of a subspace is closed. Moreover, it can be showed that:
+\begin{itemize}
+	\item if $Z \subset X$, then $(Z^\perp)^\perp = \overline{Z}$,
+	\item if $W \subset X'$, then $(W^\perp)^\perp \supset \overline{W}$.
+\end{itemize}
+Unfortunately, the use of $\supset$ when $W \subset X'$ cannot be avoided, as there are examples in which $(W^\perp)^\perp$ is strictly bigger than $\overline{W}$. However, equality holds when $X$ is reflexive. For an extensive reference, see \textbf{[insert ref, eventually]}.
+
+\begin{definition}
+	Let $X$, $Y$ be Banach spaces. Given $A \in \L(X;Y)$, its \emph{transpose} is the operator $A^T \in \L(Y';X')$ given by
+	\[
+	\langle A^T y', x \rangle_{X',X} = \langle y', Ax \rangle_{Y',Y} \qquad x \in X, y' \in Y'.
+	\]
+\end{definition}
+In the definition, it has been remarked explicitly that the duality pairings which appear at each side of the equal are different.
+
+The closed range theorem works with slightly more general operators than the ones that we have considered so far.
+\begin{definition}
+	Let $X$, $Y$ be Banach spaces. An \emph{unbounded linear operator} is a linear map $A: D(A) \subset X \to Y$ such that the domain $D(A)$ is a linear subspace of $X$.
+	
+	We say that $A$ is \emph{densely defined} if $D(A)$ is dense in $X$.
+\end{definition}
+Linear continuous operators can be seen as unbounded operators which are bounded and satisfy $D(A) = X$.
+The definition of transpose can be extended to work with unbounded linear operators as well.
+
+An operator $A$ is linked to its transpose by the following relations:
+\begin{align}
+	\ker A &= \im (A^T)^\perp \\
+	\ker (A^T) &= \im A^\perp.
+\end{align}
+These can be easily proven by writing down the definitions. If we recall that, by continuity, the kernel of a linear continuous map is closed, these equalities are also consistent from a topological point of view. A different picture comes out when trying to swap the kernel with the image. In general, we get
+\begin{align}
+	\ker A^\perp &\supset \overline{\im (A^T)} \\
+	\ker (A^T)^\perp &= \overline{\im A},
+\end{align}
+which follows after taking the annihilator at each side of the equal and recalling the observations above on the behavior of $(Z^\perp)^\perp$. Nevertheless, with further hypotheses we can still obtain equalities.
+
+\begin{theorem}[Closed range theorem]\label{thm:closed_range}
+	Let $A: D(A) \subset X \to Y$ be an unbounded linear operator which is densely defined and closed (i.e., its graph G(A) is closed). Then, the following properties are equivalent:
+	\begin{enumerate}
+		\item $\im A$ is closed,
+		\item $\im (A^T)$ is closed,
+		\item $\im A = \ker (A^T)^\perp$,
+		\item $\im (A^T) = \ker A^\perp$.
+	\end{enumerate}
+\end{theorem}
+
+Getting back to the setting of Problem \eqref{eqn:petrov-galerkin}, we discover then that the operator $A \in \L(V;W')$ and its transpose $A^T$ satisfy automatically the hypotheses of the closed range theorem, thanks to the closed graph theorem \ref{thm:closed_graph}. This will soon be of importance.
+
 
 \subsection{Conditions equivalent to BNB}
 
@@ -145,7 +198,21 @@ In a similar fashion, if $V$ is reflexive as well, one can prove an analogous re
 	\rev{In the teacher's notes it is said that this is true in the Hilbert setting, but there seems to be no problem also if both the spaces are Banach+reflexive. Am I wrong?}
 \end{remark}
 
-We also deduce that the following implications hold in general:
+\begin{corollary}
+	Using the notations above, if we assume that $V=W$ are Hilbert spaces and that $A$ is $\alpha$-elliptic, then ``Lax-Milgram implies BNB'', i.e., if the hypotheses of Lemma \ref{lemma:lax-milgram} are satisfied, then BNB conditions \eqref{eqn:BNB} hold.
+\end{corollary}
+\begin{proof}
+	It suffices to note that, thanks to ellipticity,
+	\[
+	\sup_{w\in W}\frac{\langle Au,w \rangle}{\norm{w}} \geq 
+	\frac{\langle Au,u \rangle}{\norm{u}} \geq\alpha,
+	\]
+	then apply Theorem \ref{thm:bnb_boundingness} in its inf-sup version.
+\end{proof}
+
+\rev{There's a remark in my notes on why the converse is not true. Insert something.}
+
+From Proposition \ref{prop:inf-sup_condition} and its dual version for the transpose we also deduce that the following implications hold in general:
 \begin{align}
 	\text{$A$ surjective} &\implies \text{$A^T$ injective} \\
 	\text{$A^T$ surjective} &\implies \text{$A$ injective}
@@ -153,23 +220,18 @@ We also deduce that the following implications hold in general:
 Unfortunately, the converses fail, unless we deal with finite dimensional spaces. In fact, in finite dimensions, any subspace is closed by default, hence either $\im A$ and $\im (A^T)$ are closed.
 
 \begin{example}
-	To understand what might go wrong in infinite dimensions, consider the inclusion
+	To better understand what might go wrong in infinite dimensions, consider the inclusion
 	\[
 	A: H_0^1(\Omega) \hookrightarrow L^2(\Omega) = \bigl(L^2(\Omega)\bigr)',
 	\]
 	i.e., $Au = u$ for all $u\in H_0^1(\Omega)$. Clearly, $\ker(A)=\{0\}$, but $A$ is not surjective: in fact, functions with a jump discontinuity can be in $L^2$ but not in $H^1_0$. Moreover, $\im A = H_0^1(\Omega)$ is dense in $L^2(\Omega)$ because $H_0^1$ is the closure of $C_0^\infty$, which is dense in $L^2$. Hence, $\im A\neq\overline{\im A}$.
 	
-	If we were in finite dimensions, $\ker A = \{0\}$ would be sufficient for $A$ to be invertible. However, let us look at this example from another point of view. The adjoint operator $A^T: L^2(\Omega) \to \bigl(H_0^1(\Omega)\bigr)'$ satisfies
+	If we were in finite dimensions, $\ker A = \{0\}$ would be sufficient for $A$ to be invertible. However, let us look at this example from another point of view. The transpose operator $A^T: L^2(\Omega) \to \bigl(H_0^1(\Omega)\bigr)'$ satisfies
 	\[
 	(A^T q)(u) = \int_{\Omega} uq \qquad \forall q \in L^2(\Omega).
 	\]
 	If $(A^T q)(u) = 0$ for every $u \in H_0^1(\Omega)$, then $q = 0$, thanks to standard results (fundamental lemma of calculus of variations). Hence, $\ker (A^T)$ is trivial. In finite dimensions, having $\ker (A^T) = \{0\}$ would imply that $A$ is surjective, which is not the case.
 \end{example}
-
-Finally, we conclude this section with the following result, which we do not prove.
-\begin{theorem}
-    Using the notations above, if we assume that $V=W$ and that $A$ is $\alpha$-elliptic, then ``Lax-Milgram implies BNB'', i.e. if the hypothesis of Lemma \ref{lemma:lax-milgram} are satisfied, then \eqref{eqn:BNB} holds.
-\end{theorem}
 
 
 \section{Ceà's Lemma for Petrov-Galerkin method}
