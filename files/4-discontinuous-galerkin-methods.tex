@@ -2,7 +2,7 @@
 
 \chapter{Discontinuous Galerkin methods}
 
-\section{Strang's lemmas}
+\section{Strang's lemmas}\label{sec:strang}
 Consider a bounded and coercive operator $A \in \L(V,V')$. As we know, to solve numerically the problem $A u = f$ in $V'$, we build a sequence of subspaces $V_h \subset V$ and restrict the problem to $V_h$:
 \[
 \text{find $u_h \in V_h$ s.t. } A u_h = f \quad \text{in $V'$}.
@@ -63,7 +63,9 @@ The conclusion now is immediate. \rev{...but something is wrong with the constan
 
 We can also consider a second \emph{variational crime}: the case of non-conforming finite element function spaces, i.e. $V_h \not\subset V$. For instance, think of the situation of approximating continuous functions with piecewise continuous ones.
 In this case, we can find some bound for the error considering the direct sum $\tilde{V} := V + V_h$, provided with some norm $\tnorm{\cdot}$, and working in the space $\tilde{V}$. In particular, the operators $A_h$ must be extended to be in $\L(\tilde{V},\tilde{V}')$ and, similarly, every $f_h$ must be extended to $\tilde{V}$.
-\rev{This is a slightly revisited version of the theorem in the notes. I get the concrete idea of having the norm equivalence $\norm{\cdot} \sim \tnorm{\cdot}$ in $V$, but it is not necessary in the lemma. So how do we want to use it? Is the equivalence needed also in $V_h$?}
+\rev{This is a slightly revisited version of the theorem in the notes. I get the concrete idea of having the norm equivalence $\norm{\cdot} \sim \tnorm{\cdot}$ in $V$, but it is not necessary in the lemma. So how do we want to use it? Is the equivalence needed also in $V_h$?
+
+Update, April '25: maybe this section should be connected in some way to the Petrov-Galerkin one. There, the importance of norm equivalence in $V$ becomes more apparent.}
 %suppose the norm $\tnorm{\cdot}$ is equivalent to the norm $\norm{\cdot}$ on $V$:
 %\[
 %\exists c, C>0 \text{ s.t. } c\norm{u} \le \tnorm{u} \le C\norm{u} \quad \forall u \in V;
@@ -106,7 +108,7 @@ To get to the conclusion, divide by $\alpha_0 \tnorm{v_h - u_h}$ and couple the 
 
 
 
-\section{Discontinuous Galerkin methods for the Poisson problem}
+\section{Discontinuous Galerkin methods for the Poisson problem}\label{sec:sipg}
 
 Consider the following model problem:
 \begin{equation}\label{eqn:poisson_1}

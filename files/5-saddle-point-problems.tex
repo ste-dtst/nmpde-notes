@@ -2,19 +2,19 @@
 
 \chapter{Saddle point problems}\label{chap:saddle}
 
-\section{BNB conditions}
+\section{BNB conditions}\label{sec:bnb}
 In this section we will examine a more general version of the classic problem \eqref{eqn:weak_laxmilgram}, in which the target space of the operator $A$ is allowed to be different from the dual space of the domain.
 \begin{remark}
     Recall that a Banach space $W$ is said to be \emph{reflexive} if the natural map from $W$ to $W''$ is an isomorphism (it is, in fact, a canonical isomorphism, since it does not depend on the choice of a basis). This map takes a vector $w$ and associates it to the linear map $J_w$ such that $J_w(f)=f(w)$ for every $f\in W'$. In practice we require this hypothesis so that we can identify $W=W''$.
 \end{remark}
 Consider a Banach space $V$ and a \emph{reflexive} Banach space $W$. As usual, we have the option to either consider a linear continuous operator $A\in\L(V;W')$ or a bilinear operator $a\in\L(V\times W;\R)$. Given $f\in W'$, the problem we want to solve is: find $u\in V$ such that
-\begin{equation}\label{eqn:petrov-galerkin}
+\begin{equation}\label{eqn:weak_bnb}
     Au=f \ \text{in} \ W', \ \text{or equivalently} \ a(u,w) = \langle f,w \rangle \ \forall w\in W,
 \end{equation}
 where as usual $a(\cdot,\cdot)$ is defined by $a(u,w):=\langle Au,w \rangle$ for all $u\in V$ and $w\in W$.\par
 The first question we must ask ourselves is whether the problem is well-posed. Note that we can not rely on the Lax-Milgram Lemma since here the bilinear operator is $a:V\times W\to \R$, with $V\neq W$ in general.
 \begin{definition}\label{eqn:BNB}\marginpar{BNB conditions}
-    A problem of the form \eqref{eqn:petrov-galerkin} is said to be \emph{well-posed} (in the sense of Hadamard) if the following two conditions are satisfied:
+    A problem of the form \eqref{eqn:weak_bnb} is said to be \emph{well-posed} (in the sense of Hadamard) if the following two conditions are satisfied:
     \begin{itemize}
         \item for every $f\in W'$, there exists a unique $u\in V$ such that $Au=f$,
         \item $A$ is bounding, i.e. there exists $\alpha>0$ such that $\norm{u}_V \leq \tfrac{1}{\alpha}\norm{Au}_{W'}$ for every $u\in V$.
@@ -111,7 +111,7 @@ which follows after taking the annihilator at each side of the equal and recalli
 	\end{enumerate}
 \end{theorem}
 
-Getting back to the setting of Problem \eqref{eqn:petrov-galerkin}, we discover then that the operator $A \in \L(V;W')$ and its transpose $A^T$ satisfy automatically the hypotheses of the closed range theorem, thanks to the closed graph theorem \ref{thm:closed_graph}. This will soon be of importance.
+Getting back to the setting of Problem \eqref{eqn:weak_bnb}, we discover then that the operator $A \in \L(V;W')$ and its transpose $A^T$ satisfy automatically the hypotheses of the closed range theorem, thanks to the closed graph theorem \ref{thm:closed_graph}. This will soon be of importance.
 
 
 \subsection{Conditions equivalent to BNB}
@@ -195,11 +195,11 @@ In a similar fashion, if $V$ is reflexive as well, one can prove an analogous re
 		\inf_{w\in W}\sup_{u\in V}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}&\geq\alpha.
 	\end{align}
 	This is true whenever both $V$ and $W$ are reflexive. In particular, when they are Hilbert spaces.
-	\rev{In the teacher's notes it is said that this is true in the Hilbert setting, but there seems to be no problem also if both the spaces are Banach+reflexive. Am I wrong?}
+	\rev{In the teacher's notes it is said that this is true in a Hilbert setting, but there seems to be no problem also if both the spaces are Banach+reflexive. Am I wrong?}
 \end{remark}
 
 \begin{corollary}
-	Using the notations above, if we assume that $V=W$ are Hilbert spaces and that $A$ is $\alpha$-elliptic, then ``Lax-Milgram implies BNB'', i.e., if the hypotheses of Lemma \ref{lemma:lax-milgram} are satisfied, then BNB conditions \eqref{eqn:BNB} hold.
+	Using the notations above, assume that $V=W$ are Hilbert spaces and that $A$ is $\alpha$-elliptic. Then ``Lax-Milgram implies BNB'', i.e., if the hypotheses of Lemma \ref{lemma:lax-milgram} are satisfied, then BNB conditions \eqref{eqn:BNB} hold.
 \end{corollary}
 \begin{proof}
 	It suffices to note that, thanks to ellipticity,
@@ -234,37 +234,127 @@ Unfortunately, the converses fail, unless we deal with finite dimensional spaces
 \end{example}
 
 
-\section{Ceà's Lemma for Petrov-Galerkin method}
-We consider the following slightly less general setting for Petrov-Galerkin: let $V,Q$ be Hilbert spaces, let $V_h\subset V$ and $Q_h\subset Q$ be some subspaces of finite dimension, and let $A\in\L(V;Q')$ be a linear continuous operator and let and $A_h\in\L(V_h;Q_h')$ be its discretization. It will prove useful in the following to introduce two \emph{projection} operators from the whole space to the discrete space $\Pi_h:V\to V_h$ and $P_h:Q\to Q_h$ defined as
-\begin{equation*}
-    \langle\Pi_h v,v_h\rangle=\langle v,v_h\rangle \ \forall\, v\in V,
-\end{equation*}
-and analogously for $P_h$.\par
-Consider the discrete version of problem \eqref{eqn:petrov-galerkin}: given $f\in V'$, find $u_h\in V_h$ such that
-\begin{equation}\label{eqn:discrete petrov-galerkin}\marginpar{Discrete Petrov-Galerkin}
-    \langle Au_h, q_h \rangle= \langle f,q_h \rangle \ \forall q_h\in Q_h.
+\section{Petrov-Galerkin method}
+
+\subsection{A priori bound for the error}
+
+Let us consider the discrete counterpart of Problem \eqref{eqn:weak_bnb}, in its most general form: given $f\in W'$, find $u_h\in V_h$ such that
+\begin{equation}\label{eqn:petrov-galerkin}\marginpar{Petrov-Galerkin method}
+	\langle A_h u_h, w_h \rangle= \langle f_h, w_h \rangle \quad \forall w_h\in W_h.
 \end{equation}
+In particular, $A_h \in \L(V_h, {W_h}')$ and $f_h \in {W_h}'$ are the discrete-level approximations of the operator $A$ and the functional $f$, respectively. When the spaces $V_h$ and $W_h$ are different, this approximation method is also called \emph{Petrov-Galerkin method}.
+
+Similarly to previous chapters, we say that the approximation setting is \emph{conformal} if $V_h \subset V$ and $W_h \subset W$, \emph{non-conformal} otherwise. In particular, as seen in Section \ref{sec:strang}, having $A_h \ne A$, $f_h \ne f$ and/or working in a non-conformal setting requires the use of Strang's lemmas. Therefore, it is important that the spaces $\tilde{V} = V + V_h$ and $\tilde{W} = W + W_h$ can be equipped with norms $\tnorm{\cdot}_{\tilde{V}}$ and $\tnorm{\cdot}_{\tilde{W}}$ such that:
+\begin{enumerate}
+	\item $\tnorm{v_h}_{\tilde{V}} = \norm{v_h}_{V_h}$ for all $v_h \in V_h$,
+	\item $\tnorm{v}_{\tilde{V}} \le c \norm{v}_V$ for all $v \in V$, i.e., the embedding $V \hookrightarrow \tilde{V}$ is continuous.
+\end{enumerate}
+%Of course, the same properties must hold for the other norm $\tnorm{\cdot}_{\tilde{W}}$ as well.
+\rev{Looking at Guermond's book, it seems that the assumption on the three-bar norm is needed only in the solution space. Is it true? Also todo: fix possible inconsistencies with the Strang's lemmas section.}
+
+\begin{example}
+	The three-bar norm which was introduced in Section \ref{sec:sipg} for the SIPG method satisfies the embedding property, in particular equality holds with $c = 1$.
+\end{example}
+
+As we have done for the original problem in Section \ref{sec:bnb}, we have to make sure that the approximate counterpart is well-posed as well. Therefore, a different set of BNB conditions, which will be denoted as "BNB$_h$" or \emph{discrete BNB conditions}, must be satisfied. Once BNB and BNB$_h$ conditions are proved, we are guaranteed the existence and uniqueness of solutions to the original and approximate problem, say $u$ and $u_h$. The next step is producing an \emph{a priori} bound for the error $\tnorm{u - u_h}_{\tilde{V}}$.
+
+\begin{definition}[Approximability]
+	The approximation setting is said to have the \emph{approximability} property if
+	\begin{equation}
+		\lim_{h \to 0} \left( \inf_{v_h \in V_h} \tnorm{v - v_h}_{\tilde{V}} \right) = 0 \quad \forall v \in V.
+	\end{equation}
+\end{definition}
+
+\begin{definition}[Consistency]
+	Let $u \in V$ solve Problem \eqref{eqn:weak_bnb}.
+	The approximation setting is said to be \emph{consistent} if $A_h$ can be extended to a functional in $\L(\tilde{V}, {W_h}')$ and if $u$ is also a solution to the discrete problem \eqref{eqn:petrov-galerkin}, i.e.,
+	\[
+		\langle A_h u, w_h \rangle= \langle f_h,w_h \rangle \ \quad \forall w_h\in W_h.
+	\]
+\end{definition}
+
 \begin{remark}
-    The following observation will be useful later on. Note that if $u$ is a solution to the continuous problem, then $\langle Au,q_h\rangle=\langle f,q_h\rangle$ for all $q_h\in Q_h\subset Q$. At the same time, given a solution $u_h$ to the discrete problem, we have $\langle Au_h,q_h\rangle=\langle f,q_h\rangle$ for all $q_h\in Q_h$. Subtracting the two gives us
-    \begin{equation}\label{eqn:petrov-galerkin orthogonality}
-        \langle A(u-u_h),q_h \rangle=0 
-    \end{equation}
-    for all $q_h\in Q_h$.
+	If the approximation setting is consistent, then the immediate consequence is a \emph{Galerkin orthogonality} property:
+	\[
+	\langle A_h (u-u_h) , v_h \rangle = 0 \quad \forall v_h \in W_h.
+	\]
+	Moreover, BNB conditions automatically imply the BNB$_h$ ones, because...
+	\rev{add proof}
+	However, when employing quadrature formulas or using non-conformal methods, consistency cannot be expected.
 \end{remark}
-As it has been discussed in the previous section, the solution exists and is unique if and only if the BNB conditions hold: in this setting we call them \emph{discrete infsup conditions} (or \emph{discrete BNB conditions}) to distinguish them from the infsup conditions for the continuous problem. Their formulation is however exactly the same:
-\begin{align}\label{eqn:discrete infsup}\marginpar{Discrete infsup}
+
+\begin{definition}[Asymptotic consistency]
+	Let $u \in V$ solve Problem \eqref{eqn:weak_bnb}.
+	The approximation setting is said to be \emph{asymptotically consistent} if there is an operator $\Pi_h: V \to V_h$ such that:
+	\begin{enumerate}
+		\item there exists $c>0$ such that
+		\begin{equation}
+			\tnorm{\Pi_h v - v}_{\tilde{V}} \le c \inf_{v_h \in V_h} \tnorm{v - v_h}_{\tilde{V}} \quad \forall v \in V.
+		\end{equation}
+		\item $\lim_{h \to 0} R_h(u) = 0$, where $R_h(u)$ is the \emph{consistency error}
+		\[
+		R_h(u) := \norm{A_h \Pi_h u - f_h}_{{W_h}'} = \sup_{w_h \in W_h} \frac{\vert \langle A_h \Pi_h u - f_h, w_h \rangle \vert}{\norm{w_h}_{W_h}}.
+		\]
+	\end{enumerate}
+\end{definition}
+
+\rev{Todo list, referring to Guermond's book:
+	\begin{itemize}
+		\item The book requires $A_h$ to be "uniformly bounded" on its domain, but I think this is already ok if we assume that $A_h$ is linear continuous.
+		\item There is a nice remark on the independence of asymptotic consistency from the operator $\Pi_h$ if we have approximability. Insert it?
+	\end{itemize}}
+
+When setting the discrete problem, the goal is to ensure approximability and asymptotic consistency. In fact, taking advantage of the BNB$_h$ conditions, we would get:
+\begin{align}
+	\tnorm{u - u_h}_{\tilde{V}} &\le \tnorm{u - \Pi_h u}_{\tilde{V}} + \tnorm{\Pi_h u - u_h}_{\tilde{V}} \\
+	&= \tnorm{u - \Pi_h u}_{\tilde{V}} + \norm{\Pi_h u - u_h}_{V_h} \\
+	&\le c \inf_{v_h \in V_h} \tnorm{u - v_h}_{\tilde{V}} + \frac{1}{\alpha_h} \norm{A_h (\Pi_h u - u_h)}_{{W_h}'} \\
+	&= c \inf_{v_h \in V_h} \tnorm{u - v_h}_{\tilde{V}} + \frac{1}{\alpha_h} R_h(u),
+\end{align}
+where $\alpha_h$ is the constant in the discrete inf-sup condition. Hence the error would tend to zero as $h \to 0$, provided that $\alpha_h \ge \alpha_0 > 0$ for every $h$. Indeed, $\alpha_h$ is generally different from the $\alpha$ in the continuous inf-sup, and establishing a lower bound for it is often the main difficulty. 
+
+
+\subsection{The Hilbert case in a simpler setting}
+
+Let us analyze a more specific situation. Let $V$, $Q$ be Hilbert spaces and consider, for simplicity, a conformal approximation, i.e., $V_h\subset V$ and $Q_h\subset Q$. Let $A\in\L(V;Q')$ be a linear continuous operator and let $A_h\in\L(V_h;Q_h')$ be its discretization.
+
+The continuous problem is: given $f \in Q'$, find $u \in V$ such that $Au = f$ in $Q'$, i.e.
+\begin{equation}\label{eqn:bnb-hilb}
+	\langle Au, q \rangle = \langle f, q \rangle \quad \forall q \in Q.
+\end{equation}
+
+When dealing with conformal spaces, one typically assumes that $A_h$ acts on test functions just as $A$, but only in the space $Q_h$. Therefore, the discrete version of Problem \eqref{eqn:bnb-hilb} is: given $f\in Q'$, find $u_h\in V_h$ such that
+\begin{equation}\label{eqn:petrov-galerkin-hilb}
+    \langle Au_h, q_h \rangle= \langle f,q_h \rangle \quad \forall q_h\in Q_h.
+\end{equation}
+To get a concrete expression for $A_h$ and $f_h$, however, it is useful to assume the existence of two \emph{projection} operators from the whole space to the discrete space $\Pi_h:V\to V_h$ and $P_h:Q\to Q_h$. In fact, being $\Pi_h u_h = u_h$ and $P_h q_h = q_h$, Problem \eqref{eqn:petrov-galerkin-hilb} can be rewritten as
+\[
+	\langle A \Pi_h u_h, P_h q_h \rangle= \langle f, P_h q_h \rangle \iff
+	\langle P_h^T A \Pi_h u_h, q_h \rangle= \langle P_h^T f, q_h \rangle
+\]
+hence $A_h = P_h^T A \Pi_h$ and $f_h = P_h^T f$. The formulation with $A_h$ and $f_h$ is perfectly equivalent to the one in \eqref{eqn:petrov-galerkin-hilb}.
+
+\begin{remark}
+    If $u$ is a solution to the continuous problem, then $\langle Au,q_h\rangle=\langle f,q_h\rangle$ for all $q_h\in Q_h\subset Q$. At the same time, given a solution $u_h$ to the discrete problem, we have $\langle Au_h,q_h\rangle=\langle f,q_h\rangle$ for all $q_h\in Q_h$. Subtracting the two gives us
+    \begin{equation}\label{eqn:petrov-galerkin orthogonality}
+        \langle A(u-u_h),q_h \rangle=0 \quad \forall q_h\in Q_h
+    \end{equation}
+    which, again, is a Galerkin orthogonality property.
+\end{remark}
+
+As it has been discussed in previous sections, solutions to Problems \eqref{eqn:bnb-hilb}, \eqref{eqn:petrov-galerkin-hilb} exist and are unique if and only if BNB and BNB$_h$ conditions hold. In particular, since we are working with Hilbert spaces, BNB$_h$ conditions can be reformulated as:
+\begin{align}\label{eqn:discrete infsup}\marginpar{Discrete inf-sup}
     \inf_{u_h\in V_h}\sup_{q_h\in Q_h}\frac{\langle Au_h,q_h \rangle}{\norm{u_h}_V\norm{q_h}_{Q_h}}&\geq\alpha_h>0 \\
     \inf_{q_h\in Q_h}\sup_{u_h\in V_h}\frac{\langle Au_h,q_h \rangle}{\norm{u_h}_V\norm{q_h}_{Q_h}}&\geq\alpha_h>0.
 \end{align}
-\begin{remark}
-    We wrote $\alpha_h$ to stress the fact that this constant is generally different to the one in the continuous infsup, but $\alpha_h$ \emph{does not} depend on $h$.
-\end{remark}
+
 \begin{lemma}[Ceà's lemma for Petrov-Galerkin]
-    Assume that the infsup conditions hold for both the continuous and the discrete problem. Let $u\in V$ be the solution to \eqref{eqn:petrov-galerkin} and let $u_h\in V_h$ be the solution to \eqref{eqn:discrete petrov-galerkin}. Then
+    Assume that BNB conditions hold for both Problem \eqref{eqn:bnb-hilb} and \eqref{eqn:petrov-galerkin-hilb}. Let $u\in V$ be the solution to \eqref{eqn:bnb-hilb} and let $u_h\in V_h$ be the solution to \eqref{eqn:petrov-galerkin-hilb}. Then
     \begin{equation*}
         \norm{u-u_h}_V\leq\left( 1+\frac{\norm{A}}{\alpha_h} \right)\inf_{v_h\in V_h}\norm{u-v_h}_V.
     \end{equation*}
 \end{lemma}
+\rev{Should the proof follow the teacher's notes a little more? However this seems quite ok.}
 \begin{proof}
     From the discrete infsup, we have
     \begin{equation*}
@@ -298,6 +388,7 @@ As it has been discussed in the previous section, the solution exists and is uni
     for all $v_h\in V_h$. Taking the inf on $V_h$ gives the wanted inequality.
 \end{proof}
 
+%It has been proved by J. Xu and L. Zikatanov in \textbf{[insert ref?]} that the bound can be slightly sharpened by removing the 1 in the multiplicative constant.
 
 \section{Mixed Problems}
 Saddle point problems are a class of optimization problems characterized by the presence of both primal and dual variables, leading to solutions that are critical points of a Lagrangian function. These problems are common in various applications such as fluid dynamics, structural mechanics, and optimization.\par
