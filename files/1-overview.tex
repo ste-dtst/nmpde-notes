@@ -965,8 +965,6 @@ $\mathbb{Q}^2_{-1}$ Hexahedra & 0 & 0 & 0 & 27 \\
 \label{tab:dof_distribution}
 \end{table}
 
-This vector is essential for the enumeration algorithm as it determines how many indices need to be assigned to each mesh entity.
-
 \begin{remark}[$\dpo$ and polynomial conformity]
   The $\dpo$ vector is closely related to the polynomial conformity property discussed earlier. For a finite element to be polynomially conforming, the number of DoFs assigned to each entity must match the dimension of the polynomial space on that entity. Notice however that there is a difference between the \emph{logical} association of DoFs to entities (i.e., the $\dpo$ vector) and the \emph{physical} association of DoFs to entities (i.e., the actual position of the nodes on the entities). For Lagrangian finite element spaces, the physical association of DoFs to entities is determined by the choice of support points and the polynomial degree. It is perfectly possible to have the same physical association for finite element spaces $\mathbb{P}^k_{0}$ and $\mathbb{P}^k_{-1}$, with a different logical association (i.e., a different global enumeration). For example, in the case of $\mathbb{P}^1_{0}$ and $\mathbb{P}^1_{-1}$ on a triangle, we have $\dpo_i = \delta_{1i}$ and $\dpo_i = 3\delta_{2i}$, respectively, but the physical location of the nodes could coincide (i.e., the $3$ nodes in the second case could be chosen to be physically on the vertices, even though they are not \emph{logically} assigned to vertices, i.e., $\dpo_0 = 0$ in the second case).
 \end{remark}
@@ -1045,7 +1043,7 @@ An illustration of this property is shown in Figure~\ref{fig:cg_vs_dg}, where we
 \begin{figure}[!htb]
 \centering
 \includegraphics[width=.7\textwidth]{cg_vs_dg.pdf}
-\caption{Comparison of the numbering for a continuous and for a discontinuous Lagrangian finite element method of order two on two neighboring triangles. Both finite element are polynomially conforming, and the support point locations coincide. The $\dpo$ vector on left is $\dpo = (1, 1, 0)$, while the $\dpo$ vector on the right is $\dpo = (0, 0, 6)$. We show the global indices of the support points on the left and on the right. The global indices of the support points on the shared edge are different for the discontinuous case, and we show in red the global numbering for the discontinuous case.}
+\caption{Comparison of the numbering for a continuous and for a discontinuous Lagrangian finite element method of order two on two neighboring triangles. Both finite element are polynomially conforming, and the support point locations coincide. The $\dpo$ vector on left is $\dpo = (1, 1, 0)$, while the $\dpo$ vector on the right is $\dpo = (0, 0, 6)$. We show the global indices of the support points on the left and on the right. The global indices of the support points on the shared edge are different for the discontinuous case, and we show in red the numbering in element $T_1$ for the discontinuous case.}
 \label{fig:cg_vs_dg}
 \end{figure}
 
