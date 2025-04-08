@@ -222,18 +222,18 @@ If we want the finite dimensional space $V_h$ to be conforming with $W^{k,p}(\Om
 The same inequality can be proven if the triangulation $\T_h$ is made of quadrilaterals, and if the mapping is bi-linear instead of affine. In this case, the constants that appear in the error estimates are generally better, and this is why meshes made of quadrilaterals and hexahedra are usually preferred (when available): they are more difficult to construct, but they offer better approximation properties.
 \end{remark}
 
-Finally, we can put togetner Ceà's lemma~\ref{lemma:cea} with Bramble-Hilbert lemma~\ref{lemma:bramble-hilbert} to get the following \emph{a priori} error estimate for finite element methods: provided that $A$ is bounded and coercive in $H^s(\Omega)$, for a conforming approximation $V_h \subset V \equiv H^s(\Omega)$ space we have that, if the exact solution is regular enough, i.e. $u \in H^{k+1}(\Omega)$, then
+Finally, we can put togetner Ceà's lemma~\ref{lemma:cea} with Bramble-Hilbert lemma~\ref{lemma:bramble-hilbert} to get the following \emph{a priori} error estimate for finite element methods of order $k$: provided that $A$ is bounded and coercive in $H^s(\Omega)$, for a conforming approximation $V_h \subset V \equiv H^s(\Omega)$, constructed with piece-wise polynomial bases of order $k$, we have that, if the exact solution is regular enough, i.e. $u \in H^{k+1}(\Omega)$, then
 \begin{align} \label{ineq:cea_scaling}
-\norm{u - u_h}_{s,\Omega} &\le \frac{\norm{A}}{\alpha} \inf_{v_h \in V_h} \norm{u - v_h}_{s,\Omega} \\
+  \norm{u - u_h}_V = \norm{u - u_h}_{s,\Omega} &\le \frac{\norm{A}}{\alpha} \inf_{v_h \in V_h} \norm{u - v_h}_{s,\Omega} \\
 & \le \frac{\norm{A}}{\alpha} \norm{u - \Pi^k(u)}_{s,\Omega} \\
-& \lesssim \frac{\norm{A}}{\alpha} \rho^{-s} h^{k+1} \abs{u}_{k+1,\Omega} \quad \forall 0\le s \le k.
+& \lesssim \frac{\norm{A}}{\alpha} \rho^{-s} h^{k+1} \abs{u}_{k+1,\Omega}.
 \end{align}
 The inequality hints at some strategies for error reduction:
 \begin{itemize}
 \item take $h$ smaller, i.e. \emph{refine the mesh};
-\item take $k$ bigger (if possible), which implies increasing the polynomial degree.
+\item take $k$ bigger (if possible), which implies increasing the polynomial degree of the finite element space up to the maximum regularity allowed by exact solution $u$;
 \end{itemize}
-\begin{remark}[Regularity] In order use the \emph{a-priori} estimate, we need to make sure that the solution $u$ is indeed in the space $H^{k+1}(\Omega)$. This, in general, will depend on $A$, on $f$ and on the regularity of the domain $\Omega$, and it is what the theory of regularity for PDEs attempts to do. In particular, in the following section we will mention the concept of $r$-regularity.
+\begin{remark}[Regularity] In order use the \emph{a-priori} estimate, we need to make sure that the solution $u$ is indeed in the space $H^{k+1}(\Omega)$. This, in general, will depend on $A$, on $f$, and on the regularity of the domain $\Omega$, and it is what the theory of regularity for PDEs attempts to do. In particular, in the following section we will mention the concept of $r$-regularity.
 \end{remark}
 
 %%%%%
@@ -250,33 +250,30 @@ We say that the mesh is \emph{quasi-uniform} if
 \[
 \exists \sigma > 0 \text{ s.t. } \rho_T \ge \sigma h_T  \quad \forall T\in \T_h.
 \]
-For such a mesh, the inequality~\eqref{ineq:cea_scaling} becomes:
+For such a mesh, inequality~\eqref{ineq:cea_scaling} becomes:
 \begin{equation} \label{ineq:cea_scaling2}
 \norm{u - u_h}_{s,p,\Omega}
-\lesssim \frac{\norm{A}}{\alpha} h^{k+1-s} \abs{u}_{k+1,p,\Omega} \quad \forall 0\le s \le k.
+\lesssim \frac{\norm{A}}{\alpha} h^{k+1-s} \abs{u}_{k+1,p,\Omega}.
 \end{equation}
 From now on we consider $p=2$ and use the notation $\norm{u}_k$ to mean $\norm{u}_{k,2,\Omega}$.
 \begin{definition}
-Let $V \subset H^k$ and $A \in \L(V,V')$. We say that $A$ is $r$-\emph{regular} if there exists an interval $[s_{min}, s_{max}]$ such that $\forall g \in H^s$, with $s \in [s_{min}, s_{max}]$, the problem $Au=f$ admits a unique solution $u$ which satisfies
+Let $V \subset H^s(\Omega)$, with $\|\cdot\|_V \sim \|\cdot\|_s$ and $A \in \L(V,V')$. We say that $A$ is $r$-\emph{regular} if there exists an interval $[s_{min}, s_{max}]$ (with $s_{min}\geq -s$) such that $\forall g \in H^\ell(\Omega)$, with $\ell \in [s_{min}, s_{max}]$, the problem $Au=f$ admits a unique solution $u$ which satisfies
 \[
-\norm{u}_{s+r} \lesssim \norm{f}_s.
+\norm{u}_{\ell+r} \lesssim \norm{f}_\ell.
 \]
 \end{definition}
-The inequality~\eqref{ineq:cea_scaling2}, combined with the assumption of $r$-regularity, becomes
-\begin{equation}\label{ineq:cea_scaling3}
-\norm{u-u_h}_k \lesssim h^{s+r-k} \abs{u}_{s+r} \lesssim h^{s+r-k} \norm{f}_s \quad \forall 0\le k \le s+r-1.
+For finite element spaces of order $k$, inequality~\eqref{ineq:cea_scaling2}, combined with the assumption of $r$-regularity, becomes
+\begin{equation}\label{eq:a_priori_error_estimates}
+\norm{u-u_h}_s \lesssim h^{\ell+r-s} \abs{u}_{\ell+r} \lesssim h^{s+r-k} \norm{f}_\ell \quad  0 \le \ell+r \le k + 1.
 \end{equation}
-This is finally the error estimate we were looking for. However, as said before, we may not be allowed to use all the values for $k$ in the range above, as the following example will show.
+This is generally the \emph{a-priori} error estimate we were looking for. However, as said before, we may not be allowed to use all the values for $k$ in the range above, as the following example will show.
 \begin{example}
-The Poisson problem on a Lipschitz, convex domain is $2$-regular, with $s \le 0$. Hence, the inequality~\eqref{ineq:cea_scaling3} becomes
+The Poisson problem on a Lipschitz, convex domain is $2$-regular, with $s_{min} = -1$ and $s_{max}=0$. In this case $V=H^1_0(\Omega)$ and $s=1$. Hence, inequality~\eqref{eq:a_priori_error_estimates} becomes
 \[
-\norm{u-u_h}_k \lesssim h^{s+2-k} \norm{f}_s \quad \forall 0\le k \le s+1.
+\norm{u-u_h}_1 \lesssim h^{\ell+1} \norm{f}_\ell \quad \forall -1 \le \ell \le 0.
 \]
-In particular, if $k=1$, we get
-\[
-\norm{u-u_h}_1 \lesssim h^{s+1} \norm{f}_s.
-\]
-This means that, for instance, if $f \in L^2$, i.e. $s=0$, the order of convergence in the $H^1$ norm is $1$. If $\Omega$ is better than Lipschitz, then the range for $s$ becomes better, hence we gain a better convergence of the numerical approximation (provided that $f$ is more regular).
+
+This means that, for instance, if $f \in L^2$, i.e. $\ell=0$, the order of convergence in the $H^1$ norm is $1$. If $\Omega$ is better than Lipschitz, then the range for $s$ becomes better, hence we gain a better convergence of the numerical approximation (provided that $f$ is more regular).
 Unfortunately, we cannot use the $L^2$ norm in Ceà's lemma, and this means that we cannot get an estimate in the $L^2$ norm.
 \end{example}
 
