@@ -20,7 +20,7 @@ The first question we must ask ourselves is whether the problem is well-posed. N
         \item $A$ is bounding, i.e. there exists $\alpha>0$ such that $\norm{u}_V \leq \tfrac{1}{\alpha}\norm{Au}_{W'}$ for every $u\in V$.
     \end{itemize}
 \end{definition}
-The previous two conditions are also known as \emph{BNB (Banach-Ne\v{c}as-Babuska) conditions} in the literature.
+The previous two conditions are also known as \emph{BNB (Banach-Ne\v{c}as-Babu\v{s}ka) conditions} in the literature.
 \begin{remark}\label{rmk:bnb_conditions}
 	The BNB conditions can be summarized by saying that $A$ is required to be:
 	\begin{enumerate}
@@ -33,7 +33,7 @@ The previous two conditions are also known as \emph{BNB (Banach-Ne\v{c}as-Babusk
 
 
 \subsection{Open mapping and closed range theorems}
-\rev{This subsection is a bit reworked from the lecture notes. Main reference: Brezis, \emph{Functional Analysis}. After a quick online search, I found that "polar" and the $^o$ symbol seem to refer to another kind of subset, therefore below I used only "annihilator", with the $^\perp$ symbol. Also, $(Z^\perp)^\perp = \overline{Z}$ seems to be true only when $Z \subset X$. In case this part is ok, I think the book might be added to the bibliography.}
+\rev{This subsection is a bit reworked from the lecture notes. Main reference: Brezis, \emph{Functional Analysis}. I did some research and there seems to be no clear consensus on the meaning of "polar" and the $^o$ symbol, therefore in the sequel I used "annihilator", with the $^\perp$ symbol. Also, $(Z^\perp)^\perp = \overline{Z}$ seems to be true only when $Z \subset X$. In case this part is ok, I think the book might be added to the bibliography.}
 
 Injectivity, surjectivity and the bounding condition are all different aspects of the \emph{open mapping theorem} and the \emph{closed range theorem}. Let us recall them in a general setting.
 
@@ -65,7 +65,7 @@ Before we look at the closed range theorem, some preliminary definitions are nee
 	W^\perp = \{x \in X : \langle f, x \rangle = 0 \, \forall f \in W\}.
 	\]
 \end{definition}
-It is easy to see that the annihilator of a subspace is closed. Moreover, it can be showed that:
+In some texts, the annihilator is also called \emph{polar} set and the $^o$ symbol is used. It is easy to see that the annihilator of a subspace is closed. Moreover, it can be showed that:
 \begin{itemize}
 	\item if $Z \subset X$, then $(Z^\perp)^\perp = \overline{Z}$,
 	\item if $W \subset X'$, then $(W^\perp)^\perp \supset \overline{W}$.
@@ -298,7 +298,7 @@ As we have done for the original problem in Section \ref{sec:bnb}, we have to ma
 	\end{enumerate}
 \end{definition}
 
-\rev{Todo list, referring to Guermond's book:
+\rev{Checklist, referring to Guermond's book:
 	\begin{itemize}
 		\item The book requires $A_h$ to be "uniformly bounded" on its domain, but I think this is already ok if we assume that $A_h$ is linear continuous.
 		\item There is a nice remark on the independence of asymptotic consistency from the operator $\Pi_h$ if we have approximability. Insert it?
@@ -348,7 +348,7 @@ As it has been discussed in previous sections, solutions to Problems \eqref{eqn:
     \inf_{q_h\in Q_h}\sup_{u_h\in V_h}\frac{\langle Au_h,q_h \rangle}{\norm{u_h}_V\norm{q_h}_{Q_h}}&\geq\alpha_h>0.
 \end{align}
 
-\begin{lemma}[Ceà's lemma for Petrov-Galerkin]
+\begin{lemma}[Ceà's lemma for Petrov-Galerkin]\label{lemma:cea-petrov-galerkin}
     Assume that BNB conditions hold for both Problem \eqref{eqn:bnb-hilb} and \eqref{eqn:petrov-galerkin-hilb}. Let $u\in V$ be the solution to \eqref{eqn:bnb-hilb} and let $u_h\in V_h$ be the solution to \eqref{eqn:petrov-galerkin-hilb}. Then
     \begin{equation*}
         \norm{u-u_h}_V\leq\left( 1+\frac{\norm{A}}{\alpha_h} \right)\inf_{v_h\in V_h}\norm{u-v_h}_V.
@@ -388,15 +388,16 @@ As it has been discussed in previous sections, solutions to Problems \eqref{eqn:
     for all $v_h\in V_h$. Taking the inf on $V_h$ gives the wanted inequality.
 \end{proof}
 
-%It has been proved by J. Xu and L. Zikatanov in \textbf{[insert ref?]} that the bound can be slightly sharpened by removing the 1 in the multiplicative constant.
+It has been proved by J. Xu and L. Zikatanov in~\cite{xu03} that the bound in Lemma \ref{lemma:cea-petrov-galerkin} can be slightly sharpened by removing "$1$" from the multiplicative constant. However, the result is mainly aesthetic, since it does not yield a significant benefit in many applications.
+
 
 \section{Mixed Problems}
 Saddle point problems are a class of optimization problems characterized by the presence of both primal and dual variables, leading to solutions that are critical points of a Lagrangian function. These problems are common in various applications such as fluid dynamics, structural mechanics, and optimization.\par
-The setting is the following: take  two Hilbert spaces $V,Q$ and two linear continuous operators
+The setting is the following: take two Hilbert spaces $V,Q$ and two linear continuous operators
 \begin{equation*}
     A:V\to V', \quad B:V\to Q'.
 \end{equation*}
-Take also $f\in V'$ and $g\in Q'$. The problem we aim to solve is to find $(u, p)\in V\times Q$ such that:
+Take also $f\in V'$ and $g\in Q'$. The problem we aim to solve is: find $(u, p)\in V\times Q$ such that
 \begin{equation}\label{eqn:general mixed prb} \marginpar{General mixed problem}
     \begin{aligned}
         Au + B^Tp &= f \quad \text{in} \ V', \\
@@ -417,25 +418,27 @@ Take also $f\in V'$ and $g\in Q'$. The problem we aim to solve is to find $(u, p
 
 By the previous Remark, we can therefore restrict ourselves to the study of the so-called ``$u_0$ problem'', i.e. finding $u_0\in Z$ such that
 \begin{equation*}
-    \langle Au_0,v_0 \rangle + \langle B^Tp,v_0 \rangle = \langle \Tilde{f},v_0 \rangle \quad \forall \ v_0\in Z
+    \langle Au_0,v_0 \rangle + \langle B^Tp,v_0 \rangle = \langle \Tilde{f},v_0 \rangle \quad \forall \ v_0\in Z.
 \end{equation*}
-(this is just the first \eqref{eqn:u0 prb} written in terms of scalar products). Since $v_0\in Z$, the second term of the left-hand side vanishes, and thus we are left with the equation
+This is just the first equation in \eqref{eqn:u0 prb}, written in terms of duality and restricted to $Z = \ker B$. Since $v_0\in Z$, the second term of the left-hand side vanishes, and thus we are left with the equation
 \begin{equation*}
     \langle Au_0,v_0 \rangle = \langle \Tilde{f},v_0 \rangle \quad \forall \ v_0\in Z.
 \end{equation*}
-As we have said multiple times, the solution $u_0\in Z$ to this problem exists and is unique if and only if the BNB conditions hold in $Z$. Explicitly, we ask that there exists an $\alpha>0$ such that
+As we have said multiple times, the solution $u_0\in Z$ to this problem exists and is unique if and only if BNB conditions hold in $Z$. Explicitly, we ask that there exists an $\alpha>0$ such that
 \begin{align}\label{eqn:ell-ker conditions}\marginpar{Ell-ker conditions}
     \inf_{v_0\in Z}\sup_{u_0\in Z}\frac{\langle Au_0,v_0 \rangle}{\norm{u_0}_V\norm{v_0}_V}&\geq\alpha \\
     \inf_{u_0\in Z}\sup_{v_0\in Z}\frac{\langle Au_0,v_0 \rangle}{\norm{u_0}_V\norm{v_0}_V}&\geq\alpha.
 \end{align}
-In this setting, the BNB conditions are also called \emph{ell-ker conditions} (for ellipticity in the kernel).\par
+In this setting, BNB conditions are also called \emph{ell-ker conditions} (for ellipticity in the kernel).\par
 If we manage to solve the $u_0$-problem, the solution to the original problem can be found by solving the \emph{$p$-problem}: find $p\in Q$ such that
 \begin{align*}
     \langle B^Tp,v\rangle &= -\langle Au,v\rangle + \langle f,v\rangle\\
     &= -\langle Au_0,v\rangle + \langle\Tilde{f},v\rangle \quad \forall v\in V.
 \end{align*}
-Once again, existence and uniqueness of the solution are equivalent to the following infsup condition:
-\begin{equation}\label{eqn:infsup for B}\marginpar{Infsup condition for $B$}
+Let $L = \tilde{f} - Au_0$ and notice that $L \in Z^\perp = \ker B^\perp$. If we require $B$ to be surjective, by the closed range theorem \ref{thm:closed_range} we obtain $\ker B^\perp = \im(B^T)$, therefore a solution $p$ exists; it is also unique, because $B$ surjective implies $B^T$ injective.
+
+Surjectivity of $B$ is equivalent to the following inf-sup condition:
+\begin{equation}\label{eqn:infsup for B}\marginpar{inf-sup condition for $B$}
     \inf_{p\in Q}\sup_{v\in V}\frac{\langle Bv,p \rangle}{\norm{v}_V\norm{p}_Q}\geq\beta>0
 \end{equation}
 In conclusion, if conditions \eqref{eqn:ell-ker conditions} and \eqref{eqn:infsup for B} hold, then there is a unique solution $(u,p)\in V\times Q$ for the mixed problem \eqref{eqn:general mixed prb}.\par
@@ -471,7 +474,7 @@ An analogous computation can be made for $p,$ showing that
         \inf_{\psi\in \mathbb{V}}\sup_{\theta\in \mathbb{V}}\frac{\langle A\psi,\theta \rangle}{\norm{\psi}_\mathbb{V}\norm{\theta}_\mathbb{V}}&\geq\overline{\alpha} \\
         \inf_{\theta\in \mathbb{V}}\sup_{\psi\in \mathbb{V}}\frac{\langle A\psi,\theta \rangle}{\norm{\psi}_\mathbb{V}\norm{\theta}_\mathbb{V}}&\geq\overline{\alpha}.
     \end{align}
-    This is known in the literature as \emph{``Brezzi $\iff$ Babuska''}.
+    This is known in the literature as \emph{``Brezzi $\iff$ Babu\v{s}ka''}.
 \end{remark}
 
 \subsection{Some considerations on discrete mixed problems}
