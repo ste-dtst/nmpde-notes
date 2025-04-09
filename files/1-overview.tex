@@ -161,6 +161,8 @@ When $X = Y$ is a Hilbert space, a bilinear form $a: X \times X \to \mathbb{R}$ 
 \end{itemize}
 
 \subsection{Trace spaces and the trace operator}
+\rev{L'operatore traccia viene introdotto formalmente nella sezione \ref{sec:trace_operators}, spostarlo qui forse?}
+
 
 For functions in $H^1(\Omega),$ we can define their traces on the boundary $\partial\Omega$. The trace operator 
 \[
@@ -1035,7 +1037,7 @@ This mapping ensures that the support points associated to the shared vertices a
   
   Conversely, if we take two finite element functions $u_{h,i}$ and $u_{h,j}$ defined on the elements $T^i$ and $T^j$, there is no reasons why they should coincide on $\Xi$, unless their values on the coinciding support points $a_{i~\alpha}$ and $a_{j~\beta}$ coincide. In order for this to be true, there cannot be two \emph{different} values of $u$ associated to the two local indices $\alpha$ and $\beta$: the global index of two coinciding support points $a_{i~\alpha}$ and $a_{j~\alpha}$ must be the same.
   
-  By the enumeration algorithm described above, this is true only if the entries of the $\dpo$ vector are consistent with the polynomial conformity property. In this case, every dof associated to a vertex, edge, face, or volume is assigned a unique global index, and the number of DoFs assigned to each entity (vertex, edge, face, volume) matches the dimension of the polynomial space on that entity. In particular, if the $\dpo$ vector is defined such that the logical association between dofs on a shared entity $\Xi$ is consistent with the polynomial conformity property, then the global indices of the support points on $\Xi$ are the same for both elements $T_i$ and $T_j$, and therefore the values of the nodal functions associated to the shared entity $\Xi$ coincide, i.e., for any $\alpha$ there exists a $\beta$ such that $\mathcal{I}^{i~\alpha} = \mathcal{I}^{j~\beta}$, and therefore $v^{i\alpha}(u_{h,i}) = v^{j\beta}(u_{h,j})$ on $\Xi$, and we conclude that $u_{h,i} = u_{h,j}$ on $\Xi$.
+  By the enumeration algorithm described above, this is true only if the entries of the $\dpo$ vector are consistent with the polynomial conformity property. In this case, every dof associated to a vertex, edge, face, or volume is assigned a unique global index, and the number of DoFs assigned to each entity (vertex, edge, face, volume) matches the dimension of the polynomial space on that entity. In particular, if the $\dpo$ vector is defined such that the logical association between DoFs on a shared entity $\Xi$ is consistent with the polynomial conformity property, then the global indices of the support points on $\Xi$ are the same for both elements $T_i$ and $T_j$, and therefore the values of the nodal functions associated to the shared entity $\Xi$ coincide, i.e., for any $\alpha$ there exists a $\beta$ such that $\mathcal{I}^{i~\alpha} = \mathcal{I}^{j~\beta}$, and therefore $v^{i\alpha}(u_{h,i}) = v^{j\beta}(u_{h,j})$ on $\Xi$, and we conclude that $u_{h,i} = u_{h,j}$ on $\Xi$.
 \end{proof}
 
 An illustration of this property is shown in Figure~\ref{fig:cg_vs_dg}, where we compare the numbering for a discontinuous and for a continuous Lagrangian finite element method of order two on two neighboring triangles.

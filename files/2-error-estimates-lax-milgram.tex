@@ -246,34 +246,41 @@ Consider a triangulation $\T_h$ and recall the quantities $h$ and $\rho$ we defi
 \[
 h := \max_{T \in \T_h} h_T, \quad \rho := \min_{T \in \T_h} \rho_T.
 \]
-We say that the mesh is \emph{quasi-uniform} if
+We say that the mesh is \emph{shape-regular} if
 \[
-\exists \sigma > 0 \text{ s.t. } \rho_T \ge \sigma h_T  \quad \forall T\in \T_h.
+\exists \sigma > 0 \text{ s.t. } \rho_T \ge \sigma h_T  \quad \forall T\in \T_h
+\]
+and we call $\sigma$ the constant of shape-regularity. We say instead that a mesh is \emph{quasi-uniform} if 
+\[
+\rho \sim h
 \]
 For such a mesh, inequality~\eqref{ineq:cea_scaling} becomes:
 \begin{equation} \label{ineq:cea_scaling2}
 \norm{u - u_h}_{s,p,\Omega}
 \lesssim \frac{\norm{A}}{\alpha} h^{k+1-s} \abs{u}_{k+1,p,\Omega}.
 \end{equation}
-From now on we consider $p=2$ and use the notation $\norm{u}_k$ to mean $\norm{u}_{k,2,\Omega}$.
+From now on we consider $p=2$ and use the notation $\norm{u}_k$ to mean $\norm{u}_{k,2,\Omega}$. Let $(\cdot)^T$ be the adjoint operator:
 \begin{definition}
-Let $V \subset H^s(\Omega)$, with $\|\cdot\|_V \sim \|\cdot\|_s$ and $A \in \L(V,V')$. We say that $A$ is $r$-\emph{regular} if there exists an interval $[s_{min}, s_{max}]$ (with $s_{min}\geq -s$) such that $\forall g \in H^\ell(\Omega)$, with $\ell \in [s_{min}, s_{max}]$, the problem $Au=f$ admits a unique solution $u$ which satisfies
-\[
-\norm{u}_{\ell+r} \lesssim \norm{f}_\ell.
-\]
+Let $V \subset H^s(\Omega)$, with $\|\cdot\|_V \sim \|\cdot\|_s$ and $A \in \L(V,V')$. We say that $A$ (or $A^T$) is $r$-\emph{regular} if there exists an interval $[s_{min}, s_{max}]$ such that $\forall f,g \in H^\ell(\Omega)$, with $\ell \in [s_{min}, s_{max}]$, the problem $Au=f$ (or $A^T\varphi = g)$ admits a unique solution $u$ (or $\varphi$) which satisfies
+\begin{gather*}
+\norm{u}_{\ell+r} \lesssim \norm{f}_\ell \\
+\norm{\varphi}_{\ell+r} \lesssim \norm{g}_\ell
+\end{gather*}
 \end{definition}
 For finite element spaces of order $k$, inequality~\eqref{ineq:cea_scaling2}, combined with the assumption of $r$-regularity, becomes
+\rev{Check the exponents after my fix, i was not convinced by $s+r-k$ on the second inequality, that one should be obtained \emph{after} the Nietzsche trick.}
 \begin{equation}\label{eq:a_priori_error_estimates}
-\norm{u-u_h}_s \lesssim h^{\ell+r-s} \abs{u}_{\ell+r} \lesssim h^{s+r-k} \norm{f}_\ell \quad  0 \le \ell+r \le k + 1.
+\norm{u-u_h}_s \lesssim h^{\ell+r-s} \abs{u}_{\ell+r} \lesssim h^{\ell+r-s} \norm{f}_\ell \quad  0 \le \ell+r \le k + 1.
 \end{equation}
 This is generally the \emph{a-priori} error estimate we were looking for. However, as said before, we may not be allowed to use all the values for $k$ in the range above, as the following example will show.
+
 \begin{example}
-The Poisson problem on a Lipschitz, convex domain is $2$-regular, with $s_{min} = -1$ and $s_{max}=0$. In this case $V=H^1_0(\Omega)$ and $s=1$. Hence, inequality~\eqref{eq:a_priori_error_estimates} becomes
+The Poisson problem on a Lipschitz, convex domain is $2$-regular (i.e. $r = 2$), with $s_{min} = -1$ and $s_{max}=0$. If $u \in H^1_0(\Omega)$ (i.e. $s = 1$) the inequality~\eqref{eq:a_priori_error_estimates} becomes
 \[
 \norm{u-u_h}_1 \lesssim h^{\ell+1} \norm{f}_\ell \quad \forall -1 \le \ell \le 0.
 \]
 
-This means that, for instance, if $f \in L^2$, i.e. $\ell=0$, the order of convergence in the $H^1$ norm is $1$. If $\Omega$ is better than Lipschitz, then the range for $s$ becomes better, hence we gain a better convergence of the numerical approximation (provided that $f$ is more regular).
+If $\Omega$ is better than Lipschitz, then the range for $s$ becomes better, hence we gain a better convergence of the numerical approximation (provided that $f$ is more regular).
 Unfortunately, we cannot use the $L^2$ norm in Ceà's lemma, and this means that we cannot get an estimate in the $L^2$ norm.
 \end{example}
 
@@ -282,8 +289,9 @@ With some bit of additional work, we can produce error estimates on weaker norms
 \begin{lemma}[Nitsche] \label{lemma:nitsche}
 Let $A \in \L(V,V')$ an operator as in the hypotheses of Lax-Milgram's lemma. Assume that $V$ is a subspace of some Hilbert space $H$, with the following properties:
 \begin{romanlist}
-\item $\norm{u}_H \lesssim \norm{u}_V$ $\quad \forall u \in V$ \quad (i.e., the embedding $V \hookrightarrow H$ is continuous);
-\item $V = \overline{H}^{\norm{\cdot}_V}$.
+\item $\norm{u}_H \lesssim \norm{u}_V$ $\quad \forall u \in V$;
+\item $V = \overline{H}^{\norm{\cdot}_V}$,
+i.e. the embedding $V \hookrightarrow H$ is dense and continuous.
 \end{romanlist}
 Then the following inequality holds:
 \begin{equation}\label{eqn:nitsche_lemma}
@@ -292,11 +300,10 @@ Then the following inequality holds:
 \end{lemma}
 
 \begin{remark}
-With the hypotheses above, if $f \in H$, by the Hahn-Banach theorem $f$ can be extended to a functional $\tilde{f} \in V'$, i.e.
+With the hypotheses above, if $f \in V$, by the Hahn-Banach theorem $f$ can be extended to a functional $\tilde{f} \in V'$, i.e.
 \[
 \langle \tilde{f}, v \rangle_V = (f, v)_H \quad \forall v \in V.
 \]
-\rev{Is Hahn-Banach really necessary? We are in a Hilbert space setting.}
 Now consider the usual problem in operator form $A u = \tilde{f}$, i.e.
 \begin{equation}
 \langle Au,v \rangle = \langle \tilde{f},v \rangle = (f, v)_H \quad \forall v\in V.
