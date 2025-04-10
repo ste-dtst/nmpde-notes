@@ -153,7 +153,7 @@ In fact, the $\gtrsim$ inequality follows from bounding the Sobolev seminorm wit
 \]
 The $\lesssim$ inequality, instead, can be proven by contradiction. If it were not true, then for every constant $c$ there would exist $w_c \in W^{k+1,p}$ such that $\norm{w_c}_{k+1,p} = 1$ and
 \[
-c(\abs{w_c}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(w_c)}^p) < \norm{w_c}_{k+1,p}^p = 1.
+c\big(\abs{w_c}_{k+1,p}^p + \sum_{i=0}^N \abs{v^i(w_c)}^p\big) < \norm{w_c}_{k+1,p}^p = 1.
 \]
 If we choose $c=j$ in $[1,2,\dots)$, we obtain a sequence $\{w_j\}$ such that
 \begin{equation} \label{eqn:deny-lions-proof}
@@ -185,32 +185,41 @@ where the last equality holds because the summation term is equal to zero by lin
 \end{itemize}
 \end{proof}
 
-Bramble-Hilbert lemma allows us to provide a-priori error estimates for a finite element method, by quantifying the constants in the inequality throught the scaling arguments presented in the previous section. Consider an affine mapping $F_T: \hat{T} \to T$ and its related quantities $h_T$ and $\rho_T$. 
+Bramble-Hilbert lemma allows us to provide a-priori error estimates for the interpolation operator of a finite element space, by quantifying the constants in the inequality throught the scaling arguments presented in the previous section:
+\begin{theorem}[Interpolation error]
+  \label{theo:interpolation_error}
+  Let $u\in W^{k+1,p}(\Omega)$, and let
+\[
+h = \max_{T \in \T_h} h_T, \quad \rho = \min_{T \in \T_h} \rho_T, \quad \Omega = \mathring{\overline{\bigcup_{T \in \T_h} T}}.
+\]
+
+Then the interpolation operator $\Pi^k$ satisfies:
+\begin{equation}
+  \label{eqn:interpolation_error}
+\Bigl( \sum_{T \in \T_h} \norm{u- \Pi^k(u)}_{s,p,T}^p \Bigr)^\frac{1}{p} \lesssim
+h^{\ell+1} \rho^{-s} \abs{u}_{\ell+1,p,\Omega} \qquad 0 \le s \le \ell \leq k,
+\end{equation}
+where $k$ indicates the degree of the local polynomial spaces $P^k(T)$ of the finite elements.
+\end{theorem}
+
+\begin{proof}
+Consider an affine mapping $F_T: \hat{T} \to T$ and its related quantities $h_T$ and $\rho_T$. 
 
 We can use Bramble-Hilbert lemma applied to the operator $(I-\Pi^k)\circ F_T$ to control the $s$-Sobolev norm of the error $u - \Pi^k(u)$. By repeating the scaling arguments on both $\norm{(u- \Pi^k(u)) \circ F_T}_{s,p,\hat{T}}$ and $\abs{u \circ F_T }_{k+1,p,\hat{T}}$, we get, for any triangle $T = F_T(\hat{T})$:
 \begin{align}
 \norm{u- \Pi^k(u)}_{s,p,T} &\lesssim \rho_T^{-s} J^{\frac{1}{p}} \norm{(u- \Pi^k(u)) \circ F_T}_{s,p,\hat{T}} \\
 & = \rho_T^{-s} J^{\frac{1}{p}} \norm{u \circ F_T - \Pi^k(u) \circ F_T}_{s,p,\hat{T}} \\
 & \lesssim \rho_T^{-s} J^{\frac{1}{p}} \abs{u \circ F_T }_{k+1,p,\hat{T}} \\
-& \lesssim h_T^{k+1} \rho_T^{-s} \abs{u}_{k+1,p,T} \quad \forall 0\le s \le k.
+& \lesssim h_T^{k+1} \rho_T^{-s} \abs{u}_{k+1,p,T} \qquad 0\le s \le k.
 \end{align}
 
-Overall, we can control the $s$-Sobolev norm of the error up to order $k$ with the Sobolev semi-norm of order $k+1$ of the solution $u$.
-
-If we sum over the cells of the triangulation, we obtain a global \emph{a-priori} inequality:
+Overall, we can control the $s$-Sobolev norm of the error up to order $k$ with the Sobolev semi-norm of order $k+1$ of the solution $u$. Since $P^\ell \subseteq P^k$ for $\ell \leq k$, we can repeat the argument for the Sobolev semi-norm of order $\ell+1$. Summing over the cells of the triangulation, we obtain a global \emph{a-priori} inequality:
 \[
 \sum_{T \in \T_h} \norm{u- \Pi^k(u)}_{s,p,T}^p \lesssim
-\sum_{T \in \T_h} \bigl( h_T^{k+1} \rho_T^{-s} \abs{u}_{k+1,p,T} \bigr)^p.
+\sum_{T \in \T_h} \bigl( h_T^{\ell+1} \rho_T^{-s} \abs{u}_{\ell+1,p,T} \bigr)^p, \qquad 0 \le s \le \ell \leq k.
 \]
-If we let
-\[
-h = \max_{T \in \T_h} h_T, \quad \rho = \min_{T \in \T_h} \rho_T, \quad \Omega = \mathring{\overline{\bigcup_{T \in \T_h} T}}
-\]
-then we can bound the RHS of the inequality in this way:
-\[
-\Bigl( \sum_{T \in \T_h} \norm{u- \Pi^k(u)}_{s,p,T}^p \Bigr)^\frac{1}{p} \lesssim
-h^{k+1} \rho^{-s} \abs{u}_{k+1,p,\Omega}.
-\]
+The thesis follows from the definitions of $h$ and $\rho$.
+\end{proof}
 The LHS is also called a \emph{broken Sobolev norm}, since it is defined element-wise. It is not automatically equal to $\norm{u- \Pi^k(u)}_{s,p,\Omega}$: in order to be, the global space $V_h$, obtained by gluing together the local spaces $P^k(T_m)$, must be \emph{conforming} to $V$. 
 
 \begin{remark}[Conformity] For a finite element space to be conforming, we need to guarantee that the resulting finite dimensional space $V_h$ is indeed included in $V$. While locally every polynomial space $P^k(T)$ is always contained in every Sobolev space $W^{k,p}(T)$ (since $P^k(T) \subset C^{\infty}(T)$ for any $k$), the same cannot be said for the \emph{union} of the local spaces $P^k(T_m)$. Such a space is in general discontinuous (i.e., there is no reason to expect that the polynomials in $P^k(T_m)$ and $P^k(T_n)$ agree on the common face between the two cells $T_m$ and $T_n$), and although continuity is in general not required for Sobolev spaces $W^{k,p}(\Omega)$ (i.e., $W^{k,p}(\Omega)\not\subset C^0(\Omega)$ for $kp\leq d$), one can show that if $k \geq 1/p$, then a discontinuity along a surface of co-dimension one is not allowed.
@@ -222,26 +231,48 @@ If we want the finite dimensional space $V_h$ to be conforming with $W^{k,p}(\Om
 The same inequality can be proven if the triangulation $\T_h$ is made of quadrilaterals, and if the mapping is bi-linear instead of affine. In this case, the constants that appear in the error estimates are generally better, and this is why meshes made of quadrilaterals and hexahedra are usually preferred (when available): they are more difficult to construct, but they offer better approximation properties.
 \end{remark}
 
-Finally, we can put togetner Ceà's lemma~\ref{lemma:cea} with Bramble-Hilbert lemma~\ref{lemma:bramble-hilbert} to get the following \emph{a priori} error estimate for finite element methods of order $k$: provided that $A$ is bounded and coercive in $H^s(\Omega)$, for a conforming approximation $V_h \subset V \equiv H^s(\Omega)$, constructed with piece-wise polynomial bases of order $k$, we have that, if the exact solution is regular enough, i.e. $u \in H^{k+1}(\Omega)$, then
-\begin{align} \label{ineq:cea_scaling}
-  \norm{u - u_h}_V = \norm{u - u_h}_{s,\Omega} &\le \frac{\norm{A}}{\alpha} \inf_{v_h \in V_h} \norm{u - v_h}_{s,\Omega} \\
-& \le \frac{\norm{A}}{\alpha} \norm{u - \Pi^k(u)}_{s,\Omega} \\
-& \lesssim \frac{\norm{A}}{\alpha} \rho^{-s} h^{k+1} \abs{u}_{k+1,\Omega}.
-\end{align}
+
+\section{\texorpdfstring{$H^k$}{Hk} error estimates}
+
+Finally, we can put together Ceà's lemma~\ref{lemma:cea} with Bramble-Hilbert lemma~\ref{lemma:bramble-hilbert} to obtain an \emph{a priori} error estimate for finite element methods of order $k$. To use the \emph{a-priori} interpolation estimate given in Theorem~\ref{theo:interpolation_error}, we need to make sure that the solution $u$ of the elliptic problem is indeed in the space $H^{k+1}(\Omega)$. This, in general, will depend on the operator $A$, on the source term $f$, and on the regularity of the domain $\Omega$, and it is what the theory of regularity for PDEs attempts to do. We will not go into details here, but we will just state the result we need.
+
+\begin{definition}
+  Let $V \subset H^s(\Omega)$, with $\|\cdot\|_V \sim \|\cdot\|_{s,\Omega}$ and $A \in \L(V,V')$. We say that $A$ is $r$-\emph{regular} if there exists an interval $[s_{min}, s_{max}]$ (with $s_{min}\geq -s$) such that $\forall g \in H^\ell(\Omega)$, with $\ell \in [s_{min}, s_{max}]$, the problem $Au=f$ admits a unique solution $u$ which satisfies
+  \[
+  \norm{u}_{\ell+r,\Omega} \lesssim \norm{f}_{\ell,\Omega}.
+  \]
+\end{definition}
+
+With this definition, we can state the following theorem, which puts together all the previous results:
+\begin{theorem}[A priori error estimate]
+Assume that $A$ is bounded and coercive in $H^s(\Omega)$, and that $A$ is $r$-regular for $f \in H^{\ell}(\Omega)$, $\ell \in [s_{min}, s_{max}]$. For a conforming approximation $V_h \subset V \equiv H^s(\Omega)$, constructed with piece-wise polynomial bases of order $k$, we have that the approximate solution $u_h$ satisfies the following \emph{a priori} error estimate:
+\begin{equation}
+  \label{eq:a_priori_error_estimates}
+    \norm{u-u_h}_{s,\Omega} % \lesssim h^{\ell+r-s} \abs{u}_{\ell+r} 
+    \lesssim h^{\ell+r-s} \norm{f}_{\ell,\Omega} \qquad  s_{min}+r \le \ell+r \le \min(k + 1,s_{max}+r).
+\end{equation}
+\end{theorem}
+\begin{proof}
+  From Ceà's lemma~\ref{lemma:cea} and the interpolation error estimate (Theorem~\ref{theo:interpolation_error}), we have that
+  \begin{align} \label{ineq:cea_scaling}
+    \norm{u - u_h}_{s,\Omega} &\le \frac{\norm{A}}{\alpha} \inf_{v_h \in V_h} \norm{u - v_h}_{s,\Omega} \\
+  & \le \frac{\norm{A}}{\alpha} \norm{u - \Pi^k(u)}_{s,\Omega} \\
+  & \lesssim \frac{\norm{A}}{\alpha} \rho^{-s} h^{k+1} \abs{u}_{k+1,\Omega}.
+  \end{align}
+  
+  The thesis follows by the $r$-regularity assumption of the operator $A$.
+\end{proof}
 The inequality hints at some strategies for error reduction:
 \begin{itemize}
 \item take $h$ smaller, i.e. \emph{refine the mesh};
 \item take $k$ bigger (if possible), which implies increasing the polynomial degree of the finite element space up to the maximum regularity allowed by exact solution $u$;
 \end{itemize}
-\begin{remark}[Regularity] In order use the \emph{a-priori} estimate, we need to make sure that the solution $u$ is indeed in the space $H^{k+1}(\Omega)$. This, in general, will depend on $A$, on $f$, and on the regularity of the domain $\Omega$, and it is what the theory of regularity for PDEs attempts to do. In particular, in the following section we will mention the concept of $r$-regularity.
-\end{remark}
 
 %%%%%
 % Lecture of 27 of March
 %%%%%
 
 
-\section{\texorpdfstring{$H^k$}{Hk} error estimates}
 Consider a triangulation $\T_h$ and recall the quantities $h$ and $\rho$ we defined in the previous section:
 \[
 h := \max_{T \in \T_h} h_T, \quad \rho := \min_{T \in \T_h} \rho_T.
@@ -281,8 +312,11 @@ The Poisson problem on a Lipschitz, convex domain is $2$-regular (i.e. $r = 2$),
 \]
 
 If $\Omega$ is better than Lipschitz, then the range for $s$ becomes better, hence we gain a better convergence of the numerical approximation (provided that $f$ is more regular).
-Unfortunately, we cannot use the $L^2$ norm in Ceà's lemma, and this means that we cannot get an estimate in the $L^2$ norm.
 \end{example}
+
+Although inequality~\eqref{}
+
+In order to show convergence of the numerical approximation in a weaker norm, we need to establish a relationship between the norm of the error involved and utilize the properties of the finite element spaces.
 
 \subsection{Nitsche's trick}
 With some bit of additional work, we can produce error estimates on weaker norms, such as the $L^2$ one, from the estimates on stronger norms.
