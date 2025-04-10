@@ -245,6 +245,7 @@ Finally, we can put together Ceà's lemma~\ref{lemma:cea} with Bramble-Hilbert l
 
 With this definition, we can state the following theorem, which puts together all the previous results:
 \begin{theorem}[A priori error estimate]
+  \label{theo:a_priori_estimate}
 Assume that $A$ is bounded and coercive in $H^s(\Omega)$, and that $A$ is $r$-regular for $f \in H^{\ell}(\Omega)$, $\ell \in [s_{min}, s_{max}]$. For a conforming approximation $V_h \subset V \equiv H^s(\Omega)$, constructed with piece-wise polynomial bases of order $k$, we have that the approximate solution $u_h$ satisfies the following \emph{a priori} error estimate:
 \begin{equation}
   \label{eq:a_priori_error_estimates}
@@ -253,7 +254,7 @@ Assume that $A$ is bounded and coercive in $H^s(\Omega)$, and that $A$ is $r$-re
 \end{equation}
 \end{theorem}
 \begin{proof}
-  From Ceà's lemma~\ref{lemma:cea} and the interpolation error estimate (Theorem~\ref{theo:interpolation_error}), we have that
+  From Ceà's lemma (Lemma~\ref{lemma:cea}) and the interpolation error estimate (Theorem~\ref{theo:interpolation_error}), we have that
   \begin{align} \label{ineq:cea_scaling}
     \norm{u - u_h}_{s,\Omega} &\le \frac{\norm{A}}{\alpha} \inf_{v_h \in V_h} \norm{u - v_h}_{s,\Omega} \\
   & \le \frac{\norm{A}}{\alpha} \norm{u - \Pi^k(u)}_{s,\Omega} \\
@@ -262,7 +263,7 @@ Assume that $A$ is bounded and coercive in $H^s(\Omega)$, and that $A$ is $r$-re
   
   The thesis follows by the $r$-regularity assumption of the operator $A$.
 \end{proof}
-The inequality hints at some strategies for error reduction:
+The inequality hints at some strategies for error reduction (independently on the solution or on $f$):
 \begin{itemize}
 \item take $h$ smaller, i.e. \emph{refine the mesh};
 \item take $k$ bigger (if possible), which implies increasing the polynomial degree of the finite element space up to the maximum regularity allowed by exact solution $u$;
@@ -290,31 +291,15 @@ For such a mesh, inequality~\eqref{ineq:cea_scaling} becomes:
 \norm{u - u_h}_{s,p,\Omega}
 \lesssim \frac{\norm{A}}{\alpha} h^{k+1-s} \abs{u}_{k+1,p,\Omega}.
 \end{equation}
-From now on we consider $p=2$ and use the notation $\norm{u}_k$ to mean $\norm{u}_{k,2,\Omega}$. Let $(\cdot)^T$ be the adjoint operator:
-\begin{definition}
-Let $V \subset H^s(\Omega)$, with $\|\cdot\|_V \sim \|\cdot\|_s$ and $A \in \L(V,V')$. We say that $A$ (or $A^T$) is $r$-\emph{regular} if there exists an interval $[s_{min}, s_{max}]$ such that $\forall f,g \in H^\ell(\Omega)$, with $\ell \in [s_{min}, s_{max}]$, the problem $Au=f$ (or $A^T\varphi = g)$ admits a unique solution $u$ (or $\varphi$) which satisfies
-\begin{gather*}
-\norm{u}_{\ell+r} \lesssim \norm{f}_\ell \\
-\norm{\varphi}_{\ell+r} \lesssim \norm{g}_\ell
-\end{gather*}
-\end{definition}
-For finite element spaces of order $k$, inequality~\eqref{ineq:cea_scaling2}, combined with the assumption of $r$-regularity, becomes
-\rev{Check the exponents after my fix, i was not convinced by $s+r-k$ on the second inequality, that one should be obtained \emph{after} the Nietzsche trick.}
-\begin{equation}\label{eq:a_priori_error_estimates}
-\norm{u-u_h}_s \lesssim h^{\ell+r-s} \abs{u}_{\ell+r} \lesssim h^{\ell+r-s} \norm{f}_\ell \quad  0 \le \ell+r \le k + 1.
-\end{equation}
-This is generally the \emph{a-priori} error estimate we were looking for. However, as said before, we may not be allowed to use all the values for $k$ in the range above, as the following example will show.
 
 \begin{example}
-The Poisson problem on a Lipschitz, convex domain is $2$-regular (i.e. $r = 2$), with $s_{min} = -1$ and $s_{max}=0$. If $u \in H^1_0(\Omega)$ (i.e. $s = 1$) the inequality~\eqref{eq:a_priori_error_estimates} becomes
+The Poisson problem on a Lipschitz, convex domain is $2$-regular (i.e. $r = 2$), with $s_{min} = -1$ and $s_{max}=0$. If $u \in H^1_0(\Omega)$ (i.e. $s = 1$)  inequality~\eqref{eq:a_priori_error_estimates} becomes
 \[
 \norm{u-u_h}_1 \lesssim h^{\ell+1} \norm{f}_\ell \quad \forall -1 \le \ell \le 0.
 \]
 
 If $\Omega$ is better than Lipschitz, then the range for $s$ becomes better, hence we gain a better convergence of the numerical approximation (provided that $f$ is more regular).
 \end{example}
-
-Although inequality~\eqref{}
 
 In order to show convergence of the numerical approximation in a weaker norm, we need to establish a relationship between the norm of the error involved and utilize the properties of the finite element spaces.
 
@@ -325,7 +310,8 @@ Let $A \in \L(V,V')$ an operator as in the hypotheses of Lax-Milgram's lemma. As
 \begin{romanlist}
 \item $\norm{u}_H \lesssim \norm{u}_V$ $\quad \forall u \in V$;
 \item $V = \overline{H}^{\norm{\cdot}_V}$,
-i.e. the embedding $V \hookrightarrow H$ is dense and continuous.
+i.e. the embedding $V \hookrightarrow H$ is dense and continuous;
+\item we identify $H$ with its dual $H'$ via the Riesz representation theorem.
 \end{romanlist}
 Then the following inequality holds:
 \begin{equation}\label{eqn:nitsche_lemma}
@@ -333,8 +319,9 @@ Then the following inequality holds:
 \end{equation}
 \end{lemma}
 
-\begin{remark}
-With the hypotheses above, if $f \in V$, by the Hahn-Banach theorem $f$ can be extended to a functional $\tilde{f} \in V'$, i.e.
+\begin{proof}
+
+With the hypotheses above, if $f \in H \equiv H'$, by the Hahn-Banach theorem $f$ can be extended to a functional $\tilde{f} \in V'$, i.e.
 \[
 \langle \tilde{f}, v \rangle_V = (f, v)_H \quad \forall v \in V.
 \]
@@ -344,14 +331,12 @@ Now consider the usual problem in operator form $A u = \tilde{f}$, i.e.
 \end{equation}
 By Lax-Milgram lemma, we know that this problem has a unique solution $u \in V$.
 
-With the same philosophy, let $g \in H$ and consider the \emph{dual problem} $A^T \phi = g$, i.e.
+Let $g \in H$ and consider the \emph{dual problem} $A^T \phi_g = g$, i.e.
 \begin{equation}
-\langle Av,\phi \rangle = \langle \tilde{g},v \rangle = (g, v)_H \quad \forall v\in V.
+\langle Av,\phi_g \rangle = \langle A^T\phi_g, v \rangle = \langle \tilde{g},v \rangle = (g, v)_H \quad \forall v\in V.
 \end{equation}
 Since also $A^T$ satisfies the hypotheses of  Lax-Milgram lemma, the adjoint problem admits itself a unique solution $\phi_g \in V$.
-\end{remark}
 
-\begin{proof}
 We start observing that
 \begin{equation}\label{eqn:nitsche_norm}
 \norm{u-u_h}_H = \sup_{g \in H} \frac{(g, u-u_h)_H}{\norm{g}_H}.
@@ -366,7 +351,7 @@ Now we take advantage of the Galerkin orthogonality, i.e. $\langle A (u-u_h), \p
 \[
 (g, u-u_h)_H = \langle A (u-u_h),\phi_g - \phi_h \rangle \quad \forall \phi_h \in V_h.
 \]
-Now we use the continuity of $A$ on~\eqref{eqn:nitsche_norm} to produce the desired estimate:
+By the continuity of $A$ on~\eqref{eqn:nitsche_norm}, we can produce the desired estimate:
 \begin{align}
 \norm{u-u_h}_H &= \sup_{g \in H} \frac{(g, u-u_h)_H}{\norm{g}_H} \\
 & = \sup_{g \in H} \frac{\langle A (u-u_h),\phi_g - \phi_h \rangle}{\norm{g}_H} \\
@@ -375,33 +360,55 @@ Now we use the continuity of $A$ on~\eqref{eqn:nitsche_norm} to produce the desi
 \end{align}
 \end{proof}
 
-In practice, we want to use this lemma with $V \subset H^k$ and $H \subset H^s$, with $0\le s < k$, or at least we want that $\norm{\cdot}_V \sim \norm{\cdot}_k$ and $\norm{\cdot}_H \sim \norm{\cdot}_s$. For instance, think as $V=H^1$, $H=L^2$.
-\rev{Fix inconsistencies between $\Pi^k$ and $I_h$.}
-In order to find a relation between $\norm{\phi_g - \phi_h}_k$ and $\norm{g}_s$, we use Bramble-Hilbert lemma and the scaling argument, plus the $r$-regularity, but for $A^T$:
+In practice, we want to use this lemma with $V \subset H^s$ and $H \subset H^\ell$, with $0\le \ell < s$, and exploit the $r$-regularity property of the operator to gain better estimates in the $H$ norm, by showing that the term $\norm{\phi_g - \phi_h}_V$ is itself proportional to a power of $h$ and to the $H$ norm of $g$. 
+
+\begin{theorem}[Nitsche's trick]
+  \label{theo:nitsche_trick}
+  Let $A \in \L(V,V')$ be a $r$-regular, bounded, and coercive operator. Let $V\equiv H^s(\Omega)$, $H \equiv H^\ell(\Omega)$ satisfy the same hypotheses of Lemma~\ref{lemma:nitsche}. Moreover, the following holds:
+  \begin{romanlist}
+  \item $V_h \subset V$ is a finite element space of polynomials of degree $k$;
+  \item $0\leq \ell < s$;
+  \item $s+r\leq k+1$;
+  \end{romanlist}
+
+  Then, for any $f\in H^{m}(\Omega)$, with $m\in[s_{min}, s_{max}]$, the following estimates hold:
+  \begin{equation}
+    \label{eqn:nitsche_trick}
+    \begin{aligned}
+      \norm{u-u_h}_s &\lesssim h^{m+r-s} \norm{f}_m,\\
+      \norm{u-u_h}_\ell &\lesssim h^{\ell+r-s}  \norm{u-u_h}_s \lesssim h^{(\ell+m+2(r-s))} \norm{f}_\ell.
+    \end{aligned}
+  \end{equation}
+\end{theorem}
+
+\begin{proof}
+  The first part of the estimate comes from
+  Theorem~\ref{theo:a_priori_estimate}. The second part of the estimate comes
+  from Lemma~\ref{lemma:nitsche} and from the $r$-regularity of the operator
+  $A^T$. We refine the estimate of $\norm{\phi_g - \phi_h}_s$ by
+  Theorem~\ref{theo:interpolation_error} applied to the function $\phi_g$. 
+  Provided that $0\leq s \leq \ell+r$, and that $\ell+r \leq k+1$, we have:
 \begin{align}
-\inf_{\phi_h \in V_h} \norm{\phi_g - \phi_h}_k &\lesssim \norm{\phi_g - \Pi_h(\phi_g)}_k  \\
-&\lesssim h^{s+r-k} \abs{\phi_g}_{s+r}  \\
-&\lesssim h^{s+r-k} \norm{g}_s.
+\inf_{\phi_h \in V_h} \norm{\phi_g - \phi_h}_s &\lesssim \norm{\phi_g - \Pi^k\phi_g}_{s} \lesssim h^{\ell+r-s} \abs{\phi_g}_{\ell+r}  \\
+&\lesssim h^{\ell+r-s} \norm{g}_\ell.
 \end{align}
-\emph{Careful}, though: this is true as soon as $s+r-k \ge 0$, i.e. $s \ge k-r$. Hence, Nitsche's lemma extends the range of available Sobolev norms for the error estimate according to the regularity of the operator. Plugging the result into the inequality~\eqref{eqn:nitsche_lemma} of Nitsche lemma, we get:
-\[
-\norm{u-u_h}_s \lesssim h^{s+r-k} \norm{u-u_h}_k \quad \text{if $s \ge k-r$}.
-\]
+Inserting this estimate in Lemma~\ref{lemma:nitsche}, we obtain the thesis.
+\end{proof}
 
 \begin{example}
-Back to the Poisson problem on a Lipschitz, convex domain: we have now an estimate for the $L^2$ norm of the error. We pick $s = 0$ and $k=1$ to get
+For a Poisson problem on a Lipschitz, convex domain, we have that $r=2$ in the range $[-1,0]$. With this we can estimate also the $L^2$ norm of the error, i.e., we pick $s = 0$ (and we have $k=1$) and we obtain:
 \[
 \norm{u-u_h}_0 \lesssim h \norm{u-u_h}_1.
 \]
-We had proven before that
+By the $2$-regularity, we have
 \[
-\norm{u-u_h}_1 \lesssim h^{t+1} \norm{f}_t
+\norm{u-u_h}_1 \lesssim h^{t+1} \norm{f}_t \qquad \forall t \in [-1, 0].
 \]
-for $t$ in an appropriate range, depending on the regularity of $\Omega$. Hence:
+Hence:
 \[
 \norm{u-u_h}_0 \lesssim h^{t+2} \norm{f}_t.
 \]
-For instance, if $t=0$, we have convergence of order $1$ in $H^1$, of order $2$ in $L^2$. This behavior corresponds to what we see numerically: the convergence in a lower order Sobolev norm is better than a higher order one.
+For instance, if $t=0$, we have convergence of order $1$ in $H^1$, of order $2$ in $L^2$.
 \end{example}
 
 
@@ -414,10 +421,9 @@ With the same scaling argument, we can also prove that, if $h<1$, then
 \[
 \abs{v_h}_{s,p,T} \lesssim h^{\ell-s} \abs{v_h}_{\ell,p,T} \quad \forall 0 \le \ell \le s \le k.
 \]
-Of course, in either case, $k$, $s$ must be chosen smaller or equal to the degree of $v$. The proof relies once more on the fact that all norms in finite dimensional spaces are equivalent.
+Of course, in either case, $k$, $s$ must be chosen smaller or equal to the degree of $v_h$. The proof relies once more on the fact that all norms in finite dimensional spaces are equivalent, and that the constants in the equivalence depend on the shape of the element and on the size of the element. By moving to a reference element, and exploiting the scaling properties of the norms, we quantify the constants in the equivalence in terms of mesh size $h$ only when moving to (or from) the reference element. There, we can freely exchange the norms, exploiting equivalence of all norms in finite dimensional spaces, on a domain of size $O(1)$, with constants that do not depend on $h$. By going back to the original element with the new norm, we again use the scaling properties to obtain the desired result. 
 
-\emph{Nota bene}: this is true only for finite element functions!
-\rev{Expand more on the proof.}
+When moving an $s$ norm to the reference element we pay a factor $h^{-s}$, while when moving an $\ell$ norm from the reference element to the current element we pay a factor $h^{\ell}$. Overall we control $s$ norms with $\ell$ norms with a factor $h^{\ell-s}$, and vice versa.
 
 \section{Trace operators}\label{sec:trace_operators}
 In order to deal with the trace of a Sobolev function, it is necessary to give a meaning to the space $W^{s,p}(\Omega)$ for $s\in \R$. Here we will only present the fundamental concepts. For extensive reference, see~\cite{fract_sob}. For a Lipschitz domain $\Omega \subset \R^d$ we can also define the space $W^{s,p}(\Omega)$ in a different way. We let $\lambda \in (0,1)$ such that $s = m+\lambda$ for an integer $m$ and consider the following norm:
@@ -490,12 +496,3 @@ In particular, the minimal regularity we need to require for $f$, $g_D$, $g_N$ i
 \[
 f \in \bigl(H^1(\Omega)\bigr)', \quad g_D \in H^\frac{1}{2}(\Gamma_D), \quad g_N \in \bigl(H^\frac{1}{2}(\Gamma_N)\bigr)'.
 \]
-
-To conclude this section, let's make a concrete example of coupling the inverse and trace inequalities we have seen so far. If $s>\frac{1}{2}$ and $u \in \P^k(T) \subset H^s(T)$, we have:
-\[
-\norm{u}_{s-\frac{1}{2},\partial T} \lesssim \norm{u}_{s,T} \lesssim h^{r-s} \norm{u}_{r,T}.
-\]
-In particular...
-\rev{Understand and complete the example from the notes.}
-
-\rev{something missing from start of following lecture}

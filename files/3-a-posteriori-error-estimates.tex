@@ -7,11 +7,9 @@
 This section is concerned with the problem of interpolating non-smooth functions, e.g. functions that are too rough to be in the domain of the Lagrange interpolation operator. This situation occurs, for instance, when interpolating discontinuous functions, e.g. in $L^2(\Omega)$ or $H^1(\Omega)$ in dimension $d \ge 2$.
 Throughout this section, $\Omega$ is a polyhedron and $\{\T_h\}_{h>0}$ is a shape-regular family of affine, simplicial, geometrically conformal meshes.
 
-\rev{check and add a reference to the Lagrange operator in section 1}
-
 \subsection{Scott-Zhang interpolation}
 
-Let $V_h = \P^{k,0}(\Omega)$ be the space of piecewise polynomials of order $k$ on every $T \in \T_h$. This is the usual $H^1$-conformal approximation space based on the $\P^k$ Lagrange finite element, so $V_h \subset H^1$.
+Let $V_h$ be the space of piecewise polynomials of order $k$ on every $T \in \T_h$. This is the usual $H^1$-conformal approximation space based on the $\P^k$ Lagrange finite element, so $V_h \subset H^1$.
 Our goal is to define an interpolation operator $\SZ: H^1(\Omega) \to V_h$ such that:
 \begin{enumerate}
     \item $\SZ v \in H^1_0(\Omega)$ for every $v \in H^1_0(\Omega)$;
@@ -19,8 +17,15 @@ Our goal is to define an interpolation operator $\SZ: H^1(\Omega) \to V_h$ such 
 \end{enumerate}
 This will act as a regularization operator based on \emph{macroelements} consisting of element patches. In particular, the first condition means that $\SZ$ will preserve homogeneous boundary conditions.
 
+\begin{figure}[!ht]
+    \centering
+    \includegraphics{figures/scott_zhang.pdf}
+    \caption{Example choice of the sets $\Xi$ for different types of support points in the Scott-Zhang interpolator. Case $a_i$: support point on the interior of a triangle -- $\Xi_i$ is the triangle itself. Case $a_j$: support point on an internal vertex of the triangulation -- $\Xi_i$ is one of the edges that insist on that vertex. Case $a_k$: support point on the interior of an edge within $\Omega$ -- $\Xi_k$ is the edge itself. Case $a_\ell$: support point on the boundary of the triangulation -- $\Xi_\ell$ is one of the edges that contain $a_\ell$. When multiple choices are possible, we can pick any one (shown as partial red lines in the figure).}
+    \label{fig:scott_zhang}
+\end{figure}
+
 How do we construct it? Recall that $V_h = \Span\{v_i\}_{i=1}^N$ for some $N$. Let $\{a_1, \dots , a_N\}$ be the Lagrange nodes (support points).
-Given a node $a_i$, we associate either a $d$-simplex or a $(d-1)$-simplex $\Xi_i$ to it, as follows:
+Given a node $a_i$, we associate either a $d$-simplex or a $(d-1)$-simplex $\Xi_i$ to it, as follows (see Figure~\ref{fig:scott_zhang}):
 \begin{itemize}
     \item If $a_i \in \mathring{\overline{T}}$ for some $T \in \T_h$, i.e. $a_i$ is in the interior of an element, then $\Xi_i := T$ itself.
     \item If $a_i \in \partial T \setminus \partial \Omega$, i.e. $a_i$ is on some face in the interior of $\Omega$, we choose a face $F$ containing $a_i$ and set $\Xi_i := F$.
@@ -66,32 +71,36 @@ Let us verify that $\SZ$ has indeed the required properties:
     \]
 \end{remark}
 
+\begin{figure}
+    \centering
+    \includegraphics{figures/scott_zhang_patches.pdf}
+    \caption{The approximation properties of the Scott-Zhang interpolation operator $\SZ$ are defined in terms of the local patches $\Delta T$ and $\Delta F$. The patch $\Delta T$ is the union of all elements that share at least one vertex with $T$, while the patch $\Delta F$ is the union of all elements that share at least one vertex with $F$.}
+    \label{fig:scott_zhang_patches}
+\end{figure}
+
 The interpolation properties of $\SZ$ are stated in the following lemma.
 \begin{lemma}[Scott-Zhang]
-    Let $1\le p < +\infty$ and choose $l\ge1$ if $p=1$ or $l>\frac{1}{p}$ otherwise. Then the operator $\SZ$ is a projection from $W^{l,p}(\Omega)$ to $\P^{k,0}(\Omega)$, with the following properties:
+    Let $1\le p < +\infty$ and choose $\ell\ge1$ if $p=1$ or $\ell>\frac{1}{p}$ otherwise. Then the operator $\SZ$ is a projection from $W^{\ell,p}(\Omega)$ to $\P^{k,0}(\Omega)$, with the following properties:
     \begin{enumerate}
-        \item Stability: for all $0 \le m \le \min(1,l)$,
+        \item Stability: for all $0 \le m \le \min(1,\ell)$,
         \[
-        \forall h, \, \forall v \in W^{l,p}(\Omega) \quad 
-        \norm{\SZ v}_{m,p,\Omega} \lesssim \norm{v}_{l,p,\Omega}.
+        \forall h, \, \forall v \in W^{\ell,p}(\Omega) \quad 
+        \norm{\SZ v}_{m,p,\Omega} \lesssim \norm{v}_{\ell,p,\Omega}.
         \]
-        In particular, this is true for $m=l$.
-        \item Approximation on elements: given $0\le m\le l\le k+1$,
+        In particular, this is true for $m=\ell$.
+        \item Approximation on elements: given $0\le m\le \ell\le k+1$,
         \[
-        \forall h, \, \forall T \in \T_h, \, \forall v \in W^{l,p}(\Delta T) \quad 
-        \norm{v- \SZ v}_{m,p,T} \lesssim h_T^{l-m} \abs{v}_{l,p,\Delta T}.
+        \forall h, \, \forall T \in \T_h, \, \forall v \in W^{\ell,p}(\Delta T) \quad 
+        \norm{v- \SZ v}_{m,p,T} \lesssim h_T^{\ell-m} \abs{v}_{\ell,p,\Delta T}.
         \]
-        \item Approximation on interfaces: given $m+\frac{1}{p}\le l\le k+1$,
+        \item Approximation on interfaces: given $m+\frac{1}{p}\le \ell\le k+1$,
         \[
-        \forall h, \, \forall F \in \E^i, \, \forall v \in W^{l,p}(\Delta F) \quad 
-        \norm{v- \SZ v}_{m,p,F} \lesssim h_F^{l-m-\frac{1}{p}} \abs{v}_{l,p,\Delta F}.
+        \forall h, \, \forall F \in \E^i, \, \forall v \in W^{\ell,p}(\Delta F) \quad 
+        \norm{v- \SZ v}_{m,p,F} \lesssim h_F^{\ell-m-\frac{1}{p}} \abs{v}_{\ell,p,\Delta F}.
         \]
     \end{enumerate}
-    Here $\Delta T$ is the set of elements in $\T_h$ that share at least one vertex with $T$. Analogously, if $F$ is an interface between two elements of $\T_h$, $\Delta F$ is the set of elements in $\T_h$ which share at least one vertex with $F$.
+    Here $\Delta T$ is the set of elements in $\T_h$ that share at least one vertex with $T$. Analogously, if $F$ is an interface between two elements of $\T_h$, $\Delta F$ is the set of elements in $\T_h$ which share at least one vertex with $F$ (see Figure~\ref{fig:scott_zhang_patches}).
 \end{lemma}
-
-\rev{Some slight modifications have been made to be consistent with the Ern-Guermond book. In particular, $p=+\infty$ was not included; the point (3) is not in the Ern-Guermond, but it has been adapted from the Clément interpolation section: is it still ok? Check also if $\E^i$ has been defined previously. I think it should be only it, not $\E$.}
-
 
 \subsection{Orthogonal projections}
 
@@ -192,9 +201,8 @@ Should such an estimator exist, we could \emph{adapt} the mesh $\T_h$ in order t
     \]
     where $M$ is the number of elements in $\T_h$.
 \end{itemize}
-Unfortunately, the estimates \eqref{eqn:apost_est1} and \eqref{eqn:apost_est2} are false in general. However, we can prove some weaker results.
+Unfortunately, the estimates \eqref{eqn:apost_est1} and \eqref{eqn:apost_est2} are false in general. However, we can prove some weaker -- but still very useful -- results.
 
-\rev{use norm or seminorm in inequalities above?}
 In general, we can prove that
 \[
 \norm{u - u_h}_{1,\Omega}^2 \lesssim \sum_{T \in \T_h} \eta_T^2,
@@ -227,7 +235,7 @@ This is an a priori error estimate. In the case $Au = -\Delta u$, the simplest a
 \end{equation}
 The inequality relies again on coercivity but, leaving room to generalizations, can be shown also if $A$ only satisfies the so called \emph{inf-sup condition}, i.e. the BNB theorem. We will talk about this theorem in chapter~\ref{chap:saddle}.
 
-Inequality~\eqref{eqn:apost_rough} has an issue: it cannot be localized, because the $H^{-1}$ norm is not local. However, we can work around it following these steps:
+Inequality~\eqref{eqn:apost_rough} has an issue: it cannot be localized, because the norm in $H^{-1}(\Omega)$ is not local. However, we can work around it following these steps:
 \begin{enumerate}
     \item exploit the definition of the $H^{-1}$ norm and the orthogonality of the error;
     \item integrate by parts;
@@ -263,7 +271,6 @@ which is the approximation property with $m=0$, $l=1$. Analogously,
 \[
 \norm{v-\SZ v}_{0,F} \lesssim h_F^{\frac{1}{2}} \abs{v}_{1,\Delta F}.
 \]
-\rev{Changed from the notes. I think the proof in the notes doesn't work, $\Delta F$ is already $d$-dimensional, hence we cannot use trace theorem.}
 Wrapping things up, we have shown that
 \begin{align}
 \abs{\langle A(u-u_h),v-\SZ v \rangle} &\lesssim
