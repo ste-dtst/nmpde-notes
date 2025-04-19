@@ -33,7 +33,7 @@ The previous two conditions are also known as \emph{BNB (Banach-Ne\v{c}as-Babu\v
 
 
 \subsection{Open mapping and closed range theorems}
-\rev{This subsection is a bit reworked from the lecture notes. Main reference: Brezis, \emph{Functional Analysis}. I did some research and there seems to be no clear consensus on the meaning of "polar" and the $^o$ symbol, therefore in the sequel I used "annihilator", with the $^\perp$ symbol. Also, $(Z^\perp)^\perp = \overline{Z}$ seems to be true only when $Z \subset X$. In case this part is ok, I think the book might be added to the bibliography.}
+\rev{This subsection is a bit reworked from the lecture notes. Main reference: Brezis, \emph{Functional Analysis}.}
 
 Injectivity, surjectivity and the bounding condition are all different aspects of the \emph{open mapping theorem} and the \emph{closed range theorem}. Let us recall them in a general setting.
 
@@ -65,12 +65,14 @@ Before we look at the closed range theorem, some preliminary definitions are nee
 	W^\perp = \{x \in X : \langle f, x \rangle = 0 \, \forall f \in W\}.
 	\]
 \end{definition}
-In some texts, the annihilator is also called \emph{polar} set and the $^o$ symbol is used. It is easy to see that the annihilator of a subspace is closed. Moreover, it can be showed that:
+\rev{A bit of a philological matter. After doing some research (Wikipedia, some textbooks and articles), there seems to be no clear consensus on the meaning of "polar" and the $^o$ symbol: it seems to be used as a synonym of "annihilator" in the context of PDE discretization, in particular by Brezzi, while in other contexts has different meanings. On the other hand, "annihilator" seems to be more widely used in functional analysis. This is why, for the moment, I preferred "annihilator" with the $^\perp$ symbol.}
+
+In the PDE discretization literature, annihilators are also called \emph{polar} sets and the $^o$ symbol is used. It is easy to see that the annihilator of a subspace is closed. Moreover, it can be showed that:
 \begin{itemize}
 	\item if $Z \subset X$, then $(Z^\perp)^\perp = \overline{Z}$,
 	\item if $W \subset X'$, then $(W^\perp)^\perp \supset \overline{W}$.
 \end{itemize}
-Unfortunately, the use of $\supset$ when $W \subset X'$ cannot be avoided, as there are examples in which $(W^\perp)^\perp$ is strictly bigger than $\overline{W}$. However, equality holds when $X$ is reflexive. For an extensive reference, see \textbf{[insert ref, eventually]}.
+Unfortunately, the use of $\supset$ when $W \subset X'$ cannot be avoided, as there are examples in which $(W^\perp)^\perp$ is strictly bigger than $\overline{W}$. However, equality holds when $X$ is reflexive. For an extensive reference, see \textbf{[insert Brezis ref, eventually]}.
 
 \begin{definition}
 	Let $X$, $Y$ be Banach spaces. Given $A \in \L(X;Y)$, its \emph{transpose} is the operator $A^T \in \L(Y';X')$ given by
@@ -90,7 +92,7 @@ Linear continuous operators can be seen as unbounded operators which are bounded
 The definition of transpose can be extended to work with unbounded linear operators as well.
 
 An operator $A$ is linked to its transpose by the following relations:
-\begin{align}
+\begin{align}\label{eqn:ker-im-relations}
 	\ker A &= \im (A^T)^\perp \\
 	\ker (A^T) &= \im A^\perp.
 \end{align}
@@ -111,7 +113,27 @@ which follows after taking the annihilator at each side of the equal and recalli
 	\end{enumerate}
 \end{theorem}
 
-Getting back to the setting of Problem \eqref{eqn:weak_bnb}, we discover then that the operator $A \in \L(V;W')$ and its transpose $A^T$ satisfy automatically the hypotheses of the closed range theorem, thanks to the closed graph theorem \ref{thm:closed_graph}. This will soon be of importance.
+Returning to the setting of Problem \eqref{eqn:weak_bnb}, we discover that the operator $A \in \L(V;W')$ and its transpose $A^T$ automatically satisfy the assumptions of the closed range theorem, thanks to the closed graph theorem \ref{thm:closed_graph}.
+In particular, from \eqref{eqn:ker-im-relations} we deduce that the following implications hold in general:
+\begin{align}
+	\text{$A$ surjective} &\implies \text{$A^T$ injective} \\
+	\text{$A^T$ surjective} &\implies \text{$A$ injective}
+\end{align}
+The converses fail, unless we can prove that either $\im A$ or $\im (A^T)$ is closed. This is true, in particular, when we deal with finite dimensional spaces: in that case, any subspace is closed by default.
+
+\begin{example}
+	To better understand what might go wrong in infinite dimensions, consider the inclusion
+	\[
+	A: H_0^1(\Omega) \hookrightarrow L^2(\Omega) = \bigl(L^2(\Omega)\bigr)',
+	\]
+	i.e., $Au = u$ for all $u\in H_0^1(\Omega)$. Clearly, $\ker(A)=\{0\}$, but $A$ is not surjective: in fact, functions with a jump discontinuity can be in $L^2$ but not in $H^1_0$. Moreover, $\im A = H_0^1(\Omega)$ is dense in $L^2(\Omega)$ because $H_0^1$ is the closure of $C_0^\infty$, which is dense in $L^2$. Hence, $\im A\neq\overline{\im A}$.
+	
+	If we were in finite dimensions, $\ker A = \{0\}$ would be sufficient for $A$ to be invertible. However, let us look at this example from another point of view. The transpose operator $A^T: L^2(\Omega) \to \bigl(H_0^1(\Omega)\bigr)'$ satisfies
+	\[
+	(A^T q)(u) = \int_{\Omega} uq \qquad \forall q \in L^2(\Omega).
+	\]
+	If $(A^T q)(u) = 0$ for every $u \in H_0^1(\Omega)$, then $q = 0$, thanks to standard results (fundamental lemma of calculus of variations). Hence, $\ker (A^T)$ is trivial. In finite dimensions, having $\ker (A^T) = \{0\}$ would imply that $A$ is surjective, which is not the case.
+\end{example}
 
 
 \subsection{Conditions equivalent to BNB}
@@ -212,26 +234,28 @@ In a similar fashion, if $V$ is reflexive as well, one can prove an analogous re
 
 \rev{There's a remark in my notes on why the converse is not true. Insert something.}
 
-From Proposition \ref{prop:inf-sup_condition} and its dual version for the transpose we also deduce that the following implications hold in general:
-\begin{align}
-	\text{$A$ surjective} &\implies \text{$A^T$ injective} \\
-	\text{$A^T$ surjective} &\implies \text{$A$ injective}
-\end{align}
-Unfortunately, the converses fail, unless we deal with finite dimensional spaces. In fact, in finite dimensions, any subspace is closed by default, hence either $\im A$ and $\im (A^T)$ are closed.
+\rev{I added the following technical lemma because it is implicitly used in the mixed problems section.}
 
-\begin{example}
-	To better understand what might go wrong in infinite dimensions, consider the inclusion
-	\[
-	A: H_0^1(\Omega) \hookrightarrow L^2(\Omega) = \bigl(L^2(\Omega)\bigr)',
-	\]
-	i.e., $Au = u$ for all $u\in H_0^1(\Omega)$. Clearly, $\ker(A)=\{0\}$, but $A$ is not surjective: in fact, functions with a jump discontinuity can be in $L^2$ but not in $H^1_0$. Moreover, $\im A = H_0^1(\Omega)$ is dense in $L^2(\Omega)$ because $H_0^1$ is the closure of $C_0^\infty$, which is dense in $L^2$. Hence, $\im A\neq\overline{\im A}$.
-	
-	If we were in finite dimensions, $\ker A = \{0\}$ would be sufficient for $A$ to be invertible. However, let us look at this example from another point of view. The transpose operator $A^T: L^2(\Omega) \to \bigl(H_0^1(\Omega)\bigr)'$ satisfies
-	\[
-	(A^T q)(u) = \int_{\Omega} uq \qquad \forall q \in L^2(\Omega).
-	\]
-	If $(A^T q)(u) = 0$ for every $u \in H_0^1(\Omega)$, then $q = 0$, thanks to standard results (fundamental lemma of calculus of variations). Hence, $\ker (A^T)$ is trivial. In finite dimensions, having $\ker (A^T) = \{0\}$ would imply that $A$ is surjective, which is not the case.
-\end{example}
+Before we move to the next section, let us make one final remark that will be useful in the context of mixed problems. Suppose that $V$ and $W$ are both reflexive Banach spaces and let $A \in \L(V;W')$ be a surjective operator. Thanks to Proposition \ref{prop:inf-sup_condition}, we know that $A^T$ is bounding:
+\[
+\norm{A^T w}_{V'} \ge \alpha \norm{w}_W \quad \forall w \in W.
+\]
+Furthermore, surjectivity ensures that $\im A$ is closed, hence by Theorem \ref{thm:closed_range2} there exists another constant $\overline{\alpha}>0$ such that
+\begin{equation}
+	\forall w' \in \im A \, \exists u \in V \, \text{s.t. }\, Au = w' \, \text{and }\, \norm{w'}_{W'} \ge \overline{\alpha}\norm{u}_V.
+\end{equation}
+Are these constants in fact the same? The answer is yes. A precise statement is provided below, without proof: it is a slight adaptation of Lemma A.42 in \cite{eg04}.
+\begin{lemma}\label{lemma:const-uniqueness}
+	Let $V$ and $W$ be two Banach spaces, with $W$ reflexive, and let $A \in \L(V;W')$ be a surjective operator. Let $\alpha>0$. The property
+	\begin{equation}
+		\forall w' \in \im A \, \exists u \in V \, \text{s.t. }\, Au = w' \, \text{and }\, \norm{w'}_{W'} \ge \alpha\norm{u}_V
+	\end{equation}
+	implies
+	\begin{equation}
+		\inf_{w\in W}\sup_{u\in V}\frac{\langle Au,w \rangle}{\norm{u}_V\norm{w}_W}\geq\alpha.
+	\end{equation}
+	The converse is true if $V$ is reflexive.	
+\end{lemma}
 
 
 \section{Petrov-Galerkin method}
@@ -301,7 +325,7 @@ As we have done for the original problem in Section \ref{sec:bnb}, we have to ma
 \rev{Checklist, referring to Guermond's book:
 	\begin{itemize}
 		\item The book requires $A_h$ to be "uniformly bounded" on its domain, but I think this is already ok if we assume that $A_h$ is linear continuous.
-		\item There is a nice remark on the independence of asymptotic consistency from the operator $\Pi_h$ if we have approximability. Insert it?
+		\item There is a remark on the independence of asymptotic consistency from the operator $\Pi_h$ if we have approximability. Insert it?
 	\end{itemize}}
 
 When setting the discrete problem, the goal is to ensure approximability and asymptotic consistency. In fact, taking advantage of the BNB$_h$ conditions, we would get:
@@ -356,7 +380,7 @@ As it has been discussed in previous sections, solutions to Problems \eqref{eqn:
 \end{lemma}
 \rev{Should the proof follow the teacher's notes a little more? However this seems quite ok.}
 \begin{proof}
-    From the discrete infsup, we have
+    From the discrete inf-sup, we have
     \begin{equation*}
         \alpha_h\leq \inf_{v_h\in V_h}\sup_{q_h\in Q_h}\frac{\langle Av_h,q_h \rangle}{\norm{v_h}_V\norm{q_h}_{Q_h}}= \inf_{v_h\in V_h}\frac{\norm{Av_h}_{*,Q_h}}{\norm{v_h}_V},
     \end{equation*}
@@ -392,26 +416,26 @@ It has been proved by J. Xu and L. Zikatanov in~\cite{xu03} that the bound in Le
 
 
 \section{Mixed Problems}
-Saddle point problems are a class of optimization problems characterized by the presence of both primal and dual variables, leading to solutions that are critical points of a Lagrangian function. These problems are common in various applications such as fluid dynamics, structural mechanics, and optimization.\par
+Saddle point problems are a class of optimization problems characterized by the presence of both primal and dual variables, leading to solutions that are critical points of a Lagrangian function. These problems are common in various applications such as fluid dynamics, structural mechanics and optimization.\par
 The setting is the following: take two Hilbert spaces $V,Q$ and two linear continuous operators
 \begin{equation*}
     A:V\to V', \quad B:V\to Q'.
 \end{equation*}
 Take also $f\in V'$ and $g\in Q'$. The problem we aim to solve is: find $(u, p)\in V\times Q$ such that
 \begin{equation}\label{eqn:general mixed prb} \marginpar{General mixed problem}
-    \begin{aligned}
-        Au + B^Tp &= f \quad \text{in} \ V', \\
-        Bu &= g  \quad \text{in} \ Q'.
-    \end{aligned}
+    \begin{cases}
+        Au + B^Tp = f \quad &\text{in} \ V' \\
+        Bu = g  \quad &\text{in} \ Q'.
+    \end{cases}
 \end{equation}
 
 \begin{remark}
     Assume that $g$ is in the image of $B$. Then there exists $u_g\in V$ such that $Bu_g=g$. Call $Z:=\ker{B}$; then the solution $u\in V$ can be written as $u=u_0 + u_g$ for some $u_0\in Z$. Substituting in \eqref{eqn:general mixed prb} we obtain:
     \begin{equation}\label{eqn:u0 prb}
-        \begin{aligned}
-            Au_0 + B^Tp &= f - Au_g=:\Tilde{f} , \\
-            Bu_0 &= 0,
-        \end{aligned}
+        \begin{cases}
+            Au_0 + B^Tp = f - Au_g=:\Tilde{f} \\
+            Bu_0 = 0
+        \end{cases}
     \end{equation}
     and the second equation is satisfied automatically by construction.
 \end{remark}
@@ -437,17 +461,17 @@ If we manage to solve the $u_0$-problem, the solution to the original problem ca
 \end{align*}
 Let $L = \tilde{f} - Au_0$ and notice that $L \in Z^\perp = \ker B^\perp$. If we require $B$ to be surjective, by the closed range theorem \ref{thm:closed_range} we obtain $\ker B^\perp = \im(B^T)$, therefore a solution $p$ exists; it is also unique, because $B$ surjective implies $B^T$ injective.
 
-Surjectivity of $B$ is equivalent to the following inf-sup condition:
-\begin{equation}\label{eqn:infsup for B}\marginpar{inf-sup condition for $B$}
+Surjectivity of $B$ is equivalent to the inf-sup condition on $B^T$:
+\begin{equation}\label{eqn:infsup-on-BT}\marginpar{inf-sup condition on $B^T$}
     \inf_{p\in Q}\sup_{v\in V}\frac{\langle Bv,p \rangle}{\norm{v}_V\norm{p}_Q}\geq\beta>0
 \end{equation}
-In conclusion, if conditions \eqref{eqn:ell-ker conditions} and \eqref{eqn:infsup for B} hold, then there is a unique solution $(u,p)\in V\times Q$ for the mixed problem \eqref{eqn:general mixed prb}.\par
-Now we want to investigate whether we can estimate the norm of the solution in terms of $f,g$ and the infsup constants $\alpha$ and $\beta$. First observe that, from \eqref{eqn:ell-ker conditions} and the definition of $\Tilde{f}$, it follows immediately that
+In conclusion, if conditions \eqref{eqn:ell-ker conditions} and \eqref{eqn:infsup-on-BT} hold, then there is a unique solution $(u,p)\in V\times Q$ for the mixed problem \eqref{eqn:general mixed prb}.\par
+Now we want to investigate whether we can estimate the norm of the solution in terms of $f,g$ and the inf-sup constants $\alpha$ and $\beta$. First observe that, from \eqref{eqn:ell-ker conditions} and the definition of $\Tilde{f}$, it follows immediately that
 \begin{equation*}
     \norm{u_0}_V\leq\frac{1}{\alpha}\norm{\Tilde{f}}_{V'}\leq\frac{1}{\alpha}\left( 
 \norm{f}_{V'}+\norm{A}_*\norm{u_g}_V \right).
 \end{equation*}
-Moreover, from \eqref{eqn:infsup for B} and the definition of $u_g$ we have
+Moreover, being $B$ surjective, we can apply Lemma \ref{lemma:const-uniqueness} to get
 \begin{equation*}
     \norm{g}_{Q'}=\norm{Bu_g}_{Q'}\geq\beta\norm{u_g}_V.
 \end{equation*}
@@ -459,7 +483,7 @@ Hence
 \end{align*}
 An analogous computation can be made for $p,$ showing that
 \begin{equation*}
-    \norm{p}_Q\leq\frac{\norm{A}_*+1}{\beta}\norm{f}_{V'}+\frac{\norm{A}_*}{\beta}\left(\frac{\norm{A}_*+\alpha}{\alpha\beta}\right)\norm{g}_{Q'}.
+    \norm{p}_Q\leq\frac{\norm{A}_*+\alpha}{\alpha\beta}\norm{f}_{V'}+\frac{\norm{A}_*}{\beta}\left(\frac{\norm{A}_*+\alpha}{\alpha\beta}\right)\norm{g}_{Q'}.
 \end{equation*}
 \begin{remark}
     Call $\mathbb{V}:=V\times Q$ and
@@ -469,7 +493,7 @@ An analogous computation can be made for $p,$ showing that
             B & 0
         \end{bmatrix}\in\L(\mathbb{V};\mathbb{V}').
     \end{equation*}
-    The problem \eqref{eqn:general mixed prb} can clearly be stated in terms of a singular variable $\psi:=(u,p)\in\mathbb{V}$ and the linear operator $\mathbb{A}$. It can be proved (but it is not easy) that the conditions \eqref{eqn:ell-ker conditions}, \eqref{eqn:infsup for B} are equivalent to the existence of a constant $\overline{\alpha}>0$ such that
+    Problem \eqref{eqn:general mixed prb} can clearly be stated in terms of a singular variable $\psi:=(u,p)\in\mathbb{V}$ and the linear operator $\mathbb{A}$. It can be proved (but it is not easy) that conditions \eqref{eqn:ell-ker conditions}, \eqref{eqn:infsup-on-BT} are equivalent to the existence of a constant $\overline{\alpha}>0$ such that
     \begin{align}
         \inf_{\psi\in \mathbb{V}}\sup_{\theta\in \mathbb{V}}\frac{\langle A\psi,\theta \rangle}{\norm{\psi}_\mathbb{V}\norm{\theta}_\mathbb{V}}&\geq\overline{\alpha} \\
         \inf_{\theta\in \mathbb{V}}\sup_{\psi\in \mathbb{V}}\frac{\langle A\psi,\theta \rangle}{\norm{\psi}_\mathbb{V}\norm{\theta}_\mathbb{V}}&\geq\overline{\alpha}.
@@ -477,55 +501,122 @@ An analogous computation can be made for $p,$ showing that
     This is known in the literature as \emph{``Brezzi $\iff$ Babu\v{s}ka''}.
 \end{remark}
 
-\subsection{Some considerations on discrete mixed problems}
-The aim of this paragraph is to give an idea as to why mixed problem are difficult. As we will see shortly, the main reason is that the ``goodness'' of the approximation for the velocity does not only depend on the approximation space $V_h$, but also depends on the choice of $Q_h$ (and the same can be said for the approximation of the pressure).\par
-The main idea here is to proceed as usual, as if we wanted to prove Ceà's lemma. But first we introduce the following object, which is basically a discrete version of $\ker(B)$:
-\begin{equation*}
-    Z_h:=\{ v_h\in V_h \mid \langle Bv_h,q_h\rangle=0 \ \forall\,q_h\in Q_h \}.
-\end{equation*}
-\begin{remark}
-    In general, it is not true that $Z_h\subset Z$. For example, we can consider $B=\dvg$ in dimension 1 (i.e. $B$ is the derivative operator), so that $Z$ is the set of (a.e.) constant function. However, if we consider $Q_h$ to be the set of piece-wise constant functions, then
-    \begin{equation*}
-        \langle Bu,q_h\rangle=0 \ \forall\, q_h\in Q_h \ \iff \ \int_T u'=0 \ \forall \, T \ \text{triangle in the triangulation}.
-    \end{equation*}
-    Clearly the set of functions with 0 derivative on each element of the triangulation is not contained in the set of constant functions, i.e. $Z_h\not\subset Z$.\par
-    Also note that in general it is also not true that $Z\subset Z_h$.
-\end{remark}
-With the usual notations, we let $(u,p)$ be the solution to \eqref{eqn:general mixed prb} and let $(u_h,p_h)$ be the approximated solution. Then we can write
-\begin{align*}
-    \langle Au,v_h\rangle+\langle Bv_h,p\rangle&=\langle f,v_h\rangle \quad \forall\,v_h\in V_h\\
-    \langle Au_h,v_h\rangle+\langle Bv_h,p_h\rangle&=\langle f,v_h\rangle \quad \forall\,v_h\in V_h,\\
-\end{align*}
-Subtracting the two gives
-\begin{equation*}
-    \langle A(u-u_h),v_h\rangle=-\langle Bv_h,p-p_h\rangle \quad \forall\, v_h\in V_h;
-\end{equation*}
-now observe that if we restrict ourselves to $v_h\in Z_h\subset V_h$ then $\langle Bv_h,p-p_h\rangle=\langle Bv_h,p-q_h\rangle$ for all $q_h\in Q_h$, so the previous equation can be rephrased as
-\begin{equation}\label{eqn:mixed prb orthogonality}
-    \langle A(u-u_h),v_h\rangle=-\langle Bv_h,p-q_h\rangle \quad \forall\, v_h\in Z_h \ \text{and} \ \forall\,q_h\in Q_h.
+\subsection{A priori error estimates for mixed problems}
+This paragraph aims to give an idea of why mixed problems are challenging to tackle numerically. Take for simplicity a conformal approximation setting $V_h \subset V$, $Q_h \subset Q$ and consider the discrete counterpart of Problem \eqref{eqn:general mixed prb}: find $u_h \in V_h$ and $p_h \in Q_h$ s.t.
+\begin{equation}\label{eqn:discrete-mixed-prb} \marginpar{Discrete mixed problem}
+	\begin{cases}
+		Au_h + B^Tp_h = f \quad &\text{in} \ {V_h}' \\
+		Bu_h = g  \quad &\text{in} \ {Q_h}'.
+	\end{cases}
 \end{equation}
-As usual we can employ the discrete infsup condition \eqref{eqn:discrete infsup} to write
-\begin{align*}
-    \norm{u-u_h}_V&\leq\norm{u-v_h}_V+\norm{v_h-u_h}_V\\
-    &\leq\norm{u-v_h}_V +\frac{1}{\alpha_h}\norm{A(v_h-u_h)}_{*,Z_h}
-\end{align*}
-for all $v_h\in Z_h$. Finally, we use \eqref{eqn:mixed prb orthogonality} in the following chain of (in)equalities:
-\begin{align*}
-    \norm{A(v_h-u_h)}_{*,Z_h} &= \sup_{z_h\in Z_h}\frac{\langle A(v_h-u_h),z_h\rangle}{\norm{z_h}_{V_h}}\\
-    &= \sup_{z_h\in Z_h}\frac{\langle A(v_h-u),z_h\rangle + \langle A(u-u_h),z_h\rangle}{\norm{z_h}_{V_h}}\\
-    &= \sup_{z_h\in Z_h}\frac{\langle A(v_h-u),z_h\rangle - \langle Bz_h,p-q_h\rangle}{\norm{z_h}_{V_h}}\\
-    &= \norm{A(v_h-u)}_{*,Z_h}+\norm{B^T(q_h-p)}_{*,Z_h}\\
-    &\leq \norm{A}_*\norm{v_h-u}_V+\norm{B}_*\norm{q_h-p}
-\end{align*}
-for all $v_h\in Z_h$ and all $q_h\in Q_h$. Taking the inf on $Z_h$ and $Q_h$ gives a similar result to the classic Ceà's lemma for the velocity:
-\begin{equation*}
-    \norm{u-u_h}_V\leq \left( 1+\frac{\norm{A}_*}{\alpha_h}\right)\inf_{v_h\in Z_h}\norm{u-v_h}_V+\frac{\norm{B}_*}{\alpha_h}\inf_{q_h\in Q_h}\norm{p-q_h};
-\end{equation*}
-similarly, we can obtain the following inequality for the pressure:
-\begin{equation*}
-    \norm{p-p_h}_Q\leq \left( 1+\frac{\norm{B}_*}{\beta_h}\right)\inf_{q_h\in Q_h}\norm{p-q_h}_Q+\frac{\norm{A}_*}{\beta_h}\inf_{v_h\in Z_h}\norm{u-v_h}.
-\end{equation*}
+In analogy with the continuous case, well-posedness depends on satisfying:
+\begin{itemize}
+	\item ell-ker conditions for $A_h: V_h \to {V_h}'$ (either is sufficient, since the setting has become finite dimensional),
+	\item the inf-sup condition on $B_h^T$, where $B_h: V_h \to {Q_h}'$.
+\end{itemize}
+In particular, the constants $\alpha_h$ and $\beta_h$ provided by these conditions must be \emph{uniformly} bounded from below by some positive numbers, otherwise the solution's approximation would fail.
 
+The subspace in which discrete ell-ker conditions are to be satisfied is
+\begin{equation*}
+	Z_h:=\{ v_h\in V_h \mid \langle Bv_h,q_h\rangle=0 \ \forall\,q_h\in Q_h \}
+\end{equation*}
+which is the discrete analogue of $Z = \ker B$. What this space contains depends, \emph{at the same time}, on the choice of both the approximation spaces $V_h$ and $Q_h$. Moreover, there is no guarantee that $Z_h \subset Z$, nor that $Z_h \supset Z$: in some examples, it can even happen that $Z_h \cap Z = \{ 0 \}$. Hence, we cannot deduce discrete ell-ker conditions from those of the continuous problem automatically.
+\begin{example}
+    Consider $B=\dvg: (H^1)^d \to (L^2)' = L^2$. In dimension $d=1$, $B$ is just the derivative operator
+    \[
+    \langle Bu, q \rangle = \int u' q.
+    \]
+    In this case, $Z$ is the set of (a.e.) constant functions. However, if we take $Q_h = \P_D^0$, i.e. the set of piece-wise constant functions, then
+    \begin{equation*}
+        \langle Bv_h,q_h\rangle=0 \ \forall\, q_h\in Q_h \ \iff \ \int_T v_h'=0 \quad \forall \, T \ \text{element in the triangulation}.
+    \end{equation*}
+    Since elements in 1D are just intervals, applying the fundamental theorem of calculus yields that any function $v_h \in Z_h$ will have (same) constant value at each vertex of the triangulation. Hence:
+    \begin{itemize}
+    	\item If $V_h = \P_C^1$, i.e. $v_h$ is linear continuous, then the only possibility for $v_h$ is to be globally constant.
+    	\item If $V_h = \P_C^2$, then $Z_h$ contains also all functions which are quadratic in each interval, with same value at each vertex.
+    	\rev{Add a figure to show this.}
+    \end{itemize}
+	In the former case, $Z_h = Z$, in the latter $Z_h \supset Z$.
+	
+	When $d=2$, $Z$ is the space of divergence-free functions in $(H^1)^2$. Let us choose $V_h = (\P_C^1)^2$ and $Q_h = \P_D^0$. Then, in analogy with the one-dimensional case,
+	\[
+	Z_h = \Set{ v_h \in (\P_C^1)^2 : \int_T \dvg v_h = 0 \quad \forall T}.
+	\]
+	Since $v_h \in (\P_C^1)^2$, its divergence is just a constant, therefore the integral equality implies $\dvg v_h = 0$ a.e. in each element $T$, hence $\dvg v_h = 0$ a.e. globally. This proves that $Z_h \subset Z$. If we add a zero boundary condition, it is not difficult to see that $Z_h = \{0\}$, while $Z$ may be not trivial.
+\end{example}
+
+The main consequence -- and issue -- of working with $Z_h$ is that the accuracy of the approximate solution $u_h$ will depend not only on $V_h$, but also on $Q_h$. The same will happen for $p_h$ as well.
+	\rev{The result below is slightly different from the one in the notes and follows Lemma 2.44 of Guermond's book. In particular, the triangle inequality argument for $\norm{u-u_h}$ in the notes doesn't work. The reason is: even taking $v_h \in Z_h$, there is no guarantee that $u_h - v_h$ is in $Z_h$.}
+\begin{theorem}
+	Suppose that both the continuous and discrete problem are well-posed and let $(u,p)$ be the solution to \eqref{eqn:general mixed prb}. Then the approximate solution $(u_h,p_h)$ satisfies the following inequalities:
+	\begin{align}
+		\norm{u-u_h}_V &\le c_{1h} \inf_{v_h\in V_h}\norm{u-v_h}_V + c_{2h} \inf_{q_h\in Q_h}\norm{p-q_h}_Q \\
+		\norm{p-p_h}_Q &\le c_{3h} \inf_{v_h\in V_h}\norm{u-v_h}_V + c_{4h} \inf_{q_h\in Q_h}\norm{p-q_h}_Q.
+	\end{align}
+	In particular:
+	\begin{itemize}
+		\item $c_{1h} = \left( 1+\frac{\norm{A}_*}{\alpha_h}\right) \left( 1+\frac{\norm{B}_*}{\beta_h}\right)$,
+		\item $c_{2h} = \frac{\norm{B}_*}{\alpha_h}$ \, if $Z_h \not\subset Z$, \quad $c_{2h} = 0$ \, if $Z_h \subset Z$,
+		\item $c_{3h} = c_{1h} \frac{\norm{A}_*}{\beta_h}$, \quad $c_{4h} = 1 + \frac{\norm{B}_*}{\beta_h} + c_{2h} \frac{\norm{A}_*}{\beta_h}$.
+	\end{itemize}
+\end{theorem}
+\begin{proof}
+	The solution and its approximation satisfy the following equalities:
+	\begin{align*}
+	    \langle Au,v_h\rangle+\langle Bv_h,p\rangle&=\langle f,v_h\rangle \quad \forall\,v_h\in V_h\\
+	    \langle Au_h,v_h\rangle+\langle Bv_h,p_h\rangle&=\langle f,v_h\rangle \quad \forall\,v_h\in V_h.
+	\end{align*}
+	Subtracting the two gives
+	\begin{equation}\label{eqn:mixed-remainder}
+	    \langle A(u-u_h),v_h\rangle=-\langle Bv_h,p-p_h\rangle \quad \forall\, v_h\in V_h.
+	\end{equation}
+	Now observe that, if we restrict ourselves to $v_h\in Z_h\subset V_h$, then $\langle Bv_h,p-p_h\rangle=\langle Bv_h,p-q_h\rangle$ for all $q_h\in Q_h$, so the previous equation can be rephrased as
+	\begin{equation}\label{eqn:mixed prb orthogonality}
+	    \langle A(u-u_h),v_h\rangle=-\langle Bv_h,p-q_h\rangle \quad \forall\, v_h\in Z_h \ \text{and} \ \forall\,q_h\in Q_h.
+	\end{equation}
+	
+	Let $v_h \in V_h$. In order to derive a bound on $\norm{u-u_h}_V$, the usual argument with the triangle inequality
+	\[
+	\norm{u-u_h}_V\leq\norm{u-v_h}_V+\norm{v_h-u_h}_V
+	\]
+	needs some adjustment. In fact, since neither $v_h$ nor $u_h$ is guaranteed to be in $Z_h$, we would not be allowed to take advantage of the discrete ell-ker condition for the second term. A workaround is considering some $r_h \in V_h$ such that
+	\[
+	\langle Br_h , q_h \rangle = \langle B (u-v_h) , q_h \rangle \quad \forall q_h \in Q_h.
+	\]
+	Such $r_h$ exists for any given $v_h\in Z_h$, because $B_h$ is surjective. If we set $w_h = r_h + v_h$, we obtain that $w_h - u_h \in Z_h$. Then, the following holds:
+	\begin{align*}
+	    \norm{u-u_h}_V&\leq\norm{u-w_h}_V+\norm{w_h-u_h}_V\\
+	    &\leq\norm{u-w_h}_V +\frac{1}{\alpha_h}\norm{A(w_h-u_h)}_{*,Z_h}
+	\end{align*}
+	Now, we use \eqref{eqn:mixed prb orthogonality} in the following chain of (in)equalities:
+	\begin{align*}
+	    \norm{A(w_h-u_h)}_{*,Z_h} &= \sup_{z_h\in Z_h}\frac{\langle A(w_h-u_h),z_h\rangle}{\norm{z_h}_{V_h}}\\
+	    &= \sup_{z_h\in Z_h}\frac{\langle A(w_h-u),z_h\rangle + \langle A(u-u_h),z_h\rangle}{\norm{z_h}_{V_h}}\\
+	    &= \sup_{z_h\in Z_h}\frac{\langle A(w_h-u),z_h\rangle - \langle Bz_h,p-q_h\rangle}{\norm{z_h}_{V_h}}\\
+	    &\leq \norm{A}_*\norm{w_h-u}_V+\norm{B}_*\norm{p-q_h}_Q
+	\end{align*}
+	Notice in particular that the second contribution vanishes if $Z_h \subset Z$. Finally, $\norm{w_h-u}_V$ can be bounded as follows:
+	\begin{align}
+		\norm{w_h-u}_V &\le \norm{w_h-v_h}_V + \norm{v_h-u}_V \\
+		&= \norm{r_h}_V + \norm{v_h-u}_V \\
+		&\le \frac{\norm{B}_*}{\beta_h} \norm{u-v_h}_V + \norm{u-v_h}_V.
+	\end{align}
+	The last line is a consequence of Lemma \ref{lemma:const-uniqueness}, applied to $B_h$. Putting every piece together and taking the infimum over all $v_h \in V_h$ and $q_h \in Q_h$ yields the inequality for $\norm{u-u_h}_V$.
+	
+	To get the bound for $\norm{p-p_h}_Q$, it suffices to take any $q_h \in Q_h$ and use the triangle inequality
+	\[
+	\norm{p-p_h}_Q \le \norm{p-q_h}_Q + \norm{q_h-p_h}_Q.
+	\]
+	The second term can be bounded using the inf-sup condition for $B_h^T$ and then \eqref{eqn:mixed-remainder}:
+	\begin{align}
+	\norm{q_h-p_h}_Q &\le \frac{1}{\beta_h} \norm{B^T(q_h - p_h)}_{*,V_h} \\
+	&\le \frac{1}{\beta_h} \left( \norm{B^T(q_h - p)}_{*,V_h} + \norm{B^T(p - p_h)}_{*,V_h} \right) \\
+	&= \frac{1}{\beta_h} \sup_{v_h \in V_h} \frac{\langle  B v_h, q_h - p \rangle + \langle B v_h, p - p_h \rangle}{\norm{v_h}_{V_h}} \\
+	&= \frac{1}{\beta_h} \sup_{v_h \in V_h} \frac{\langle  B v_h, q_h - p \rangle - \langle A (u-u_h) , v_h \rangle}{\norm{v_h}_{V_h}} \\
+	&\le \frac{1}{\beta_h} (\norm{B}_* \norm{p-q_h}_Q + \norm{A}_*\norm{u-u_h}_V).
+	\end{align}
+	The result follows without difficulty.
+\end{proof}
 
 
 \subsection{An example: the mixed Laplacian}
