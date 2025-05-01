@@ -664,14 +664,14 @@ As a consequence, the only element in $P$ that vanishes at all the support point
       legend style={at={(1.05,0.5)}, anchor=west},
       ]
       
-      \addplot[domain=0:1, samples=100, ultra thick, blue] {2*x*(x-0.5)};
+      \addplot[domain=0:1, samples=100, ultra thick, blue] {2*(x-0.5)*(x-1)};
       \addlegendentry{$v_1(x)$};
       
       \addplot[domain=0:1, samples=100, ultra thick, red] {-4*(x-1)*(x-0)};
       \addlegendentry{$v_2(x)$};
       % \node[red, above] at (axis cs:0.5,1) {$1$};
       
-      \addplot[domain=0:1, samples=100, ultra thick, green] {2*(x-0.5)*(x-1)};
+      \addplot[domain=0:1, samples=100, ultra thick, green] {2*x*(x-0.5)};
       \addlegendentry{$v_3(x)$};
       
       % Add 6 black dots at the nodes in y = 0 and y = 1

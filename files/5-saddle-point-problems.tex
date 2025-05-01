@@ -234,8 +234,6 @@ In a similar fashion, if $V$ is reflexive as well, one can prove an analogous re
 
 \rev{There's a remark in my notes on why the converse is not true. Insert something.}
 
-\rev{I added the following technical lemma because it is implicitly used in the mixed problems section.}
-
 Before we move to the next section, let us make one final remark that will be useful in the context of mixed problems. Suppose that $V$ and $W$ are both reflexive Banach spaces and let $A \in \L(V;W')$ be a surjective operator. Thanks to Proposition \ref{prop:inf-sup_condition}, we know that $A^T$ is bounding:
 \[
 \norm{A^T w}_{V'} \ge \alpha \norm{w}_W \quad \forall w \in W.
@@ -471,7 +469,7 @@ Now we want to investigate whether we can estimate the norm of the solution in t
     \norm{u_0}_V\leq\frac{1}{\alpha}\norm{\Tilde{f}}_{V'}\leq\frac{1}{\alpha}\left( 
 \norm{f}_{V'}+\norm{A}_*\norm{u_g}_V \right).
 \end{equation*}
-Moreover, being $B$ surjective, we can apply Lemma \ref{lemma:const-uniqueness} to get
+Moreover, being $B$ surjective, by Lemma \ref{lemma:const-uniqueness} we can choose $u_g$ to satisfy
 \begin{equation*}
     \norm{g}_{Q'}=\norm{Bu_g}_{Q'}\geq\beta\norm{u_g}_V.
 \end{equation*}
@@ -583,7 +581,7 @@ The main consequence -- and issue -- of working with $Z_h$ is that the accuracy 
 	\[
 	\langle Br_h , q_h \rangle = \langle B (u-v_h) , q_h \rangle \quad \forall q_h \in Q_h.
 	\]
-	Such $r_h$ exists for any given $v_h\in Z_h$, because $B_h$ is surjective. If we set $w_h = r_h + v_h$, we obtain that $w_h - u_h \in Z_h$. Then, the following holds:
+	Such $r_h$ exists for any given $v_h\in Z_h$, because $B_h$ is surjective. Moreover, by Lemma~\ref{lemma:const-uniqueness}, it can be chosen so that $\beta_h \norm{r_h}_V \le \norm{Br_h}_{Q'}$. If we set $w_h = r_h + v_h$, we obtain that $w_h - u_h \in Z_h$. Then, the following holds:
 	\begin{align*}
 	    \norm{u-u_h}_V&\leq\norm{u-w_h}_V+\norm{w_h-u_h}_V\\
 	    &\leq\norm{u-w_h}_V +\frac{1}{\alpha_h}\norm{A(w_h-u_h)}_{*,Z_h}
@@ -601,7 +599,7 @@ The main consequence -- and issue -- of working with $Z_h$ is that the accuracy 
 		&= \norm{r_h}_V + \norm{v_h-u}_V \\
 		&\le \frac{\norm{B}_*}{\beta_h} \norm{u-v_h}_V + \norm{u-v_h}_V.
 	\end{align}
-	The last line is a consequence of Lemma \ref{lemma:const-uniqueness}, applied to $B_h$. Putting every piece together and taking the infimum over all $v_h \in V_h$ and $q_h \in Q_h$ yields the inequality for $\norm{u-u_h}_V$.
+	The last line is a consequence of Lemma \ref{lemma:const-uniqueness} applied to $B_h$, as pointed out earlier. Putting every piece together and taking the infimum over all $v_h \in V_h$ and $q_h \in Q_h$ yields the inequality for $\norm{u-u_h}_V$.
 	
 	To get the bound for $\norm{p-p_h}_Q$, it suffices to take any $q_h \in Q_h$ and use the triangle inequality
 	\[
